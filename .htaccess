@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# RewriteBase indispensable sur webetu :
+# à adapter à votre
+RewriteBase /www/e32772u/BUT_Info_S3/SAE/Touiteur
+
+#
+# Pour interdire l'accès aux répertoires contenant du code
+RewriteRule ^sql(/.*|)$ - [NC,F]   # interdit l'accès à touiteur/sql
+RewriteRule ^src(/.*|)$ - [NC,F]   # interdit l'accès à touiteur/src (il ne doit pas contenir index.php)
+RewriteRule \.ini$ - [NC,F]   # interdit l'accès à tous les fichiers .ini
