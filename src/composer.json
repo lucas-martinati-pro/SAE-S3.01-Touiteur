@@ -1,0 +1,10 @@
+{
+    "name": "s3/touiteur",
+    "description": "la meilleur app de publication et de partage de Touites de tout l'iut",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "iutnc\\touiteur\\": "classes/"
+        }
+    }
+}
