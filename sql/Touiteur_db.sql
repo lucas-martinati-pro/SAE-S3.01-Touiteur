@@ -76,7 +76,6 @@ alter table follow add constraint no_self_follow check (follower_id != followed_
 -- Contenu : (Contenu généré à l'aide de l'IA)
 
 -- Comptes de test : les mots de passe correspondent aux valeurs indiquées
--- dans README.md (user1, user2, user3, user4 et admin).
 insert into user (id, email, passwd, role) values
     (1, 'user1@mail.com', '$2y$12$z7mHIyHACElCs8zE4hVvN.cPM4ala.FM6McIch4Zn7OakVGhMskvC', 1),
     (2, 'user2@mail.com', '$2y$12$JelzicyqC10xiJz0i/JWUuUqFLBr5fhos2omEJoV68yGpQVp1.U1.', 1),
