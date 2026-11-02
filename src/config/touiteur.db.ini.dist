@@ -1,0 +1,5 @@
+driver=mysql
+host=localhost
+database=database
+username=username
+password=password

@@ -1,0 +1,11 @@
+vendor/
+
+# IDE
+.idea
+.vscode
+
+Fichier avec les images...
+/image/
+
+# Configuration base de données
+src/config/touiteur.db.ini
