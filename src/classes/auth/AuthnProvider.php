@@ -39,11 +39,15 @@ class AuthnProvider {
      *
      * @param string $email Adresse email du nouvel utilisateur.
      * @param string $password Mot de passe choisi.
+     * @param string $nom Nom de l'utilisateur
+     * @param string $prenom Prenom de l'utilisateur
      * @return void
      * @throws AuthnException Si l'email est invalide, déjà utilisé, ou si le mot de passe ne respecte pas les critères de sécurité.
      */
-    public static function register(string $email, string $password) : void {
+    public static function register(string $email, string $password, string $nom, string $prenom) : void {
         $email = filter_var($email, FILTER_VALIDATE_EMAIL);
+        $nom = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);
+        $prenom = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
 
         if ($email === false) {
             throw new AuthnException("L'adresse email n'est pas valide.");
@@ -73,7 +77,7 @@ class AuthnProvider {
             throw new AuthnException("Le mot de passe doit contenir au moins une lettre majuscule.");
         }
 
-        $r->adduser($email, $password);
+        $r->adduser($email, $password, $nom, $prenom);
     }
 
     /**
