@@ -2,7 +2,7 @@
 
 namespace iutnc\touiteur\render;
 
-use iutnc\touiteur\enums\TypeRender;
+use iutnc\touiteur\enum\TypeRender;
 
 /**
  * Interface pour le rendu HTML des éléments de l'application.

@@ -1,6 +1,6 @@
 <?php
 
-namespace iutnc\touiteur\enums;
+namespace iutnc\touiteur\enum;
 
 /**
  * Mode de rendu pour les renderers (vue compacte ou détaillée).
