@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\dispatch;
 
+use iutnc\touiteur\action\AddTouiteAction;
 use iutnc\touiteur\action\DisplayFeedAction;
 use iutnc\touiteur\action\DisplayFeedFollowedAction;
 use iutnc\touiteur\action\RegisterAction;
@@ -35,6 +36,7 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
+            "addTouite" => (new AddTouiteAction())(),
             "displayFeed" => (new DisplayFeedAction())(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
