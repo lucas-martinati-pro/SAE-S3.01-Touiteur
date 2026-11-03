@@ -16,11 +16,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     private function rowToTouite(array $res): Touite {
         $touite = new Touite(
-                $res['id'],
                 $res['content'],
                 $res['posted_at'],
                 $res['image_path'] ?? null,
-                $res['image_description'] ?? null
+                $res['image_description'] ?? null,
+                $res['id']
             );
 
         return $touite;
@@ -47,21 +47,51 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return new Feed($touites);
     }
 
-    public function findFollowedFeed(string $email): ?Feed {
+    public function findTouiteById(int $id) : ?Touite {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
-            inner join users on users.id = touites.user_id
-            WHERE email = :email;
+            where id = :id;
         SQL);
 
-        $stmt->execute(['email' => $email]);
+        $stmt->execute(['id' => $id]);
 
         $res = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$res) return null;
 
-        return null;
+        return $this->rowToTouite($res);
+    }
+
+    public function findFollowedFeed(string $id): ?Feed {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT touite.*
+            FROM touite
+            WHERE touite.users_id IN (
+                SELECT followed_id
+                FROM follow
+                WHERE follower_id = :id
+            )
+            OR touite.id IN (
+                SELECT tag2touite.touite_id
+                FROM tag2touite
+                INNER JOIN user2tag ON user2tag.tag_id = tag2touite.tag_id
+                WHERE user2tag.users_id = :id
+            )
+            ORDER BY posted_at DESC;
+        SQL);
+
+        $stmt->execute(['id' => $id]);
+
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $tabTouite = [];
+
+        foreach($res as $row){
+            $tabTouite[] = $this->rowToTouite($row);
+        }
+
+        return new Feed($tabTouite);
     }
 
     /**============================================

@@ -2,6 +2,8 @@
 
 namespace iutnc\touiteur\repository;
 
+use iutnc\touiteur\touite\Touite;
+
 class TouiteurRepository {
     protected \PDO $pdo;
     protected static array $config = [];

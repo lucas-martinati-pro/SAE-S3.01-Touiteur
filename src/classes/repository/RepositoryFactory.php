@@ -4,7 +4,7 @@ namespace iutnc\touiteur\repository;
 
 class RepositoryFactory extends TouiteurRepository {
     private static ?TouiteurReaderRepository $readInstance = null;
-    private static ?TouiteurWritterRepository $writeInstance = null;
+    private static ?TouiteurWriterRepository $writeInstance = null;
 
     // Singleton pour la lecture
     public static function getReader(): TouiteurReaderRepository {
@@ -15,9 +15,9 @@ class RepositoryFactory extends TouiteurRepository {
     }
 
     // Singleton pour l'écriture
-    public static function getWriter(): TouiteurWritterRepository {
+    public static function getWriter(): TouiteurWriterRepository {
         if (is_null(self::$writeInstance)) {
-            self::$writeInstance = new TouiteurWritterRepository();
+            self::$writeInstance = new TouiteurWriterRepository();
         }
         return self::$writeInstance;
     }

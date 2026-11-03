@@ -5,6 +5,7 @@ namespace iutnc\touiteur\dispatch;
 use iutnc\touiteur\action\AddTouiteAction;
 use iutnc\touiteur\action\DisplayFeedAction;
 use iutnc\touiteur\action\DisplayFeedFollowedAction;
+use iutnc\touiteur\action\DisplayTouite;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
@@ -37,11 +38,11 @@ class Dispatcher {
     public function run(): void {
         $html = match ($this->action) {
             "addTouite" => (new AddTouiteAction())(),
-            "displayFeed" => (new DisplayFeedAction())(),
+            "displayTouite" => (new DisplayTouite())(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
-            default => (new DisplayFeedFollowedAction())(),
+            default => (new DisplayFeedAction())(),
         };
 
         $this->renderPage($html);
@@ -75,13 +76,6 @@ class Dispatcher {
                     <link href="css/style.css" rel="stylesheet">
                     <!-- Icône personnalisée pour le site -->
                     <link rel="icon" type="image/x-icon" href="image/favicon.png">
-                    <!-- Script pour l'audio -->
-                    <script type="module" src="https://cdn.jsdelivr.net/npm/player.style/tailwind-audio/+esm"></script>
-                    <!-- Script pour l'audio, Swup : change de page sans couper la musique -->
-                    <script src="https://unpkg.com/swup@4"></script>
-                    <script>
-                      const swup = new Swup();
-                    </script>
                 </head>
                 <body>
                     <div class="app-layout" id="swup">

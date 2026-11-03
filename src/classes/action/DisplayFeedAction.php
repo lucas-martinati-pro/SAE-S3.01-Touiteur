@@ -14,8 +14,18 @@ use Override;
 class DisplayFeedAction extends Action {
     #[Override]
     public function get(): string {
-        $reader = RepositoryFactory::getReader();
-        $feed = $reader->findAllTouites();
+        $r = RepositoryFactory::getReader();
+
+        $feed = "";
+        $activeGlobal = '';
+        $activeFollow = '';
+        if (isset($_GET['type']) && $_GET['type'] == 'global') {
+            $feed = $r->findAllTouites();
+            $activeGlobal = 'class="active"';
+        } else {
+            $feed = $r->findFollowedFeed($this->user['id']);
+            $activeFollow = 'class="active"';
+        }
 
         $page = <<< HTML
             <header class="feed-header">
@@ -23,8 +33,8 @@ class DisplayFeedAction extends Action {
                     <h1>Accueil</h1>
                 </div>
                 <nav class="feed-tabs" aria-label="Fil d'actualité">
-                    <a class="active" href="?action=displayFeed">Pour vous</a>
-                    <a href="?action=displayFeedFollowed">Abonnements</a>
+                    <a {$activeGlobal} href="?action=displayFeed&type=global">Pour vous</a>
+                    <a {$activeFollow} href="?action=displayFeed">Abonnements</a>
                 </nav>
             </header>
             <div class="compose-box">
