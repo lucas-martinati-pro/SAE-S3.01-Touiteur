@@ -2,6 +2,8 @@
 
 namespace iutnc\touiteur\repository;
 
+use iutnc\touiteur\touite\Touite;
+
 class TouiteurRepository {
     protected \PDO $pdo;
     protected static array $config = [];
@@ -21,40 +23,15 @@ class TouiteurRepository {
         ];
     }
 
-    protected function rowToTrack(array $res) : Touite {
-        if ($res['type'] === 'A') {
-            $track = new AlbumTrack(
-                $res['titre'],
-                $res['filename'],
-                $res['titre_album'] ?? '',
-                (!empty($res['numero_album'])) ? (int) $res['numero_album'] : 1
+    protected function rowToTouite(array $res) : Touite {
+        $touite = new Touite(
+                $res['id'],
+                $res['content'],
+                $res['posted_at'],
+                $res['image_path'] ?? null,
+                $res['image_description'] ?? null
             );
-            if (!empty($res['artiste_album'])) {
-                $track->setArtist($res['artiste_album']);
-            }
-            if (!empty($res['annee_album'])) {
-                $track->setYear((int) $res['annee_album']);
-            }
-        } else {
-            $track = new PodcastTrack(
-                $res['titre'],
-                $res['filename'],
-                $res['auteur_podcast'] ?? null,
-                $res['date_podcast'] ?? null
-            );
-        }
 
-        $track->setId((int) $res['id']);
-        if (!empty($res['duree']) && (int) $res['duree'] > 0) {
-            $track->setDuration((int) $res['duree']);
-        }
-        if (!empty($res['genre'])) {
-            $track->setGenre($res['genre']);
-        }
-        if (!empty($res['image'])) {
-            $track->setImage($res['image']);
-        }
-
-        return $track;
+        return $touite;
     }
 }

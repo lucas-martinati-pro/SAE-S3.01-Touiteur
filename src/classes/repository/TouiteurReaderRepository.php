@@ -13,17 +13,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
      *               GESTION DES TOUITES
      *=============================================**/
 
-    public function findFollowedFeed(string $email) : ?Feed {
-
-        $stmt = $this->pdo->prepare(<<<SQL
-            SELECT id
-            FROM users
-            WHERE email = :email
-        SQL);
-
-        $stmt->execute(['email' => $email]);
-
-        $id = $stmt->fetch(PDO::FETCH_ASSOC);
+    public function findFollowedFeed(string $id) : ?Feed {
 
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT touite.*
