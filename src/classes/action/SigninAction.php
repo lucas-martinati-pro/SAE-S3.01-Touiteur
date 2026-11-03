@@ -70,7 +70,7 @@ class SigninAction extends Action {
     #[Override]
     public function post() : string {
         if (!isset($_POST['email'], $_POST['password'])) {
-            return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin", title: "Échec de la connexion");
+            return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin&form=1", title: "Échec de la connexion");
         }
 
         $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -78,7 +78,7 @@ class SigninAction extends Action {
         try {
             AuthnProvider::signin($email, $_POST['password']);
         } catch (AuthnException $error) {
-            return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin", title: "Échec de la connexion");
+            return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin&form=1", title: "Échec de la connexion");
         }
 
         $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
