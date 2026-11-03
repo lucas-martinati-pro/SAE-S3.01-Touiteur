@@ -3,13 +3,13 @@
 namespace iutnc\touiteur\touite;
 
 class Touite {
-    private int $id;
+    private ?int $id;
     private string $content;
     private string $posted_at;
     private ?string $image_path;
     private ?string $image_description;
 
-    function __construct(int $id, string $content, string $posted_at, ?string $image_path, ?string $image_description) {
+    function __construct(string $content, string $posted_at, ?string $image_path, ?string $image_description, ?int $id = null) {
         $this->id = $id;
         $this->content = $content;
         $this->posted_at = $posted_at;
