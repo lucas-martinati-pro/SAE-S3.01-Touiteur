@@ -3,7 +3,7 @@
 namespace iutnc\touiteur\dispatch;
 
 use iutnc\touiteur\action\DisplayFeedAction;
-use iutnc\touiteur\action\DisplayFeedFollowedAction;
+use iutnc\touiteur\action\DisplayProfile;
 use iutnc\touiteur\action\DisplayTouite;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
@@ -37,6 +37,7 @@ class Dispatcher {
     public function run(): void {
         $html = match ($this->action) {
             "displayTouite" => (new DisplayTouite())(),
+            "DisplayProfile" => (new DisplayProfile)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
@@ -127,6 +128,11 @@ class Dispatcher {
                     <li class="nav-item">
                         <a class="nav-link" href="?action=addTouite">
                             Poster un touite
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?action=DisplayProfile&id=1">
+                            Profile
                         </a>
                     </li>
                 </ul>
