@@ -76,7 +76,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
      */
     public function findUserByEmail(string $email): ?array {
         $stmt = $this->pdo->prepare(<<<SQL
-            SELECT id, email, passwd
+            SELECT id, email, passwd, nom, prenom, counter_touite
             FROM users
             WHERE email = :email
         SQL);
