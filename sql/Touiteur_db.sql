@@ -62,8 +62,6 @@ create table user2tag (
 );
 
 -- Clés étrangères :
-alter table users add constraint uq_users_email unique (email);
-alter table tag add constraint uq_tag_libelle unique (libelle);
 alter table user2tag add foreign key (users_id) references users(id);
 alter table user2tag add foreign key (tag_id) references tag(id);
 alter table note2touite add foreign key (users_id) references users(id);
@@ -75,6 +73,8 @@ alter table follow add foreign key (followed_id) references users(id);
 alter table touite add foreign key (users_id) references users(id);
 
 -- Contraintes :
+alter table users add constraint uq_users_email unique (email);
+alter table tag add constraint uq_tag_libelle unique (libelle);
 alter table users add constraint chk_counter_touite_positiv check (counter_touite >= 0);
 alter table touite add constraint chk_touite_content_length check (length(content) <= 235);
 alter table follow add constraint chk_no_self_follow check (follower_id != followed_id);
