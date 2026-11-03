@@ -2,7 +2,7 @@
 
 namespace iutnc\touiteur\dispatch;
 
-use iutnc\touiteur\action\DefaultAction;
+use iutnc\touiteur\action\DisplayFeedFollowedAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
@@ -37,7 +37,7 @@ class Dispatcher {
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
-            default => (new DefaultAction())(),
+            default => (new DisplayFeedFollowedAction())(),
         };
 
         $this->renderPage($html);

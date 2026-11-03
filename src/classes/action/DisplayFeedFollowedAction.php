@@ -9,7 +9,7 @@ use Override;
 /**
  * Action par défaut affichant la page d'accueil de l'application Touiteur.
  */
-class DefaultAction extends Action {
+class DisplayFeedFollowedAction extends Action {
     protected bool $requireAuth = false;
 
     #[Override]
