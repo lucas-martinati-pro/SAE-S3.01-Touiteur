@@ -47,6 +47,22 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return new Feed($touites);
     }
 
+    public function findTouiteById(int $id) : ?Touite {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT *
+            FROM touite
+            where id = :id;
+        SQL);
+
+        $stmt->execute(['id' => $id]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowToTouite($res);
+    }
+
     public function findFollowedFeed(string $id): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT touite.*
@@ -74,7 +90,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         foreach($res as $row){
             $tabTouite[] = $this->rowToTouite($row);
         }
-        
+
         return new Feed($tabTouite);
     }
 
