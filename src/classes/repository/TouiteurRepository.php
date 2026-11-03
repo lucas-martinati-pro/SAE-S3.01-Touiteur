@@ -11,7 +11,7 @@ class TouiteurRepository {
         [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
     }
 
-    public static function setConfig(string $file) : void {
+    public static function setConfig(string $file): void {
         $conf = parse_ini_file($file);
         if ($conf === false) throw new \Exception("Error reading configuration file");
         self::$config = [

@@ -15,7 +15,7 @@ class HtmlHelper {
      * @param string $color Classe de couleur Bootstrap (ex: 'text-primary', 'danger', etc. Défaut: 'text-primary').
      * @return string Balises HTML du titre formaté.
      */
-    public static function title(string $title = '', string $icon = '', string $color = 'text-primary') : string {
+    public static function title(string $title = '', string $icon = '', string $color = 'text-primary'): string {
         return <<<HTML
             <h1 class="h2 fw-bold mb-3 d-flex align-items-center">
                 <i class="bi {$icon} text-{$color} me-2"></i>
@@ -31,7 +31,7 @@ class HtmlHelper {
      * @param string|array $content Texte unique ou tableau de messages à afficher.
      * @return string Balises HTML de l'alerte Bootstrap.
      */
-    public static function alert(string $type = 'info', string|array $content = '') : string {
+    public static function alert(string $type = 'info', string|array $content = ''): string {
         $icon = match ($type) {
             'success' => 'bi-check-circle-fill',
             'warning' => 'bi-exclamation-triangle-fill',
@@ -70,7 +70,7 @@ class HtmlHelper {
      * @param string $type Type d'alerte Bootstrap ('danger', 'warning', etc. Défaut: 'danger').
      * @return string Balises HTML de la page d'erreur.
      */
-    public static function errorPage(string $title = "Erreur", string|array $message = "Une erreur inattendue est survenue.", string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil", string $type = 'danger') : string {
+    public static function errorPage(string $title = "Erreur", string|array $message = "Une erreur inattendue est survenue.", string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil", string $type = 'danger'): string {
         $alertHtml = self::alert($type, $message);
 
         $titleColor = match ($type) {
@@ -106,7 +106,7 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à l'accueil').
      * @return string Balises HTML de l'écran d'accès refusé.
      */
-    public static function authRequired(string $message = "Vous devez être connecté pour accéder à cette page.", string $loginUrl = "?action=signin", string $loginLabel = "Se connecter", string $backUrl = "index.php", string $backLabel = "Retour à l'accueil") : string {
+    public static function authRequired(string $message = "Vous devez être connecté pour accéder à cette page.", string $loginUrl = "?action=signin", string $loginLabel = "Se connecter", string $backUrl = "index.php", string $backLabel = "Retour à l'accueil"): string {
         $alert = self::alert('warning', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
         $titleHtml = self::title("Accès refusé", "bi-shield-lock-fill", "text-danger");
@@ -137,7 +137,7 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à mon feed').
      * @return string Balises HTML de l'écran d'interdiction.
      */
-    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed") : string {
+    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
         $titleHtml = self::title("Accès refusé", "bi-shield-lock-fill", "text-danger");
@@ -164,7 +164,7 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à mon compte').
      * @return string Balises HTML de la page 404.
      */
-    public static function notFound(string $item = "Ressource", string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed") : string {
+    public static function notFound(string $item = "Ressource", string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
         $titleHtml = self::title("{$item} introuvable", "bi-exclamation-triangle-fill", "text-danger");
@@ -191,7 +191,7 @@ class HtmlHelper {
      * @param string $title Titre de l'écran d'erreur (défaut: 'Erreur dans le formulaire').
      * @return string Balises HTML de l'écran d'erreur de formulaire.
      */
-    public static function formError(string|array $errors = "Une erreur est survenue lors de la validation du formulaire.", string $backUrl = "index.php", string $backLabel = "Retour au formulaire", string $title = "Erreur dans le formulaire") : string {
+    public static function formError(string|array $errors = "Une erreur est survenue lors de la validation du formulaire.", string $backUrl = "index.php", string $backLabel = "Retour au formulaire", string $title = "Erreur dans le formulaire"): string {
         $alert = self::alert('danger', $errors);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
         $titleHtml = self::title($title, "bi-exclamation-triangle-fill", "text-danger");
@@ -218,7 +218,7 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton d'action suivante (défaut: 'Retour à mon feed').
      * @return string Balises HTML de la page de confirmation de succès.
      */
-    public static function successPage(string $title = "Opération réussie", string $message = "L'opération s'est déroulée avec succès.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed") : string {
+    public static function successPage(string $title = "Opération réussie", string $message = "L'opération s'est déroulée avec succès.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('success', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/check-circle-fill/
         $titleHtml = self::title($title, "bi-check-circle-fill", "text-success");

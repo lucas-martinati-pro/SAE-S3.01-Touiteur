@@ -47,7 +47,7 @@ abstract class Action {
      *
      * @return string Balises HTML générées en réponse à la requête.
      */
-    public function execute() : string {
+    public function execute(): string {
         if ($this->requireAuth && $this->user === null) {
             return HtmlHelper::authRequired();
         }
@@ -67,7 +67,7 @@ abstract class Action {
      *
      * @return string Résultat de l'exécution de l'action.
      */
-    public function __invoke() : string {
+    public function __invoke(): string {
         return $this->execute();
     }
 
@@ -76,21 +76,21 @@ abstract class Action {
      *
      * @return string Code HTML généré pour l'affichage (formulaire, vue, etc.).
      */
-    abstract public function get() : string;
+    abstract public function get(): string;
 
     /**
      * Traite les requêtes HTTP de type POST.
      *
      * @return string Code HTML résultant du traitement (succès, redirection, erreur).
      */
-    abstract public function post() : string;
+    abstract public function post(): string;
 
     /**
      * Vérifie les conditions de l'action (existence des paramètres, droits, ressources).
      *
      * @return string|null Message d'erreur HTML si la vérification échoue, null sinon.
      */
-    protected function check() : ?string {
+    protected function check(): ?string {
         return null;
     }
 }

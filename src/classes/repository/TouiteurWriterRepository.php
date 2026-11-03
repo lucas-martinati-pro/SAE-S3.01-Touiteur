@@ -2,13 +2,20 @@
 
 namespace iutnc\touiteur\repository;
 
-use PDO;
-
 /**
  * Repository centralisant les opérations d'accès à la base de données.
  */
-class TouiteurWritterRepository extends TouiteurRepository{
+class TouiteurWriterRepository extends TouiteurRepository {
+    /**============================================
+     *               GESTION DES TOUITES
+     *=============================================**/
+
     
+
+    /**============================================
+     *               GESTION DE L'AUTH
+     *=============================================**/
+
     /**
      * Crée un nouvel utilisateur en base de données avec un mot de passe haché (bcrypt).
      *
@@ -18,7 +25,7 @@ class TouiteurWritterRepository extends TouiteurRepository{
      * @param string $prenom Prénom de l'utilisateur
      * @return void
      */
-    public function addUser(string $email, string $password, string $nom, string $prenom) : void {
+    public function addUser(string $email, string $password, string $nom, string $prenom): void {
         // Double par précaution;
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         $nom = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);

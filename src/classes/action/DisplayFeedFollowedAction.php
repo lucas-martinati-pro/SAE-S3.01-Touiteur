@@ -9,11 +9,9 @@ use Override;
 /**
  * Action par défaut affichant la page d'accueil de l'application Touiteur.
  */
-class DefaultAction extends Action {
-    protected bool $requireAuth = false;
-
+class DisplayFeedFollowedAction extends Action {
     #[Override]
-    public function get() : string {
+    public function get(): string {
         $page = <<< HTML
             <h1 class="h2 fw-bold mb-2">
                 <img src="image/favicon.png" width="40" height="40" alt="Logo" class="align-text-top">
@@ -64,7 +62,7 @@ class DefaultAction extends Action {
     }
 
     #[Override]
-    public function post() : string {
+    public function post(): string {
         return '';
     }
 }

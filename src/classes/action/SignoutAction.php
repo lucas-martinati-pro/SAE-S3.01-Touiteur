@@ -10,7 +10,7 @@ use Override;
  */
 class SignoutAction extends Action {
     #[Override]
-    public function get() : string {
+    public function get(): string {
         // Si l'utilisateur n'est même pas connecté
         if (!isset($_SESSION['user'])) {
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/
@@ -46,7 +46,7 @@ class SignoutAction extends Action {
     }
 
     #[Override]
-    public function post() : string {
+    public function post(): string {
         unset($_SESSION['user']);
         
         return <<<HTML

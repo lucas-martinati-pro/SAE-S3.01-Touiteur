@@ -14,18 +14,12 @@ class FeedRenderer implements Renderer {
     }
 
     #[Override]
-    public function render(TypeRender $selector = TypeRender::COMPACT) : string {
-        $res = "";
-        foreach ($this->feed->getTouites() as $touite) {
-            $res .= ($selector == TypeRender::LONG)
-                ? <<<HTML
-                <h2> LONG : {$touite->getContent()}</h2>
-                HTML
-                : <<<HTML
-                <h2> COMPACT : {$touite->getImage_description()}</h2>
-                HTML;
+    public function render(TypeRender $selector = TypeRender::COMPACT): string {
+        $res = '<section class="feed" aria-label="Liste des touites">';
+        foreach ($this->feed as $touite) {
+            $res .= (new TouiteRenderer($touite))->render($selector);
         }
 
-        return $res;
+        return $res . '</section>';
     }
 }
