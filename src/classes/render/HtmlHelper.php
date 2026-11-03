@@ -186,12 +186,12 @@ class HtmlHelper {
      * Génère un écran d'erreur de formulaire avec bouton de retour arrière vers le formulaire.
      *
      * @param string|array $errors Message d'erreur unique ou tableau de messages.
-     * @param string $backUrl URL de retour (par défaut: 'javascript:history.back()').
+     * @param string $backUrl URL de retour (par défaut: 'index.php').
      * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour au formulaire').
      * @param string $title Titre de l'écran d'erreur (défaut: 'Erreur dans le formulaire').
      * @return string Balises HTML de l'écran d'erreur de formulaire.
      */
-    public static function formError(string|array $errors = "Une erreur est survenue lors de la validation du formulaire.", string $backUrl = "javascript:history.back()", string $backLabel = "Retour au formulaire", string $title = "Erreur dans le formulaire") : string {
+    public static function formError(string|array $errors = "Une erreur est survenue lors de la validation du formulaire.", string $backUrl = "index.php", string $backLabel = "Retour au formulaire", string $title = "Erreur dans le formulaire") : string {
         $alert = self::alert('danger', $errors);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
         $titleHtml = self::title($title, "bi-exclamation-triangle-fill", "text-danger");
