@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\repository;
 
+use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\touite\Feed;
 use PDO;
 
@@ -13,7 +14,40 @@ class TouiteurReaderRepository extends TouiteurRepository {
      *               GESTION DES TOUITES
      *=============================================**/
 
-    public function findFollowedFeed(string $email) : ?Feed {
+    private function rowToTouite(array $res): Touite {
+        $touite = new Touite(
+                $res['id'],
+                $res['content'],
+                $res['posted_at'],
+                $res['image_path'] ?? null,
+                $res['image_description'] ?? null
+            );
+
+        return $touite;
+    }
+
+    public function findAllTouites(): ?Feed {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT *
+            FROM touite
+            order by posted_at desc;
+        SQL);
+
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        $touites = [];
+
+        foreach ($res as $touite) {
+            $touites[] = $this->rowToTouite($touite);
+        }
+
+        return new Feed($touites);
+    }
+
+    public function findFollowedFeed(string $email): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
@@ -27,7 +61,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         if (!$res) return null;
 
-        return 
+        return null;
     }
 
     /**============================================
@@ -40,7 +74,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
      * @param string $email Adresse email recherchée.
      * @return array|null Données de l'utilisateur ou null si introuvable.
      */
-    public function findUserByEmail(string $email) : ?array {
+    public function findUserByEmail(string $email): ?array {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT id, email, passwd
             FROM users
@@ -62,7 +96,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
      * @param string $email Adresse email à vérifier.
      * @return bool True si l'email existe déjà, false sinon.
      */
-    public function existsByEmail(string $email) : bool {
+    public function existsByEmail(string $email): bool {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT id
             FROM users

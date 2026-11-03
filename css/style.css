@@ -1,0 +1,102 @@
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    padding: 2rem 1.25rem;
+    border-right: 1px solid var(--bs-border-color);
+}
+
+.sidebar .nav-link {
+    border-radius: .75rem;
+    padding: .7rem .8rem;
+    margin-bottom: .35rem;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link:focus {
+    background: var(--bs-secondary-bg);
+}
+
+.page-content {
+    width: min(100%, 760px);
+    padding: 2rem;
+    margin: 0 auto;
+}
+
+.feed-title {
+    margin-bottom: 1.5rem;
+}
+
+.feed-title h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.feed-title p {
+    color: var(--bs-secondary-color);
+}
+
+.touite-card {
+    padding: 1.1rem 1.25rem;
+    margin-bottom: .8rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 1rem;
+    background: var(--bs-body-bg);
+}
+
+.touite-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--bs-secondary-color);
+    font-size: .9rem;
+}
+
+.touite-header strong {
+    color: var(--bs-primary);
+}
+
+.touite-content {
+    margin: .7rem 0 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.touite-image {
+    display: block;
+    max-width: 100%;
+    max-height: 360px;
+    margin-top: 1rem;
+    border-radius: .75rem;
+    object-fit: cover;
+}
+
+@media (max-width: 700px) {
+    .app-layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 1rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+
+    .sidebar .navbar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sidebar .nav-link {
+        margin-right: .35rem;
+    }
+
+    .page-content {
+        padding: 1.25rem;
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\dispatch;
 
+use iutnc\touiteur\action\DisplayFeedAction;
 use iutnc\touiteur\action\DisplayFeedFollowedAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
@@ -32,8 +33,9 @@ class Dispatcher {
      *
      * @return void
      */
-    public function run() : void {
+    public function run(): void {
         $html = match ($this->action) {
+            "displayFeed" => (new DisplayFeedAction())(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
@@ -49,7 +51,7 @@ class Dispatcher {
      * @param string $html Contenu HTML généré par l'action courante.
      * @return void
      */
-    private function renderPage(string $html) : void {
+    private function renderPage(string $html): void {
         $navbar = $this->renderNavbar();
         $theme = (($_COOKIE['theme'] ?? 'dark') === 'light') ? 'light' : 'dark';
 
@@ -79,25 +81,16 @@ class Dispatcher {
                       const swup = new Swup();
                     </script>
                 </head>
-                <body class="d-flex flex-column min-vh-100">
-                    <!-- Contenu rechargé à chaque page, le lecteur audio est en dehors donc il continue -->
-                    <div class="flex-grow-1" id="swup">
-                        <nav class="navbar navbar-expand-lg">
-                            <div class="container">
-                                <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.php">
-                                    <img src="image/favicon.png" alt="Logo" width="24" height="24" class="me-2">
-                                    Touiteur
-                                </a>
-                                <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                                    <span class="navbar-toggler-icon"></span>
-                                </button>
-                                <div class="collapse navbar-collapse" id="navbarNav">
-                                    {$navbar}
-                                </div>
-                            </div>
-                        </nav>
-
-                        <main class="container py-4">
+                <body>
+                    <div class="app-layout" id="swup">
+                        <aside class="sidebar">
+                            <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php">
+                                <img src="image/favicon.png" alt="Logo" width="28" height="28" class="me-2">
+                                Touiteur
+                            </a>
+                            {$navbar}
+                        </aside>
+                        <main class="page-content">
                             $html
                         </main>
                     </div>
@@ -113,7 +106,7 @@ class Dispatcher {
      *
      * @return string Balises HTML de la barre de navigation.
      */
-    private function renderNavbar() : string {
+    private function renderNavbar(): string {
         $toggleThemeButton = <<<HTML
             <button id="toggle-theme" class="btn btn-outline-secondary btn-sm d-flex align-items-center" title="Changer de thème">
                 <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/circle-half/ -->

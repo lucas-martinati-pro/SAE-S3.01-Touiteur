@@ -15,7 +15,7 @@ class RendererFactory {
      * @param object $element L'objet à restituer en HTML (Touite ou Feed).
      * @return Renderer|null Instance de Renderer adaptée, ou null si l'objet n'est pas pris en charge.
      */
-    public static function getRenderer(object $element) : ?Renderer {
+    public static function getRenderer(object $element): ?Renderer {
         if ($element instanceof Touite) return new TouiteRenderer($element);
         else if ($element instanceof Feed) return new FeedRenderer($element);
         else return null;

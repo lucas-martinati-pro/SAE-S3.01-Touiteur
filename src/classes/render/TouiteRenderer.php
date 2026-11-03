@@ -14,15 +14,31 @@ class TouiteRenderer implements Renderer {
     }
 
     #[Override]
-    public function render(TypeRender $selector = TypeRender::COMPACT) : string {
-        $res = ($selector == TypeRender::LONG)
-            ? <<<HTML
-            <h2> LONG : {$this->touite->getContent()}</h2>
-            HTML
-            : <<<HTML
-            <h2> COMPACT : {$this->touite->getImage_description()}</h2>
-            HTML;
+    public function render(TypeRender $selector = TypeRender::COMPACT): string {
+        $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
+        $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
+        $image = '';
 
-        return $res;
+        if ($this->touite->getImage_path() !== null) {
+            $path = htmlspecialchars($this->touite->getImage_path(), ENT_QUOTES, 'UTF-8');
+            $description = htmlspecialchars(
+                $this->touite->getImage_description() ?? 'Image du touite',
+                ENT_QUOTES,
+                'UTF-8'
+            );
+            $image = "<img class=\"touite-image\" src=\"{$path}\" alt=\"{$description}\">";
+        }
+
+        $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
+        return <<<HTML
+            <article class="{$class}">
+                <div class="touite-header">
+                    <strong>@touiteur</strong>
+                    <time datetime="{$date}">{$date}</time>
+                </div>
+                <p class="touite-content">{$content}</p>
+                {$image}
+            </article>
+        HTML;
     }
 }
