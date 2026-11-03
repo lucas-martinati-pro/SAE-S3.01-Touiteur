@@ -26,6 +26,16 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $touite;
     }
 
+    private function rowsToFeed(array $res): Feed {
+        $touites = [];
+
+        foreach ($res as $touite) {
+            $touites[] = $this->rowToTouite($touite);
+        }
+
+        return new Feed($touites);
+    }
+
     public function findAllTouites(): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
@@ -38,13 +48,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         if (!$res) return null;
 
-        $touites = [];
-
-        foreach ($res as $touite) {
-            $touites[] = $this->rowToTouite($touite);
-        }
-
-        return new Feed($touites);
+        return $this->rowsToFeed($res);
     }
 
     public function findTouiteById(int $id) : ?Touite {
@@ -63,7 +67,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowToTouite($res);
     }
 
-    public function findFollowedFeed(string $id): ?Feed {
+    public function findFollowedFeed(int $id): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT touite.*
             FROM touite
@@ -85,13 +89,24 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $tabTouite = [];
+        if (!$res) return null;
 
-        foreach($res as $row){
-            $tabTouite[] = $this->rowToTouite($row);
-        }
+        return $this->rowsToFeed($res);
+    }
 
-        return new Feed($tabTouite);
+    public function findAllTouitesByUserId(int $id): ?Feed {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT *
+            FROM touite
+            where users_id = :id;
+        SQL);
+
+        $stmt->execute(['id' => $id]);
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowsToFeed($res);
     }
 
     /**============================================

@@ -81,10 +81,10 @@ ALTER TABLE follow ADD CONSTRAINT chk_no_self_follow CHECK (follower_id != follo
 ALTER TABLE note2touite ADD CONSTRAINT chk_note_bool CHECK (state IN (-1, 0, 1));
 
 -- Contenu : (Contenu généré à l'aide de l'IA)
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('users1@mail.com', '$2y$12$z7mHIyHACElCs8zE4hVvN.cPM4ala.FM6McIch4Zn7OakVGhMskvC', 'Martin', 'Lucas', 2);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('users2@mail.com', '$2y$12$JelzicyqC10xiJz0i/JWUuUqFLBr5fhos2omEJoV68yGpQVp1.U1.', 'Durand', 'Emma', 2);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('users3@mail.com', '$2y$12$KYcd2LqjSdH/wvGzv8qB.OZiyPPqno1ac4IoRjbVqErUP0M.6V8La', 'Bernard', 'Hugo', 2);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('users4@mail.com', '$2y$12$NyyVwilJWJtwEcTUXwLWceGWaztT1PtPsyswXx0t8dbMW0O8tngcu', 'Petit', 'Chloe', 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user1@mail.com', '$2y$12$z7mHIyHACElCs8zE4hVvN.cPM4ala.FM6McIch4Zn7OakVGhMskvC', 'Martin', 'Lucas', 2);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user2@mail.com', '$2y$12$JelzicyqC10xiJz0i/JWUuUqFLBr5fhos2omEJoV68yGpQVp1.U1.', 'Durand', 'Emma', 2);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user3@mail.com', '$2y$12$KYcd2LqjSdH/wvGzv8qB.OZiyPPqno1ac4IoRjbVqErUP0M.6V8La', 'Bernard', 'Hugo', 2);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user4@mail.com', '$2y$12$NyyVwilJWJtwEcTUXwLWceGWaztT1PtPsyswXx0t8dbMW0O8tngcu', 'Petit', 'Chloe', 1);
 INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('admin@mail.com', '$2y$12$6KbKcQdgn.Sid6kvbunFmufU5d6KgArMGQ5EKXUnpwsQSOECmTv1W', 'Administrateur', 'Admin', 1);
 
 INSERT INTO tag (id, libelle, description) VALUES (1, 'annonce', 'Informations et annonces importantes.');
