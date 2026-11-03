@@ -74,8 +74,8 @@ class TouiteurRepository {
      */
     public function findUserByEmail(string $email) : ?array {
         $stmt = $this->pdo->prepare(<<<SQL
-            SELECT id, email, passwd, role
-            FROM User
+            SELECT id, email, passwd
+            FROM users
             WHERE email = :email
         SQL);
 
@@ -97,7 +97,7 @@ class TouiteurRepository {
     public function existsByEmail(string $email) : bool {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT id
-            FROM User
+            FROM users
             WHERE email = :email
         SQL);
 
@@ -121,18 +121,23 @@ class TouiteurRepository {
      *
      * @param string $email Adresse email nettoyée de l'utilisateur.
      * @param string $password Mot de passe en clair à hacher.
+     * @param string $nom Nom de l'utilisateur
+     * @param string $prenom Prénom de l'utilisateur
      * @return void
      */
-    public function addUser(string $email, string $password) : void {
+    public function addUser(string $email, string $password, string $nom, string $prenom) : void {
         // Double par précaution;
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        $nom = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);
+        $prenom = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
+
 
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO User (email, passwd, role) VALUES (:email, :password, 1)
+            INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES (:email, :password, :nom, :prenom, 0)
         SQL);
 
-        $stmt->execute(['email' => $email, 'password' => $password]);
+        $stmt->execute(['email' => $email, 'password' => $password, 'nom' => $nom, 'prenom' => $prenom]);
     }
 }
