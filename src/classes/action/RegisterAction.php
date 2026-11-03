@@ -21,6 +21,14 @@ class RegisterAction extends Action {
         return <<<HTML
         {$title}
         <form method="post" action="?action=register">
+            <div>
+                <label for="nom" class="form-label">Nom$require</label>
+                <input type="nom" name="nom" class="form-control" id="nom" placeholder="Dupont" required>
+            </div>
+            <div>
+                <label for="prenom" class="form-label">Prénom$require</label>
+                <input type="prenom" name="prenom" class="form-control" id="prenom" placeholder="Dupont" required>
+            </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Adresse mail$require</label>
                 <input type="email" name="email" class="form-control" id="email" placeholder="nom@exemple.com" aria-describedby="emailHelp" required>
@@ -67,9 +75,11 @@ class RegisterAction extends Action {
         }
 
         $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        $_POST['nom'] = filter_var($_POST['nom'], FILTER_SANITIZE_SPECIAL_CHARS);
+        $_POST['prenom'] = filter_var($_POST['nom'], FILTER_SANITIZE_SPECIAL_CHARS);
 
         try {
-            AuthnProvider::register($_POST['email'], $_POST['password']);
+            AuthnProvider::register($_POST['email'], $_POST['password'], $_POST['nom'], $_POST['prenom']);
         } catch (AuthnException $error) {
             return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=register", title: "Échec de l'inscription");
         }
