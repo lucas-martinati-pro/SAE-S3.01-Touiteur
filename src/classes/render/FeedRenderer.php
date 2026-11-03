@@ -3,7 +3,7 @@
 namespace iutnc\touiteur\render;
 
 use iutnc\touiteur\touite\Feed;
-use iutnc\touiteur\enums\TypeRender;
+use iutnc\touiteur\enum\TypeRender;
 use Override;
 
 class FeedRenderer implements Renderer {
@@ -16,7 +16,7 @@ class FeedRenderer implements Renderer {
     #[Override]
     public function render(TypeRender $selector = TypeRender::COMPACT) : string {
         $res = "";
-        foreach ($this->feed as $touite) {
+        foreach ($this->feed->getTouites() as $touite) {
             $res .= ($selector == TypeRender::LONG)
                 ? <<<HTML
                 <h2> LONG : {$touite->getContent()}</h2>

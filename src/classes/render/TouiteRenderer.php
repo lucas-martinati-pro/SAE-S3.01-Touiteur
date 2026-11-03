@@ -3,7 +3,7 @@
 namespace iutnc\touiteur\render;
 
 use iutnc\touiteur\touite\Touite;
-use iutnc\touiteur\enums\TypeRender;
+use iutnc\touiteur\enum\TypeRender;
 use Override;
 
 class TouiteRenderer implements Renderer {
