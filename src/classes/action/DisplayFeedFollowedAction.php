@@ -15,12 +15,22 @@ class DisplayFeedFollowedAction extends Action {
     #[Override]
     public function get(): string {
         $page = <<< HTML
-            <h1 class="h2 fw-bold mb-2">
-                <img src="image/favicon.png" width="40" height="40" alt="Logo" class="align-text-top">
-                Bienvenue sur Touiteur !
-            </h1>
-            <p class="text-muted">Bienvenue sur Touiteur, votre plateforme de touites.</p>
-            <div class="list-group mb-3" style="max-width: 450px;">
+            <header class="feed-header">
+                <div class="feed-heading">
+                    <h1>Accueil</h1>
+                </div>
+                <nav class="feed-tabs" aria-label="Fil d'actualité">
+                    <a href="?action=displayFeed">Pour vous</a>
+                    <a class="active" href="?action=displayFeedFollowed">Abonnements</a>
+                </nav>
+            </header>
+            <div class="compose-box">
+                <div class="touite-avatar">T</div>
+                <div>
+                    <p>Quoi de neuf ?</p>
+                    <a class="btn btn-primary" href="?action=addTouite">Touiter</a>
+                </div>
+            </div>
         HTML;
         try {
             AuthnProvider::getSignedInUser();
@@ -30,23 +40,7 @@ class DisplayFeedFollowedAction extends Action {
             $renderFeed = RendererFactory::getRenderer($feedFollowed);
             $affiche = $renderFeed->render();
 
-            $page .= <<<HTML
-                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=displayFeedFollowed">
-                    Mon feed
-                </a>
-                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=displayFeed">
-                    Feed général
-                </a>
-                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=addTouite">
-                    Poster un touite
-                </a>
-                <a class="list-group-item list-group-item-action text-danger d-flex align-items-center" href="?action=signout">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
-                    <i class="bi bi-box-arrow-right text-danger me-2 fs-5"></i>
-                    Se déconnecter
-                </a>
-                {$affiche}
-            HTML;
+            $page .= $affiche;
         } catch (AuthnException) {
             $page .= <<<HTML
                 <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=signin">
