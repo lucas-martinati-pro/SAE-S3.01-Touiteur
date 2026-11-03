@@ -14,7 +14,8 @@ session_start();
 try {
     TouiteurRepository::setConfig(__DIR__ . '/src/config/touiteur.db.ini');
 } catch (ConfigIOException $e) {
-
+    http_response_code(500);
+    exit('Impossible de charger la configuration de la base de données.');
 }
 
 $dispatcher = new Dispatcher($_GET['action'] ?? 'default');
