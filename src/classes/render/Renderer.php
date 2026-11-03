@@ -14,5 +14,5 @@ interface Renderer {
      * @param TypeRender $selector Constante indiquant le mode de rendu désiré (TypeRender::COMPACT ou TypeRender::LONG).
      * @return string Balises HTML prêtes à être insérées dans la page.
      */
-    public function render(TypeRender $selector = TypeRender::COMPACT) : string;
+    public function render(TypeRender $selector = TypeRender::COMPACT): string;
 }

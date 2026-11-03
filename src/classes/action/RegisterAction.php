@@ -14,7 +14,7 @@ class RegisterAction extends Action {
     protected bool $requireAuth = false;
 
     #[Override]
-    public function get() : string {
+    public function get(): string {
         $require = '<span class="text-danger">*</span>';
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/
         $title = HtmlHelper::title("Inscription", "bi-person-plus-fill");
@@ -65,7 +65,7 @@ class RegisterAction extends Action {
     }
 
     #[Override]
-    public function post() : string {
+    public function post(): string {
         if (!isset($_POST['email'], $_POST['password'], $_POST['password-double'])) {
             return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=register&form=1", title: "Échec de l'inscription");
         }

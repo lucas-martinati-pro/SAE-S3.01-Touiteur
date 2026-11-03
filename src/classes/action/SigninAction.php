@@ -14,7 +14,7 @@ class SigninAction extends Action {
     protected bool $requireAuth = false;
 
     #[Override]
-    public function get() : string {
+    public function get(): string {
         try {
             $user = AuthnProvider::getSignedInUser();
 
@@ -68,7 +68,7 @@ class SigninAction extends Action {
     }
 
     #[Override]
-    public function post() : string {
+    public function post(): string {
         if (!isset($_POST['email'], $_POST['password'])) {
             return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin&form=1", title: "Échec de la connexion");
         }

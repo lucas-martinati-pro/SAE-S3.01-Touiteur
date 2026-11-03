@@ -20,7 +20,7 @@ class AuthnProvider {
      * @return void
      * @throws AuthnException Si les identifiants sont invalides ou inexistants.
      */
-    public static function signin(string $email, string $password) : void {
+    public static function signin(string $email, string $password): void {
         $r = RepositoryFactory::getReader();
 
         $user = $r->findUserByEmail(filter_var($email, FILTER_SANITIZE_EMAIL));
@@ -45,7 +45,7 @@ class AuthnProvider {
      * @return void
      * @throws AuthnException Si l'email est invalide, déjà utilisé, ou si le mot de passe ne respecte pas les critères de sécurité.
      */
-    public static function register(string $email, string $password, string $nom, string $prenom) : void {
+    public static function register(string $email, string $password, string $nom, string $prenom): void {
         $email = filter_var($email, FILTER_VALIDATE_EMAIL);
         $nom = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);
         $prenom = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -88,7 +88,7 @@ class AuthnProvider {
      * @return array Tableau associatif contenant les informations de l'utilisateur (id, email, passwd, role).
      * @throws AuthnException Si aucun utilisateur n'est connecté en session.
      */
-    public static function getSignedInUser() : array {
+    public static function getSignedInUser(): array {
         if (!isset($_SESSION['user']) || !isset(unserialize($_SESSION['user'])['id'])) {
             throw new AuthnException("Vous devez être connecté pour accéder à cette page.");
         }
