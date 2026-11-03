@@ -3,7 +3,7 @@ namespace iutnc\touiteur\action;
 use Override;
 class AddTouiteAction extends Action
 {
-    protected bool $requireAuth = false;
+    protected bool $requireAuth = true;
 
     #[Override]
     public function get(): string
@@ -18,13 +18,13 @@ class AddTouiteAction extends Action
                     <input type="file" name="img">
 
                     <label> description image: </label>
-                    <input type="text" name="dscrip_img">
+                    <input type="text" name="descrip_img">
 
                     <label> tag : </label>
                     <input type="text" name="tag" placeholder = "#nom_tag">
 
 
-                    <button type="submit"> publier </button>
+                    <button type="submit" name="publier"> publier </button>
         </form>
         HTML;
 
@@ -34,6 +34,23 @@ class AddTouiteAction extends Action
     #[Override]
     public function post(): string
     {
+        //values input
+        $contenu = filter_var($_POST["contenu"], FILTER_SANITIZE_SPECIAL_CHARS);
+        $desc_img = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
+        $tag = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
+
+        //capture de la date
+        if (isset($_POST['mon_bouton'])) {
+            // Définit le fuseau horaire 
+            date_default_timezone_set('Europe/Paris');
+
+            // Format AAAA-MM-JJ HH:MM:SS
+            $dateClic = date('Y-m-d H:i:s');
+        }
+
+        
+
+
 
 
     }
