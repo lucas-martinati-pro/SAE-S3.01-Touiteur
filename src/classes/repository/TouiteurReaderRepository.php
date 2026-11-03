@@ -94,6 +94,18 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return new Feed($tabTouite);
     }
 
+    public function getUserIdByTouiteId(int $touite_id) : int {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT users_id
+            FROM touite
+            WHERE id = :id
+        SQL);
+
+        $stmt->execute(['id' => $touite_id]);
+
+        return $stmt->fetchColumn();
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/

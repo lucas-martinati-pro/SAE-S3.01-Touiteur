@@ -2,6 +2,8 @@
 
 namespace iutnc\touiteur\touite;
 
+use iutnc\touiteur\repository\RepositoryFactory;
+
 class Touite {
     private ?int $id;
     private string $content;
@@ -32,5 +34,10 @@ class Touite {
     }
     public function getImage_description(): ?string {
         return $this->image_description;
+    }
+
+    public function getCreatorId() : int {
+        $r = RepositoryFactory::getReader();
+        return $r->getUserIdByTouiteId($this->id);
     }
 }
