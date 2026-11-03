@@ -11,7 +11,8 @@ create table users (
     -- le GENERATED ALWAYS AS IDENTITY pour remplacer le AUTO_INCREMENT
     id number(11) GENERATED ALWAYS AS IDENTITY primary key,
     email varchar2(256) NOT NULL,
-    passwd varchar2(256) NOT NULL
+    passwd varchar2(256) NOT NULL,
+    counter_touite number(38)
 );
 
 create table touite (
@@ -73,17 +74,18 @@ alter table follow add foreign key (followed_id) references users(id);
 alter table touite add foreign key (users_id) references users(id);
 
 -- Contraintes :
-alter table follow add constraint no_self_follow check (follower_id != followed_id);
-alter table note2touite add constraint chk_note_bool CHECK (state IN (-1, 0, 1));
+alter table users add constraint chk_counter_touite_positiv check (counter_touite > 0);
+alter table follow add constraint chk_no_self_follow check (follower_id != followed_id);
+alter table note2touite add constraint chk_note_bool check (state IN (-1, 0, 1));
 
 -- Contenu : (Contenu généré à l'aide de l'IA)
 
 -- Comptes de test : les mots de passe correspondent aux valeurs indiquées
-INSERT INTO users (email, passwd) VALUES ('users1@mail.com', '$2y$12$z7mHIyHACElCs8zE4hVvN.cPM4ala.FM6McIch4Zn7OakVGhMskvC');
-INSERT INTO users (email, passwd) VALUES ('users2@mail.com', '$2y$12$JelzicyqC10xiJz0i/JWUuUqFLBr5fhos2omEJoV68yGpQVp1.U1.');
-INSERT INTO users (email, passwd) VALUES ('users3@mail.com', '$2y$12$KYcd2LqjSdH/wvGzv8qB.OZiyPPqno1ac4IoRjbVqErUP0M.6V8La');
-INSERT INTO users (email, passwd) VALUES ('users4@mail.com', '$2y$12$NyyVwilJWJtwEcTUXwLWceGWaztT1PtPsyswXx0t8dbMW0O8tngcu');
-INSERT INTO users (email, passwd) VALUES ('admin@mail.com', '$2y$12$6KbKcQdgn.Sid6kvbunFmufU5d6KgArMGQ5EKXUnpwsQSOECmTv1W');
+INSERT INTO users (email, passwd, counter_Touite) VALUES ('users1@mail.com', '$2y$12$z7mHIyHACElCs8zE4hVvN.cPM4ala.FM6McIch4Zn7OakVGhMskvC', 2);
+INSERT INTO users (email, passwd, counter_Touite) VALUES ('users2@mail.com', '$2y$12$JelzicyqC10xiJz0i/JWUuUqFLBr5fhos2omEJoV68yGpQVp1.U1.', 2);
+INSERT INTO users (email, passwd, counter_Touite) VALUES ('users3@mail.com', '$2y$12$KYcd2LqjSdH/wvGzv8qB.OZiyPPqno1ac4IoRjbVqErUP0M.6V8La', 2);
+INSERT INTO users (email, passwd, counter_Touite) VALUES ('users4@mail.com', '$2y$12$NyyVwilJWJtwEcTUXwLWceGWaztT1PtPsyswXx0t8dbMW0O8tngcu', 1);
+INSERT INTO users (email, passwd, counter_Touite) VALUES ('admin@mail.com', '$2y$12$6KbKcQdgn.Sid6kvbunFmufU5d6KgArMGQ5EKXUnpwsQSOECmTv1W', 1);
 
 INSERT INTO tag (libelle) VALUES ('annonce');
 INSERT INTO tag (libelle) VALUES ('cinema');
