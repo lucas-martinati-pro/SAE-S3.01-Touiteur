@@ -116,18 +116,13 @@ class Dispatcher {
                 <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=displayFeedFollowed">
-                            Mon feed
+                        <a class="nav-link" href="?action=displayFeed&type=global">
+                            Pour vous
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="?action=displayFeed">
-                            Feed général
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=addTouite">
-                            Poster un touite
+                            Abonnemnet
                         </a>
                     </li>
                     <li class="nav-item">
