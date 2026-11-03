@@ -369,6 +369,27 @@
     color: var(--bs-secondary-color);
 }
 
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+.tag-list a {
+    padding: .35rem .7rem;
+    border-radius: 1rem;
+    background: var(--bs-secondary-bg);
+    color: var(--bs-primary);
+    font-size: .9rem;
+    text-decoration: none;
+}
+
+.tag-list a:hover {
+    background: var(--bs-primary);
+    color: white;
+}
+
 @media (max-width: 700px) {
     .app-layout {
         display: block;

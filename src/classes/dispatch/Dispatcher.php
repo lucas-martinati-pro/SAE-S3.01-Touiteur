@@ -88,6 +88,20 @@ class Dispatcher {
                         <main class="page-content">
                             $html
                         </main>
+                        <aside class="right-sidebar">
+                            <section class="trends">
+                                <h2>Tags populaires</h2>
+                                <div class="tag-list">
+                                    <a href="?action=displayFeed&tag=annonce">#annonce</a>
+                                    <a href="?action=displayFeed&tag=cinema">#cinema</a>
+                                    <a href="?action=displayFeed&tag=code">#code</a>
+                                    <a href="?action=displayFeed&tag=culture">#culture</a>
+                                    <a href="?action=displayFeed&tag=musique">#musique</a>
+                                    <a href="?action=displayFeed&tag=sport">#sport</a>
+                                    <a href="?action=displayFeed&tag=technologie">#technologie</a>
+                                </div>
+                            </section>
+                        </aside>
                     </div>
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
                     <script src="js/script.js"></script>
