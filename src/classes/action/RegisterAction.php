@@ -94,7 +94,7 @@ class RegisterAction extends Action {
             return HtmlHelper::successPage(
                 title: "Connexion réussie",
                 message: "Bienvenue, <strong>{$_POST['email']}</strong> ! Vous êtes maintenant connecté à Touiteur.",
-                backLabel: "Accéder à mes playlists"
+                backLabel: "Accéder à mon feed"
             );
         }
 

@@ -24,17 +24,20 @@ class SigninAction extends Action {
                 {$title}
                 <p>Vous êtes déjà connecté avec l'adresse <strong>{$user['email']}</strong>.</p>
                 <p>
-                    <a class="btn btn-primary d-inline-flex align-items-center" href="?action=playlists">
+                    <a class="btn btn-primary d-inline-flex align-items-center" href="?action=displayFeedFollowed">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/collection-play-fill/ -->
-                        <i class="bi bi-collection-play-fill me-2"></i>Mes playlists
+                        <i class="bi bi-collection-play-fill me-2"></i>
+                        Mon feed
                     </a>
                     <a class="btn btn-danger ms-2 d-inline-flex align-items-center" href="?action=signout">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
-                        <i class="bi bi-box-arrow-right me-1"></i>Se déconnecter
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        Se déconnecter
                     </a>
                     <a class="btn btn-secondary ms-2 d-inline-flex align-items-center" href="index.php">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/house-door-fill/ -->
-                        <i class="bi bi-house-door-fill me-1"></i>Accueil
+                        <i class="bi bi-house-door-fill me-1"></i>
+                        Accueil
                     </a>
                 </p>
             HTML;
@@ -83,7 +86,7 @@ class SigninAction extends Action {
         return HtmlHelper::successPage(
             title: "Connexion réussie",
             message: "Bienvenue, <strong>{$email}</strong> ! Vous êtes maintenant connecté à Touiteur.",
-            backLabel: "Accéder à mes playlists"
+            backLabel: "Accéder à mon feed"
         );
     }
 }
