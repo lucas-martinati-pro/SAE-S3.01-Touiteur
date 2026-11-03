@@ -1,11 +1,12 @@
 -- MariaDB
+-- Datas
 DROP TABLE IF EXISTS user2tag;
 DROP TABLE IF EXISTS note2touite;
 DROP TABLE IF EXISTS tag2touite;
 DROP TABLE IF EXISTS follow;
 DROP TABLE IF EXISTS tag;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS touite;
+DROP TABLE IF EXISTS users;
 
 create table touite (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -168,4 +169,77 @@ INSERT INTO note2touite (users_id, touite_id, state) VALUES (5, 4, 1);
 INSERT INTO note2touite (users_id, touite_id, state) VALUES (5, 8, 1);
 commit;
 
--- Déclencheurs PL/SQL
+-- Déclencheurs MariaDB
+DELIMITER //
+
+CREATE TRIGGER count_touite_users_insert
+AFTER INSERT ON touite
+FOR EACH ROW
+BEGIN
+    UPDATE users
+    SET counter_touite = counter_touite + 1
+    WHERE id = NEW.users_id;
+END//
+
+CREATE TRIGGER count_touite_users_delete
+AFTER DELETE ON touite
+FOR EACH ROW
+BEGIN
+    UPDATE users
+    SET counter_touite = counter_touite - 1
+    WHERE id = OLD.users_id;
+END//
+
+-- Un utilisateur ne peut pas se suivre lui-même ou suivre un utilisateur ayant le même email :
+-- (Une contrainte existe déjà)
+CREATE TRIGGER trigger_no_self_follow_insert
+BEFORE INSERT ON follow
+FOR EACH ROW
+BEGIN
+    IF NEW.follower_id = NEW.followed_id THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Un utilisateur ne peut pas se suivre lui-meme';
+    END IF;
+END//
+
+CREATE TRIGGER trigger_no_self_follow_update
+BEFORE UPDATE ON follow
+FOR EACH ROW
+BEGIN
+    IF NEW.follower_id = NEW.followed_id THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Un utilisateur ne peut pas se suivre lui-meme';
+    END IF;
+END//
+
+-- Empêcher la modification de l’auteur d’un touite : une fois publié, un touite conserve son auteur initial. Il est interdit de transférer une publication à un autre utilisateur :
+CREATE TRIGGER not_edit_author
+BEFORE UPDATE ON touite
+FOR EACH ROW
+BEGIN
+    IF OLD.users_id != NEW.users_id THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Il est interdit de transferer une publication a un autre utilisateur';
+    END IF;
+END//
+
+-- Un utilisateur est limité à 50 touites par jour, pour éviter que des bots ne saturent la plateforme :
+CREATE TRIGGER limite_50_touites
+BEFORE INSERT ON touite
+FOR EACH ROW
+BEGIN
+    DECLARE nb_touites INT;
+
+    SELECT COUNT(*)
+    INTO nb_touites
+    FROM touite
+    WHERE users_id = NEW.users_id
+    AND posted_at = NEW.posted_at;
+
+    IF nb_touites >= 50 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Un utilisateur ne peut pas publier plus de 50 touites par jour';
+    END IF;
+END//
+
+DELIMITER ;

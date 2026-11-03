@@ -16,10 +16,10 @@ La base de données est dans [`sql/Touiteur_db.sql`](sql/Touiteur_db.sql). Les c
 
 | Email | Mot de passe |
 |:---|:---:|
-| `user1@mail.com` | `user1` |
-| `user2@mail.com` | `user2` |
-| `user3@mail.com` | `user3` |
-| `user4@mail.com` | `user4` |
+| `users1@mail.com` | `users1` |
+| `users2@mail.com` | `users2` |
+| `users3@mail.com` | `users3` |
+| `users4@mail.com` | `users4` |
 | `admin@mail.com` | `admin` |
 
 Vous pouvez créer un compte sur la page d'inscription (`?action=register`). Le mot de passe doit faire 10 caractères minimum. Il faut une majuscule, une minuscule, un chiffre et un caractère spécial.
