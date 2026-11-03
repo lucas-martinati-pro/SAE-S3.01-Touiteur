@@ -16,11 +16,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     private function rowToTouite(array $res): Touite {
         $touite = new Touite(
-                $res['id'],
                 $res['content'],
                 $res['posted_at'],
                 $res['image_path'] ?? null,
-                $res['image_description'] ?? null
+                $res['image_description'] ?? null,
+                $res['id']
             );
 
         return $touite;
@@ -72,7 +72,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $tabTouite = [];
 
         foreach($res as $row){
-            $tabTouite = $this->rowToTouite($row);
+            $tabTouite[] = $this->rowToTouite($row);
         }
         
         return new Feed($tabTouite);
