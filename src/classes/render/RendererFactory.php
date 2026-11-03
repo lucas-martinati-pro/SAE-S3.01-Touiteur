@@ -13,11 +13,14 @@ class RendererFactory {
      * Instancie et retourne le renderer adéquat pour l'objet donné en argument.
      *
      * @param object $element L'objet à restituer en HTML (Touite ou Feed).
-     * @return Renderer|null Instance de Renderer adaptée, ou null si l'objet n'est pas pris en charge.
+     * @return Renderer Instance de Renderer adaptée.
+     * @throws \InvalidArgumentException Si l'objet n'est pas pris en charge.
      */
-    public static function getRenderer(object $element): ?Renderer {
-        if ($element instanceof Touite) return new TouiteRenderer($element);
-        elseif ($element instanceof Feed) return new FeedRenderer($element);
-        else return null;
+    public static function getRenderer(object $element): Renderer {
+        return match (true) {
+            $element instanceof Touite => new TouiteRenderer($element),
+            $element instanceof Feed => new FeedRenderer($element),
+            default => throw new \InvalidArgumentException('Type de rendu non pris en charge.'),
+        };
     }
 }

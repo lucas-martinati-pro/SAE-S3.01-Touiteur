@@ -39,7 +39,7 @@ class DisplayProfile extends Action {
                     </div>
                 </div>
                 <nav class="profile-tabs" aria-label="Navigation du profil">
-                    <a class="active" href="?action=DisplayProfile&id={$id}">Touites</a>
+                    <a class="active" href="?action=displayProfile&id={$id}">Touites</a>
                 </nav>
             </section>
         HTML;

@@ -37,7 +37,7 @@ class Dispatcher {
     public function run(): void {
         $html = match ($this->action) {
             "displayTouite" => (new DisplayTouite())(),
-            "DisplayProfile" => (new DisplayProfile)(),
+            "displayProfile" => (new DisplayProfile)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
@@ -126,6 +126,9 @@ class Dispatcher {
         try {
             $user = AuthnProvider::getSignedInUser();
 
+            $userId = (int) $user['id'];
+            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+
             return <<<HTML
                 <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -136,12 +139,12 @@ class Dispatcher {
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="?action=displayFeed">
-                            Abonnemnet
+                            Abonnements
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=DisplayProfile&id={$user['id']}">
-                            Profile
+                        <a class="nav-link" href="?action=displayProfile&id={$userId}">
+                            Profil
                         </a>
                     </li>
                 </ul>
@@ -153,7 +156,7 @@ class Dispatcher {
                 <div class="sidebar-user">
                     <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-circle/ -->
                     <i class="bi bi-person-circle"></i>
-                    <span class="sidebar-email">{$user['email']}</span>
+                    <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
                         <i class="bi bi-box-arrow-right"></i>

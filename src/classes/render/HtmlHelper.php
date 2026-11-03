@@ -12,7 +12,7 @@ class HtmlHelper {
      *
      * @param string $title Texte du titre à afficher.
      * @param string $icon Nom ou classe de l'icône Bootstrap Icons (ex: 'bi-music-note', 'music-note' ou 'bi bi-music-note').
-     * @param string $color Classe de couleur Bootstrap (ex: 'text-primary', 'danger', etc. Défaut: 'text-primary').
+     * @param string $color Classe CSS complète de couleur Bootstrap (ex: 'text-primary', 'text-danger'). Défaut: 'text-primary'.
      * @return string Balises HTML du titre formaté.
      */
     public static function title(string $title = '', string $icon = '', string $color = 'text-primary'): string {

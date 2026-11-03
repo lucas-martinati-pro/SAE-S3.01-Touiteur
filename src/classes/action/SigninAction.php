@@ -17,12 +17,13 @@ class SigninAction extends Action {
     public function get(): string {
         try {
             $user = AuthnProvider::getSignedInUser();
+            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
 
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/
             $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
             return <<<HTML
                 {$title}
-                <p>Vous êtes déjà connecté avec l'adresse <strong>{$user['email']}</strong>.</p>
+                <p>Vous êtes déjà connecté avec l'adresse <strong>{$email}</strong>.</p>
                 <p>
                     <a class="btn btn-primary d-inline-flex align-items-center" href="?action=displayFeed">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/collection-play-fill/ -->
@@ -81,11 +82,9 @@ class SigninAction extends Action {
             return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin&form=1", title: "Échec de la connexion");
         }
 
-        $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-
         return HtmlHelper::successPage(
             title: "Connexion réussie",
-            message: "Bienvenue, <strong>{$email}</strong> ! Vous êtes maintenant connecté à Touiteur.",
+            message: "Bienvenue, <strong>" . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . "</strong> ! Vous êtes maintenant connecté à Touiteur.",
             backLabel: "Accéder à mon feed"
         );
     }
