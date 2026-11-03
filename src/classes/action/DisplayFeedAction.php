@@ -18,10 +18,22 @@ class DisplayFeedAction extends Action {
         $feed = $reader->findAllTouites();
 
         $page = <<< HTML
-            <header class="feed-title">
-                <h1>Feed général</h1>
-                <p>Les derniers touites publiés sur Touiteur.</p>
+            <header class="feed-header">
+                <div class="feed-heading">
+                    <h1>Accueil</h1>
+                </div>
+                <nav class="feed-tabs" aria-label="Fil d'actualité">
+                    <a class="active" href="?action=displayFeed">Pour vous</a>
+                    <a href="?action=displayFeedFollowed">Abonnements</a>
+                </nav>
             </header>
+            <div class="compose-box">
+                <div class="touite-avatar">T</div>
+                <div>
+                    <p>Quoi de neuf ?</p>
+                    <a class="btn btn-primary" href="?action=addTouite">Touiter</a>
+                </div>
+            </div>
         HTML;
 
         if ($feed === null) {

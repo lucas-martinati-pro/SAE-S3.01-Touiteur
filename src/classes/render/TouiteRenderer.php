@@ -30,14 +30,22 @@ class TouiteRenderer implements Renderer {
         }
 
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
+
         return <<<HTML
             <article class="{$class}">
-                <div class="touite-header">
-                    <strong>@touiteur</strong>
-                    <time datetime="{$date}">{$date}</time>
-                </div>
-                <p class="touite-content">{$content}</p>
-                {$image}
+                <div class="touite-row">
+                    <div class="touite-avatar">T</div>
+                    <div class="touite-body">
+                        <div class="touite-header">
+                            <strong>Nom User</strong>
+                            <span>@Nom User · <time datetime="{$date}">{$date}</time></span>
+                        </div>
+                        <p class="touite-content">{$content}</p>
+                        {$image}
+                        <div class="touite-actions" aria-label="Actions du touite">
+                            <button type="button" aria-label="J'aime"><i class="bi bi-heart"></i></button>
+                        </div>
+                    </div>
             </article>
         HTML;
     }

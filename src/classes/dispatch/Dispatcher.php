@@ -114,19 +114,12 @@ class Dispatcher {
             </button>
         HTML;
 
-    
         try {
             $user = AuthnProvider::getSignedInUser();
 
             return <<<HTML
+                <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/house-door-fill/ -->
-                            <i class="bi bi-house-door-fill me-1"></i>
-                            Accueil
-                        </a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="?action=displayFeedFollowed">
                             Mon feed
@@ -143,20 +136,24 @@ class Dispatcher {
                         </a>
                     </li>
                 </ul>
-                <div class="d-flex align-items-center gap-2">
+                <div class="theme-switch">
+                    {$toggleThemeButton}
+                    <span>Changer le thème</span>
+                </div>
+                </div>
+                <div class="sidebar-user">
                     <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-circle/ -->
                     <i class="bi bi-person-circle"></i>
-                    <span class="navbar-text small text-muted me-2">{$user['email']}</span>
-                    <a class="btn btn-danger btn-sm signout rounded-3" href="?action=signout">
+                    <span class="sidebar-email">{$user['email']}</span>
+                    <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
-                        <i class="bi bi-box-arrow-right me-1"></i>
-                        Déconnexion
+                        <i class="bi bi-box-arrow-right"></i>
                     </a>
-                    {$toggleThemeButton}
                 </div>
             HTML;
         } catch (AuthnException) {
             return <<<HTML
+                <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">
@@ -165,7 +162,12 @@ class Dispatcher {
                         </a>
                     </li>
                 </ul>
-                <div class="d-flex gap-2 align-items-center">
+                </div>
+                <div class="theme-switch">
+                    {$toggleThemeButton}
+                    <span>Changer le thème</span>
+                </div>
+                <div class="sidebar-user guest-user">
                     <a class="btn btn-sm btn-dark rounded-3" href="?action=signin">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/ -->
                         <i class="bi bi-box-arrow-in-right me-1"></i>
@@ -176,7 +178,6 @@ class Dispatcher {
                         <i class="bi bi-person-plus-fill me-1"></i>
                         Inscription
                     </a>
-                    {$toggleThemeButton}
                 </div>
             HTML;
         }
