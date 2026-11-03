@@ -140,7 +140,7 @@ class Dispatcher {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=DisplayProfile&id=1">
+                        <a class="nav-link" href="?action=DisplayProfile&id={$user['id']}">
                             Profile
                         </a>
                     </li>

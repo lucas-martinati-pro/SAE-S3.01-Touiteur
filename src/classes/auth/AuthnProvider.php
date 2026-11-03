@@ -79,7 +79,7 @@ class AuthnProvider {
             throw new AuthnException("Le mot de passe doit contenir au moins une lettre majuscule.");
         }
 
-        $rWrite->adduser($email, $password, $nom, $prenom);
+        $rWrite->addUser($email, $password, $nom, $prenom);
     }
 
     /**

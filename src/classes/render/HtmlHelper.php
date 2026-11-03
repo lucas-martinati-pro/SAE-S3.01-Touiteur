@@ -18,7 +18,7 @@ class HtmlHelper {
     public static function title(string $title = '', string $icon = '', string $color = 'text-primary'): string {
         return <<<HTML
             <h1 class="h2 fw-bold mb-3 d-flex align-items-center">
-                <i class="bi {$icon} text-{$color} me-2"></i>
+                <i class="bi {$icon} {$color} me-2"></i>
                 {$title}
             </h1>
         HTML;
@@ -137,7 +137,7 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à mon feed').
      * @return string Balises HTML de l'écran d'interdiction.
      */
-    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed"): string {
+    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = "?action=displayFeed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
         $titleHtml = self::title("Accès refusé", "bi-shield-lock-fill", "text-danger");
@@ -160,11 +160,11 @@ class HtmlHelper {
      *
      * @param string $item Nom de la ressource introuvable.
      * @param string $message Message d'erreur explicatif.
-     * @param string $backUrl URL du lien de retour (défaut: '?action=displayFeedFollowed').
+     * @param string $backUrl URL du lien de retour (défaut: '?action=displayFeed').
      * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à mon compte').
      * @return string Balises HTML de la page 404.
      */
-    public static function notFound(string $item = "Ressource", string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed"): string {
+    public static function notFound(string $item = "Ressource", string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = "?action=displayFeed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
         $titleHtml = self::title("{$item} introuvable", "bi-exclamation-triangle-fill", "text-danger");
@@ -214,11 +214,11 @@ class HtmlHelper {
      *
      * @param string $title Titre du message de succès (défaut: 'Opération réussie').
      * @param string $message Message de confirmation textuel ou HTML.
-     * @param string $backUrl URL de redirection ou d'action suivante (défaut: '?action=displayFeedFollowed').
+     * @param string $backUrl URL de redirection ou d'action suivante (défaut: '?action=displayFeed').
      * @param string $backLabel Libellé du bouton d'action suivante (défaut: 'Retour à mon feed').
      * @return string Balises HTML de la page de confirmation de succès.
      */
-    public static function successPage(string $title = "Opération réussie", string $message = "L'opération s'est déroulée avec succès.", string $backUrl = "?action=displayFeedFollowed", string $backLabel = "Retour à mon feed"): string {
+    public static function successPage(string $title = "Opération réussie", string $message = "L'opération s'est déroulée avec succès.", string $backUrl = "?action=displayFeed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('success', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/check-circle-fill/
         $titleHtml = self::title($title, "bi-check-circle-fill", "text-success");

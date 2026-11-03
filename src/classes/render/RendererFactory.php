@@ -17,7 +17,7 @@ class RendererFactory {
      */
     public static function getRenderer(object $element): ?Renderer {
         if ($element instanceof Touite) return new TouiteRenderer($element);
-        else if ($element instanceof Feed) return new FeedRenderer($element);
+        elseif ($element instanceof Feed) return new FeedRenderer($element);
         else return null;
     }
 }

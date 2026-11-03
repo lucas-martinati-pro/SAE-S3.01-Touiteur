@@ -89,6 +89,8 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        if (!$res) return null;
+
         return $this->rowsToFeed($res);
     }
 

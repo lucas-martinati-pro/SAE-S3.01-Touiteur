@@ -17,7 +17,7 @@ class Touite {
         $this->image_description = $image_description;
     }
 
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
 

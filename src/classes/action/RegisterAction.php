@@ -76,7 +76,7 @@ class RegisterAction extends Action {
 
         $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
         $_POST['nom'] = filter_var($_POST['nom'], FILTER_SANITIZE_SPECIAL_CHARS);
-        $_POST['prenom'] = filter_var($_POST['nom'], FILTER_SANITIZE_SPECIAL_CHARS);
+        $_POST['prenom'] = filter_var($_POST['prenom'], FILTER_SANITIZE_SPECIAL_CHARS);
 
         try {
             AuthnProvider::register($_POST['email'], $_POST['password'], $_POST['nom'], $_POST['prenom']);

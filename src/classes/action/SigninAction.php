@@ -24,7 +24,7 @@ class SigninAction extends Action {
                 {$title}
                 <p>Vous êtes déjà connecté avec l'adresse <strong>{$user['email']}</strong>.</p>
                 <p>
-                    <a class="btn btn-primary d-inline-flex align-items-center" href="?action=displayFeedFollowed">
+                    <a class="btn btn-primary d-inline-flex align-items-center" href="?action=displayFeed">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/collection-play-fill/ -->
                         <i class="bi bi-collection-play-fill me-2"></i>
                         Mon feed
