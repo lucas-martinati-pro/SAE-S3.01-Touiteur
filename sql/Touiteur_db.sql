@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS user2tag;
 DROP TABLE IF EXISTS note2touite;
 DROP TABLE IF EXISTS tag2touite;
 DROP TABLE IF EXISTS follow;
-DROP TABLE IF EXISTS touite_daily_count;
 DROP TABLE IF EXISTS tag;
 DROP TABLE IF EXISTS touite;
 DROP TABLE IF EXISTS users;
@@ -171,70 +170,76 @@ INSERT INTO note2touite (users_id, touite_id, state) VALUES (5, 8, 1);
 commit;
 
 -- Déclencheurs MariaDB
-CREATE OR REPLACE TRIGGER count_touite_users_insert
-AFTER INSERT OR UPDATE OR DELETE ON touite
+DELIMITER //
+
+CREATE TRIGGER count_touite_users_insert
+AFTER INSERT ON touite
 FOR EACH ROW
 BEGIN
     UPDATE users
     SET counter_touite = counter_touite + 1
-    WHERE id = :NEW.users_id;
-END;
-/
+    WHERE id = NEW.users_id;
+END//
 
-CREATE OR REPLACE TRIGGER count_touite_users_delete
+CREATE TRIGGER count_touite_users_delete
 AFTER DELETE ON touite
 FOR EACH ROW
 BEGIN
     UPDATE users
     SET counter_touite = counter_touite - 1
-    WHERE id = :OLD.users_id;
-END;
-/
+    WHERE id = OLD.users_id;
+END//
 
 -- Un utilisateur ne peut pas se suivre lui-même ou suivre un utilisateur ayant le même email :
 -- (Une contrainte existe déjà)
-CREATE OR REPLACE TRIGGER trigger_no_self_follow
-AFTER INSERT OR UPDATE ON follow
+CREATE TRIGGER trigger_no_self_follow_insert
+BEFORE INSERT ON follow
 FOR EACH ROW
-DECLARE
-    self_follow EXCEPTION;
 BEGIN
-    IF (:NEW.follower_id = :NEW.followed_id) THEN
-        raise self_follow;
+    IF NEW.follower_id = NEW.followed_id THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Un utilisateur ne peut pas se suivre lui-meme';
     END IF;
+END//
 
-    EXCEPTION
-        WHEN self_follow THEN RAISE_APPLICATION_ERROR(-20001, 'Un utilisateur ne peut pas suivre un autre utilisateur ayant le même email');
-END;
-/
+CREATE TRIGGER trigger_no_self_follow_update
+BEFORE UPDATE ON follow
+FOR EACH ROW
+BEGIN
+    IF NEW.follower_id = NEW.followed_id THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Un utilisateur ne peut pas se suivre lui-meme';
+    END IF;
+END//
 
 -- Empêcher la modification de l’auteur d’un touite : une fois publié, un touite conserve son auteur initial. Il est interdit de transférer une publication à un autre utilisateur :
-CREATE OR REPLACE TRIGGER not_edit_author
-AFTER UPDATE ON touite
+CREATE TRIGGER not_edit_author
+BEFORE UPDATE ON touite
 FOR EACH ROW
 BEGIN
-    IF (:OLD.users_id != :NEW.users_id) THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Il est interdit de transférer une publication à un autre utilisateur');
+    IF OLD.users_id != NEW.users_id THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Il est interdit de transferer une publication a un autre utilisateur';
     END IF;
-END;
-/
+END//
 
 -- Un utilisateur est limité à 50 touites par jour, pour éviter que des bots ne saturent la plateforme :
-CREATE OR REPLACE TRIGGER limite_50_touites
-AFTER INSERT ON touite
+CREATE TRIGGER limite_50_touites
+BEFORE INSERT ON touite
 FOR EACH ROW
-DECLARE
-    -- On avait l'erreur de mutation lorsqu'on voulait parcourir la table touite pendant le trigger, du coup nous avons chercher un moyen de corriger cela et nous avons trouver ce pragma (grâce à l'IA) pour contourner ce problème
-    PRAGMA AUTONOMOUS_TRANSACTION;
-    nb_touite NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO nb_touite
-    FROM touite
-    WHERE users_id = :NEW.users_id
-    AND TRUNC(posted_at) = TRUNC(:NEW.posted_at);
+    DECLARE nb_touites INT;
 
-    IF (nb_touite > 49) THEN
-        RAISE_APPLICATION_ERROR(-20002, 'Un utilisateur ne peut pas publier plus de 50 touites par jour');
+    SELECT COUNT(*)
+    INTO nb_touites
+    FROM touite
+    WHERE users_id = NEW.users_id
+    AND posted_at = NEW.posted_at;
+
+    IF nb_touites >= 50 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Un utilisateur ne peut pas publier plus de 50 touites par jour';
     END IF;
-END;
-/
+END//
+
+DELIMITER ;
