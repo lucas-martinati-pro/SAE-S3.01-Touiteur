@@ -6,19 +6,15 @@ use iutnc\touiteur\action\DefaultAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
-use iutnc\touiteur\audio\tracks\AlbumTrack;
-use iutnc\touiteur\audio\tracks\PodcastTrack;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
-use iutnc\touiteur\config\Config;
-use iutnc\touiteur\repository\TouiteurRepository;
 
 /**
  * Contrôleur de l'affichage.
  */
 class Dispatcher {
     /**
-     * Identifiant textuel de l'action à exécuter (ex: 'playlists', 'signin', etc.).
+     * Identifiant textuel de l'action à exécuter (ex: 'signin', etc.).
      */
     private string $action;
 
@@ -125,75 +121,34 @@ class Dispatcher {
             </button>
         HTML;
 
-        $activePlaylists = '';
-        $activeTracks = '';
-        $activeAddPlaylist = '';
-        $activeCurrentPl = '';
-        $activeAccueil = '';
-
-        switch ($this->action) {
-            case 'playlists' : {
-                $activePlaylists = 'active';
-                break;
-            }
-            case 'tracks' : {
-                $activeTracks = 'active';
-                break;
-            }
-            case 'add-playlist' : {
-                $activeAddPlaylist = 'active';
-                break;
-            }
-            case 'display-playlist' : {
-                $activeCurrentPl = 'active';
-                break;
-            }
-            case 'default' : $activeAccueil = 'active';
-        }
-
+    
         try {
             $user = AuthnProvider::getSignedInUser();
-
-            $currentPlaylist = "";
-
-            if (isset($_SESSION['playlist'])) {
-                $currentPlaylist = <<<HTML
-                    <li class="nav-item">
-                        <a class="nav-link {$activeCurrentPl}" href="?action=display-playlist">
-                            <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/music-note-list/ -->
-                            <i class="bi bi-music-note-list me-1"></i>Playlist courante
-                        </a>
-                    </li>
-                HTML;
-            }
 
             return <<<HTML
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {$activeAccueil}" href="index.php">
+                        <a class="nav-link" href="index.php">
                             <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/house-door-fill/ -->
-                            <i class="bi bi-house-door-fill me-1"></i>Accueil
+                            <i class="bi bi-house-door-fill me-1"></i>
+                            Accueil
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {$activePlaylists}" href="?action=playlists">
-                            <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/collection-play-fill/ -->
-                            <i class="bi bi-collection-play-fill me-1"></i>Mes playlists
+                        <a class="nav-link" href="?action=displayFeedFollowed">
+                            Mon feed
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {$activeTracks}" href="?action=tracks">
-                            <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/music-note/ -->
-                            <i class="bi bi-music-note me-1"></i>Mes pistes
+                        <a class="nav-link" href="?action=displayFeed">
+                            Feed général
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {$activeAddPlaylist}" href="?action=add-playlist">
-                            <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/plus-circle-fill/ -->
-                            <i class="bi bi-plus-circle-fill me-1"></i>Créer une playlist
+                        <a class="nav-link" href="?action=addTouite">
+                            Poster un touite
                         </a>
                     </li>
-                    {$currentPlaylist}
                 </ul>
                 <div class="d-flex align-items-center gap-2">
                     <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-circle/ -->
@@ -211,7 +166,7 @@ class Dispatcher {
             return <<<HTML
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {$activeAccueil}" href="index.php">
+                        <a class="nav-link" href="index.php">
                             <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/house-door-fill/ -->
                             <i class="bi bi-house-door-fill me-1"></i>Accueil
                         </a>

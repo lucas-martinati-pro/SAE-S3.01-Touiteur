@@ -19,40 +19,21 @@ class DefaultAction extends Action {
                 <img src="image/favicon.png" width="40" height="40" alt="Logo" class="align-text-top">
                 Bienvenue sur Touiteur !
             </h1>
-            <p class="text-muted">Bienvenue sur Touiteur, votre plateforme de musique.</p>
+            <p class="text-muted">Bienvenue sur Touiteur, votre plateforme de touites.</p>
             <div class="list-group mb-3" style="max-width: 450px;">
         HTML;
         try {
             AuthnProvider::getSignedInUser();
 
-            $currentPlaylist = "";
-
-            if (isset($_SESSION['playlist'])) {
-                $currentPlaylist = <<<HTML
-                    <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=display-playlist">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/music-note-list/ -->
-                        <i class="bi bi-music-note-list text-info me-2 fs-5"></i>
-                        Afficher la playlist courante
-                    </a>
-                HTML;
-            }
-
             $page .= <<<HTML
-                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=playlists">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/collection-play-fill/ -->
-                    <i class="bi bi-collection-play-fill text-primary me-2 fs-5"></i>
-                    Afficher mes playlists
+                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=displayFeedFollowed">
+                    Mon feed
                 </a>
-                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=tracks">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/music-note/ -->
-                    <i class="bi bi-music-note text-primary me-2 fs-5"></i>
-                    Afficher mes pistes
+                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=displayFeed">
+                    Feed général
                 </a>
-                {$currentPlaylist}
-                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=add-playlist">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/plus-circle-fill/ -->
-                    <i class="bi bi-plus-circle-fill text-success me-2 fs-5"></i>
-                    Créer une playlist
+                <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=addTouite">
+                    Poster un touite
                 </a>
                 <a class="list-group-item list-group-item-action text-danger d-flex align-items-center" href="?action=signout">
                     <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->

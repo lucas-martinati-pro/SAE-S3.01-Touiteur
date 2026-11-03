@@ -48,8 +48,7 @@ class SignoutAction extends Action {
     #[Override]
     public function post() : string {
         unset($_SESSION['user']);
-        unset($_SESSION['playlist']);
-        unset($_SESSION['playerTrack']);
+        
         return <<<HTML
             <h1 class="h2 fw-bold text-success mb-3 d-flex align-items-center">
                 <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/check-circle-fill/ -->
