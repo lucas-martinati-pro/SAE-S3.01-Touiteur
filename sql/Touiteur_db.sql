@@ -79,8 +79,6 @@ alter table follow add constraint chk_no_self_follow check (follower_id != follo
 alter table note2touite add constraint chk_note_bool check (state IN (-1, 0, 1));
 
 -- Contenu : (Contenu généré à l'aide de l'IA)
-
--- Comptes de test : les mots de passe correspondent aux valeurs indiquées
 INSERT INTO users (email, passwd, counter_Touite) VALUES ('users1@mail.com', '$2y$12$z7mHIyHACElCs8zE4hVvN.cPM4ala.FM6McIch4Zn7OakVGhMskvC', 2);
 INSERT INTO users (email, passwd, counter_Touite) VALUES ('users2@mail.com', '$2y$12$JelzicyqC10xiJz0i/JWUuUqFLBr5fhos2omEJoV68yGpQVp1.U1.', 2);
 INSERT INTO users (email, passwd, counter_Touite) VALUES ('users3@mail.com', '$2y$12$KYcd2LqjSdH/wvGzv8qB.OZiyPPqno1ac4IoRjbVqErUP0M.6V8La', 2);
