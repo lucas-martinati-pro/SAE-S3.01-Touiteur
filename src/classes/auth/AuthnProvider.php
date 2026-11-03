@@ -3,6 +3,7 @@
 namespace iutnc\touiteur\auth;
 
 use iutnc\touiteur\exception\AuthnException;
+use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\repository\TouiteurRepository;
 
 /**
@@ -20,7 +21,7 @@ class AuthnProvider {
      * @throws AuthnException Si les identifiants sont invalides ou inexistants.
      */
     public static function signin(string $email, string $password) : void {
-        $r = TouiteurRepository::getInstance();
+        $r = RepositoryFactory::getReader();
 
         $user = $r->findUserByEmail(filter_var($email, FILTER_SANITIZE_EMAIL));
 
@@ -53,9 +54,10 @@ class AuthnProvider {
             throw new AuthnException("L'adresse email n'est pas valide.");
         }
 
-        $r = TouiteurRepository::getInstance();
+        $rRead = RepositoryFactory::getReader();
+        $rWrite = RepositoryFactory::getWriter();
 
-        if ($r->existsByEmail($email)) {
+        if ($rRead->existsByEmail($email)) {
             throw new AuthnException("Cette adresse email est déjà utilisée.");
         }
 
@@ -77,7 +79,7 @@ class AuthnProvider {
             throw new AuthnException("Le mot de passe doit contenir au moins une lettre majuscule.");
         }
 
-        $r->adduser($email, $password, $nom, $prenom);
+        $rWrite->adduser($email, $password, $nom, $prenom);
     }
 
     /**
