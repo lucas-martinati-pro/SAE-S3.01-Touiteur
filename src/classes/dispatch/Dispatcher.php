@@ -36,12 +36,11 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "displayFeed" => (new DisplayFeedAction())(),
             "displayTouite" => (new DisplayTouite())(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
-            default => (new DisplayFeedFollowedAction())(),
+            default => (new DisplayFeedAction())(),
         };
 
         $this->renderPage($html);
