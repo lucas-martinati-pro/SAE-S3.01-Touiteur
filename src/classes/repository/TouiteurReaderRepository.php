@@ -47,7 +47,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return new Feed($touites);
     }
 
-    public function findFollowedFeed(string $email): ?Feed {
+    public function findFollowedFeed(string $id): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT touite.*
             FROM touite
