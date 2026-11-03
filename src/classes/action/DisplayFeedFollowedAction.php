@@ -4,13 +4,14 @@ namespace iutnc\touiteur\action;
 
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
+use iutnc\touiteur\render\RendererFactory;
+use iutnc\touiteur\repository\RepositoryFactory;
 use Override;
 
 /**
  * Action par défaut affichant la page d'accueil de l'application Touiteur.
  */
 class DisplayFeedFollowedAction extends Action {
-    protected bool $requireAuth = false;
 
     #[Override]
     public function get() : string {
@@ -24,6 +25,11 @@ class DisplayFeedFollowedAction extends Action {
         HTML;
         try {
             AuthnProvider::getSignedInUser();
+            
+            $r = RepositoryFactory::getReader();
+            $feedFollowed = $r->findFollowedFeed($this->user['id']);
+            $renderFeed = RendererFactory::getRenderer($feedFollowed);
+            $affiche = $renderFeed->render();
 
             $page .= <<<HTML
                 <a class="list-group-item list-group-item-action d-flex align-items-center" href="?action=displayFeedFollowed">
@@ -40,6 +46,7 @@ class DisplayFeedFollowedAction extends Action {
                     <i class="bi bi-box-arrow-right text-danger me-2 fs-5"></i>
                     Se déconnecter
                 </a>
+                {$affiche}
             HTML;
         } catch (AuthnException) {
             $page .= <<<HTML
