@@ -2,12 +2,37 @@
 
 namespace iutnc\touiteur\repository;
 
+use iutnc\touiteur\touite\Feed;
 use PDO;
 
 /**
  * Repository centralisant les opérations d'accès à la base de données.
  */
-class TouiteurReaderRepository extends TouiteurRepository{
+class TouiteurReaderRepository extends TouiteurRepository {
+    /**============================================
+     *               GESTION DES TOUITES
+     *=============================================**/
+
+    public function findFollowedFeed(string $email) : ?Feed {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT *
+            FROM touite
+            inner join users on users.id = touites.user_id
+            WHERE email = :email;
+        SQL);
+
+        $stmt->execute(['email' => $email]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return 
+    }
+
+    /**============================================
+     *               GESTION DE L'AUTH
+     *=============================================**/
 
     /**
      * Recherche un utilisateur par son adresse email.

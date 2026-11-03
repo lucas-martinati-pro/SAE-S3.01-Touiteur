@@ -3,7 +3,6 @@
 namespace iutnc\touiteur\repository;
 
 class RepositoryFactory extends TouiteurRepository {
-    
     private static ?TouiteurReaderRepository $readInstance = null;
     private static ?TouiteurWritterRepository $writeInstance = null;
 

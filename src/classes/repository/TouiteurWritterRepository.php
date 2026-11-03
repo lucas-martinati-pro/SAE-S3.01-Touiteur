@@ -7,8 +7,17 @@ use PDO;
 /**
  * Repository centralisant les opérations d'accès à la base de données.
  */
-class TouiteurWritterRepository extends TouiteurRepository{
+class TouiteurWritterRepository extends TouiteurRepository {
+    /**============================================
+     *               GESTION DES TOUITES
+     *=============================================**/
+
     
+
+    /**============================================
+     *               GESTION DE L'AUTH
+     *=============================================**/
+
     /**
      * Crée un nouvel utilisateur en base de données avec un mot de passe haché (bcrypt).
      *
