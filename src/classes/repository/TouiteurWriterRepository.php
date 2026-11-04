@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\repository;
 
+use iutnc\touiteur\enum\TypeNote;
 use iutnc\touiteur\touite\Touite;
 
 /**
@@ -46,6 +47,14 @@ class TouiteurWriterRepository extends TouiteurRepository {
         SQL);
 
         $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
+    }
+
+    public function noteTouite(int $user_id, int $touite_id, TypeNote $note) {
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO note2touite (users_id, touite_id, note) VALUES (:user_id, :touite_id, :note);
+        SQL);
+
+        $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id, 'note' => $note::note]);
     }
 
     /**============================================
