@@ -16,6 +16,7 @@ use iutnc\touiteur\action\SubscribeAction;
 use iutnc\touiteur\action\SubscribeTagAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
+use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\repository\RepositoryFactory;
 
 /**
@@ -145,23 +146,14 @@ class Dispatcher {
 
             $userId = (int) $user['id'];
             $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+            $profileAvatar = HtmlHelper::profileAvatar($user, 'sidebar-avatar');
 
             return <<<HTML
                 <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=displayFeed&type=global">
-                            Pour vous
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="?action=displayFeed">
-                            Abonnements
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=displayProfile&id={$userId}">
-                            Profil
+                            Accueil
                         </a>
                     </li>
                 </ul>
@@ -170,8 +162,8 @@ class Dispatcher {
                     {$toggleThemeButton}
                 </div>
                 <div class="sidebar-user">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-circle/ -->
-                    <i class="bi bi-person-circle"></i>
+                    <a class="sidebar-avatar-link" href="?action=displayProfile&id={$userId}"
+                       aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->

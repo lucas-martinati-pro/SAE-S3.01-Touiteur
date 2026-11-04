@@ -58,6 +58,13 @@ class TouiteRenderer implements Renderer {
         $subBtn = "";
         $currentUser = AuthnProvider::getSignedInUser();
         $currentUserId = $currentUser['id'];
+        $profileUser = [
+            'id' => $this->user_id,
+            'nom' => $this->nom,
+            'prenom' => $this->prenom,
+        ];
+        $profileAvatar = HtmlHelper::profileAvatar($profileUser);
+
         if ($this->user_id !== $currentUserId && $selector === TypeRender::LONG) {
             $subBtn = HtmlHelper::subscriptionButton(
                 $this->user_id,
@@ -75,7 +82,7 @@ class TouiteRenderer implements Renderer {
                     <div class="touite-row">
                         <a class="touite-profile-link" href="?action=displayProfile&id={$this->user_id}"
                            aria-label="Voir le profil de {$completeName}">
-                            <div class="touite-avatar">{$premiereLettre}</div>
+                            {$profileAvatar}
                         </a>
                         <div class="touite-body">
                             <div class="touite-header">

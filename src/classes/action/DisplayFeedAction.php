@@ -13,8 +13,42 @@ use Override;
  * Action par défaut affichant la page d'accueil de l'application Touiteur.
  */
 class DisplayFeedAction extends Action {
+    protected bool $requireAuth = false;
+
     #[Override]
     public function get(): string {
+        if ($this->user === null) {
+            return <<<HTML
+                <section class="landing-page">
+                    <div class="landing-icon" aria-hidden="true">
+                        <i class="bi bi-chat-heart-fill"></i>
+                    </div>
+                    <h1>Bienvenue sur Touiteur</h1>
+                    <p class="landing-lead">
+                        Le réseau social où chaque touite compte.
+                    </p>
+                    <p class="landing-description">
+                        Partagez vos idées, découvrez les publications qui vous intéressent,
+                        suivez vos tags préférés et échangez avec la communauté.
+                    </p>
+                    <div class="landing-actions">
+                        <a class="btn btn-primary" href="?action=register">
+                            <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                            Créer un compte
+                        </a>
+                        <a class="btn btn-outline-primary" href="?action=signin">
+                            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                            Se connecter
+                        </a>
+                    </div>
+                    <p class="landing-tagline">
+                        <i class="bi bi-stars" aria-hidden="true"></i>
+                        Le meilleur réseau social du monde, évidemment.
+                    </p>
+                </section>
+            HTML;
+        }
+
         $r = RepositoryFactory::getReader();
 
         $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
@@ -32,6 +66,7 @@ class DisplayFeedAction extends Action {
             $activeFollow = 'class="active"';
         }
 
+        $profileAvatar = HtmlHelper::profileAvatar($this->user);
         $page = <<< HTML
             <header class="feed-header">
                 <div class="feed-heading">
@@ -43,7 +78,7 @@ class DisplayFeedAction extends Action {
                 </nav>
             </header>
             <div class="compose-box">
-                <div class="touite-avatar">T</div>
+                {$profileAvatar}
                 <div>
                     <p>Quoi de neuf ?</p>
                     <a class="btn btn-primary" href="?action=addTouite">Touiter</a>

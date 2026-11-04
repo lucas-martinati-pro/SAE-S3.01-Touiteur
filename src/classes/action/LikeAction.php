@@ -3,6 +3,7 @@
 namespace iutnc\touiteur\action;
 
 use iutnc\touiteur\enum\TypeNote;
+use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\repository\RepositoryFactory;
 use Override;
 
@@ -19,9 +20,11 @@ class LikeAction extends Action {
 
         $w->noteTouite($this->user['id'], $id, $type);
 
+        $profileAvatar = HtmlHelper::profileAvatar($this->user);
+
         $page = <<< HTML
             <div class="compose-box">
-                <div class="touite-avatar">T</div>
+                {$profileAvatar}
                 <div>
                     <p>Quoi de neuf ?</p>
                     <a class="btn btn-primary" href="?action=addTouite">Touiter</a>
