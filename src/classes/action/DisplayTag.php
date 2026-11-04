@@ -17,9 +17,17 @@ class DisplayTag extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $feed = $r->findAllTouitesByTagId($id);
+        $pageNumber = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT);
+        $pageNumber = $pageNumber !== false && $pageNumber > 0 ? $pageNumber : 1;
+        $feed = $r->findFeedByTagId($id, $pageNumber);
         $tag = $r->findTagById($id);
         $tagLabel = $tag->getLibelle();
+
+        $previousPage = max(1, $pageNumber - 1);
+        $nextPage = $pageNumber + 1;
+        $previousAttributes = $pageNumber === 1
+            ? ' aria-disabled="true" tabindex="-1"'
+            : '';
 
         $page = <<< HTML
             <header class="feed-header detail-header">
@@ -35,10 +43,27 @@ class DisplayTag extends Action {
             </section>
         HTML;
 
+        $pagination = <<< HTML
+            <nav class="feed-pagination" aria-label="Pagination du tag">
+                <a class="btn btn-outline-secondary"
+                   {$previousAttributes}
+                   href="?action=displayTag&id={$id}&page={$previousPage}">
+                    <i class="bi bi-chevron-left"></i>
+                    Page précédente
+                </a>
+                <span>Page {$pageNumber}</span>
+                <a class="btn btn-outline-secondary"
+                   href="?action=displayTag&id={$id}&page={$nextPage}">
+                    Page suivante
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+        HTML;
+
         if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
+            return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.') . $pagination;
         }
 
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }
 }

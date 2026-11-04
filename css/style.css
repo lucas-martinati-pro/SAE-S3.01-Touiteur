@@ -249,6 +249,25 @@
     margin: .4rem 0 1rem;
 }
 
+.feed-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.feed-pagination span {
+    color: var(--bs-secondary-color);
+    font-size: .9rem;
+}
+
+.feed-pagination a[aria-disabled="true"] {
+    pointer-events: none;
+    opacity: .5;
+}
+
 .touite-card {
     padding: 1rem;
     border-bottom: 1px solid var(--bs-border-color);

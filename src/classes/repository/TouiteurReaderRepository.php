@@ -59,13 +59,104 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $tags;
     }
 
-    public function findAllTouites(): ?Feed {
+    public function findFeed(int $page = 1): ?Feed {
+        if ($page < 1) $page = 1;
+        $nb_touite = 20;
+        $offset = ($page - 1) * $nb_touite;
+
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
-            ORDER BY posted_at DESC;
+            ORDER BY posted_at DESC
+            LIMIT :nb_touite OFFSET :offset;
         SQL);
 
+        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->execute(); // vide
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowsToFeed($res);
+    }
+
+    public function findFollowedFeed(int $id, int $page = 1): ?Feed {
+        if ($page < 1) $page = 1;
+        $nb_touite = 20;
+        $offset = ($page - 1) * $nb_touite;
+
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT touite.*
+            FROM touite
+            WHERE touite.users_id IN (
+                SELECT followed_id
+                FROM follow
+                WHERE follower_id = :follower_id
+            )
+            OR touite.id IN (
+                SELECT tag2touite.touite_id
+                FROM tag2touite
+                INNER JOIN user2tag ON user2tag.tag_id = tag2touite.tag_id
+                WHERE user2tag.users_id = :tag_user_id
+            )
+            ORDER BY posted_at DESC
+            LIMIT :nb_touite OFFSET :offset;
+        SQL);
+
+        $stmt->bindValue('follower_id', $id, PDO::PARAM_INT);
+        $stmt->bindValue('tag_user_id', $id, PDO::PARAM_INT);
+        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowsToFeed($res);
+    }
+
+    public function findFeedByUserId(int $id, int $page = 1): ?Feed {
+        if ($page < 1) $page = 1;
+        $nb_touite = 20;
+        $offset = ($page - 1) * $nb_touite;
+
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT *
+            FROM touite
+            WHERE users_id = :id
+            LIMIT :nb_touite OFFSET :offset;
+        SQL);
+
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowsToFeed($res);
+    }
+
+    public function findFeedByTagId(int $id, int $page = 1): ?Feed {
+        if ($page < 1) $page = 1;
+        $nb_touite = 20;
+        $offset = ($page - 1) * $nb_touite;
+
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT touite.*
+            FROM touite
+            INNER JOIN tag2touite on touite.id = tag2touite.touite_id
+            WHERE tag2touite.tag_id = :id
+            ORDER BY posted_at DESC
+            LIMIT :nb_touite OFFSET :offset;
+        SQL);
+
+        $stmt->bindValue('id', $id, PDO::PARAM_INT);
+        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -88,64 +179,6 @@ class TouiteurReaderRepository extends TouiteurRepository {
         if (!$res) return null;
 
         return $this->rowToTouite($res);
-    }
-
-    public function findFollowedFeed(int $id): ?Feed {
-        $stmt = $this->pdo->prepare(<<<SQL
-            SELECT touite.*
-            FROM touite
-            WHERE touite.users_id IN (
-                SELECT followed_id
-                FROM follow
-                WHERE follower_id = :id
-            )
-            OR touite.id IN (
-                SELECT tag2touite.touite_id
-                FROM tag2touite
-                INNER JOIN user2tag ON user2tag.tag_id = tag2touite.tag_id
-                WHERE user2tag.users_id = :id
-            )
-            ORDER BY posted_at DESC;
-        SQL);
-
-        $stmt->execute(['id' => $id]);
-
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!$res) return null;
-
-        return $this->rowsToFeed($res);
-    }
-
-    public function findAllTouitesByUserId(int $id): ?Feed {
-        $stmt = $this->pdo->prepare(<<<SQL
-            SELECT *
-            FROM touite
-            WHERE users_id = :id;
-        SQL);
-
-        $stmt->execute(['id' => $id]);
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!$res) return null;
-
-        return $this->rowsToFeed($res);
-    }
-
-    public function findAllTouitesByTagId(int $id): ?Feed {
-        $stmt = $this->pdo->prepare(<<<SQL
-            SELECT touite.*
-            FROM touite
-            INNER JOIN tag2touite on touite.id = tag2touite.touite_id
-            WHERE tag2touite.tag_id = :id;
-        SQL);
-
-        $stmt->execute(['id' => $id]);
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!$res) return null;
-
-        return $this->rowsToFeed($res);
     }
 
     public function findTagById(int $id): ?Tag {

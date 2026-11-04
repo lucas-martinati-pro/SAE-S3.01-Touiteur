@@ -17,7 +17,14 @@ class DisplayProfile extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $feed = $r->findAllTouitesByUserId($id);
+        $pageNumber = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT);
+        $pageNumber = $pageNumber !== false && $pageNumber > 0 ? $pageNumber : 1;
+        $feed = $r->findFeedByUserId($id, $pageNumber);
+        $previousPage = max(1, $pageNumber - 1);
+        $nextPage = $pageNumber + 1;
+        $previousAttributes = $pageNumber === 1
+            ? ' aria-disabled="true" tabindex="-1"'
+            : '';
 
         $page = <<< HTML
             <header class="feed-header detail-header">
@@ -44,10 +51,27 @@ class DisplayProfile extends Action {
             </section>
         HTML;
 
+        $pagination = <<< HTML
+            <nav class="feed-pagination" aria-label="Pagination du profil">
+                <a class="btn btn-outline-secondary"
+                   {$previousAttributes}
+                   href="?action=displayProfile&id={$id}&page={$previousPage}">
+                    <i class="bi bi-chevron-left"></i>
+                    Page précédente
+                </a>
+                <span>Page {$pageNumber}</span>
+                <a class="btn btn-outline-secondary"
+                   href="?action=displayProfile&id={$id}&page={$nextPage}">
+                    Page suivante
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+        HTML;
+
         if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.');
+            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.') . $pagination;
         }
 
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }
 }
