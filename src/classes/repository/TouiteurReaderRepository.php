@@ -281,6 +281,23 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToTag($res);
     }
 
+    public function getAllFollowedTag(int $user_id) : ?array {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT libelle
+            FROM tag
+            INNER JOIN users2tag on users2tag.tag_id = tag.id
+            WHERE users2tag.users_id = :user_id
+        SQL);
+
+        $stmt->execute(['user_id' => $user_id]);
+
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $res;
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/

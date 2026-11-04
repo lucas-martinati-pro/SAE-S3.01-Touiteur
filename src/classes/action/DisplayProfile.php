@@ -63,6 +63,11 @@ class DisplayProfile extends Action {
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>
                     </div>
+                    <form method="POST" action="?action=listFollowTag" class="mt-3">
+                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="bi bi-tags me-1"></i> Tags suivis
+                        </button>
+                    </form>
                 </div>
                 <nav class="profile-tabs" aria-label="Navigation du profil">
                     <a class="active" href="?action=displayProfile&id={$id}">Touites</a>
