@@ -2,7 +2,6 @@
 namespace iutnc\touiteur\action;
 
 use iutnc\touiteur\repository\RepositoryFactory;
-use \iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
@@ -32,35 +31,35 @@ class AddTouiteAction extends Action {
                     <div class="form-text">235 caractères maximum.</div>
                 </div>
 
-                <div class="mb-3 image-upload">
-                    <label for="img" class="form-label">Image ou vidéo <span class="text-muted">(optionnelle)</span></label>
+                <div class="mb-3 media-upload">
+                    <label for="media" class="form-label">Média <span class="text-muted">(optionnel)</span></label>
                     <input
                         type="file"
-                        name="img"
-                        class="form-control image-input"
-                        id="img"
+                        name="media"
+                        class="form-control media-input"
+                        id="media"
                         accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
                     >
-                    <div class="image-upload-help">
+                    <div class="media-upload-help">
                         <i class="bi bi-image" aria-hidden="true"></i>
-                        <span>Ajoutez une image ou une vidéo à votre touite</span>
+                        <span>Ajoutez un média à votre touite</span>
                         <small>JPG, PNG, WEBP, GIF ou MP4 · 2 Mo maximum</small>
                     </div>
                 </div>
 
-                <details class="image-description mb-3">
+                <details class="media-description mb-3">
                     <summary>
                         <i class="bi bi-card-text" aria-hidden="true"></i>
                         Ajouter une description au média
                     </summary>
-                    <label for="descrip_img" class="form-label">Description <span class="text-muted">(optionnelle)</span></label>
+                    <label for="descrip_media" class="form-label">Description <span class="text-muted">(optionnelle)</span></label>
                     <input
                         type="text"
-                        name="descrip_img"
+                        name="descrip_media"
                         class="form-control"
-                        id="descrip_img"
+                        id="descrip_media"
                         maxlength="235"
-                        placeholder="Décrivez votre image ou votre vidéo"
+                        placeholder="Décrivez votre média"
                     >
                 </details>
 
@@ -89,12 +88,12 @@ class AddTouiteAction extends Action {
                 title: 'Impossible de publier le touite'
             );
         }
-        $desc_img = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
+        $desc_media = filter_var($_POST["descrip_media"], FILTER_SANITIZE_SPECIAL_CHARS);
 
         if (
-            isset($_FILES['img']) &&
-            $_FILES['img']['error'] === UPLOAD_ERR_OK &&
-            $_FILES['img']['size'] > 2 * 1024 * 1024
+            isset($_FILES['media']) &&
+            $_FILES['media']['error'] === UPLOAD_ERR_OK &&
+            $_FILES['media']['size'] > 2 * 1024 * 1024
         ) {
             return HtmlHelper::formError(
                 errors: 'Le fichier ne doit pas dépasser 2 Mo.',
@@ -109,26 +108,26 @@ class AddTouiteAction extends Action {
         // Format AAAA-MM-JJ HH:MM:SS
         $date = date('Y-m-d H:i:s');
 
-        $imageName = $this->saveImage($_FILES);
+        $mediaName = $this->saveMedia($_FILES);
 
         // ajout à la bd
         $w = RepositoryFactory::getWriter();
-        $touite = $w->addTouite($contenu, $date, $imageName, $desc_img, $this->user["id"]);
+        $touite = $w->addTouite($contenu, $date, $mediaName, $desc_media, $this->user["id"]);
 
         header("Location: ?action=displayTouite&id=" . $touite->getId());
         exit;
     }
 
-    private function saveImage(array $imgFile): ?String {
-        if (isset($imgFile['img']) && $imgFile['img']['error'] === UPLOAD_ERR_OK) {
-            $extension = strtolower(pathinfo($imgFile['img']['name'], PATHINFO_EXTENSION));
+    private function saveMedia(array $mediaFile): ?String {
+        if (isset($mediaFile['media']) && $mediaFile['media']['error'] === UPLOAD_ERR_OK) {
+            $extension = strtolower(pathinfo($mediaFile['media']['name'], PATHINFO_EXTENSION));
 
             if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4'])) {
-                $imgDir = 'image' . DIRECTORY_SEPARATOR . 'touite_img' . DIRECTORY_SEPARATOR;
-                $imageName = $imgDir . uniqid('touite_img_', true) . bin2hex(random_bytes(4)) . '.' . $extension;
+                $mediaDir = 'image' . DIRECTORY_SEPARATOR . 'touite_media' . DIRECTORY_SEPARATOR;
+                $mediaName = $mediaDir . uniqid('touite_media_', true) . bin2hex(random_bytes(4)) . '.' . $extension;
 
-                if (move_uploaded_file($imgFile['img']['tmp_name'], $imageName)) {
-                    return $imageName;
+                if (move_uploaded_file($mediaFile['media']['tmp_name'], $mediaName)) {
+                    return $mediaName;
                 }
             }
         }

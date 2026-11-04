@@ -7,16 +7,16 @@ class Touite {
     private string $content;
     private string $posted_at;
     private int $note;
-    private ?string $image_path;
-    private ?string $image_description;
+    private ?string $media_path;
+    private ?string $media_description;
 
-    public function __construct(string $content, string $posted_at, int $note, ?string $image_path, ?string $image_description, ?int $id = null) {
+    public function __construct(string $content, string $posted_at, int $note, ?string $media_path, ?string $media_description, ?int $id = null) {
         $this->id = $id;
         $this->content = $content;
         $this->posted_at = $posted_at;
         $this->note = $note;
-        $this->image_path = $image_path;
-        $this->image_description = $image_description;
+        $this->media_path = $media_path;
+        $this->media_description = $media_description;
     }
 
     public function getId(): ?int {
@@ -39,11 +39,11 @@ class Touite {
         return $this->note;
     }
 
-    public function getImage_path(): ?string {
-        return $this->image_path;
+    public function getmedia_path(): ?string {
+        return $this->media_path;
     }
 
-    public function getImage_description(): ?string {
-        return $this->image_description;
+    public function getmedia_description(): ?string {
+        return $this->media_description;
     }
 }

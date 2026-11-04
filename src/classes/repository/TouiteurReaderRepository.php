@@ -20,8 +20,8 @@ class TouiteurReaderRepository extends TouiteurRepository {
                 $res['content'],
                 $res['posted_at'],
                 $res['note'],
-                $res['image_path'] ?? null,
-                $res['image_description'] ?? null,
+                $res['media_path'] ?? null,
+                $res['media_description'] ?? null,
                 $res['id']
             );
 

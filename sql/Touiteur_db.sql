@@ -12,8 +12,8 @@ create table touite (
     id INT AUTO_INCREMENT PRIMARY KEY,
     content VARCHAR(235) NOT NULL,
     note INT,
-    image_description VARCHAR(235),
-    image_path VARCHAR(256),
+    media_description VARCHAR(235),
+    media_path VARCHAR(256),
     posted_at DATETIME NOT NULL,
     users_id INT NOT NULL
 );
