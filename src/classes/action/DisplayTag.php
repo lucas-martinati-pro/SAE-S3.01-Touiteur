@@ -34,7 +34,7 @@ class DisplayTag extends Action {
 
         if ($r->isTagSub($this->user['id'], $id)) {
             $subTagBtn = <<<HTML
-                <form method="POST" action="?action=" class="ms-auto">
+                <form method="POST" action="?action=subtag" class="ms-auto">
                     <input type="hidden" name="type" value="unsub">
                     <input type="hidden" name="id" value="{$id}">
                     <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Abonné</button>
@@ -42,7 +42,7 @@ class DisplayTag extends Action {
             HTML;
         } else {
             $subTagBtn = <<<HTML
-                <form method="POST" action="?action=" class="ms-auto">
+                <form method="POST" action="?action=subtag" class="ms-auto">
                     <input type="hidden" name="type" value="sub">
                     <input type="hidden" name="id" value="{$id}">
                     <button type="submit" class="btn btn-sm btn-primary rounded-pill">S'abonner</button>
@@ -58,9 +58,6 @@ class DisplayTag extends Action {
                 <h1 class="mb-0">#{$tagLabel}</h1>
                 {$subTagBtn}
             </header>
-            <section class="tag-feed">
-                
-            </section>
         HTML;
 
         $previous = $pagination->previous();

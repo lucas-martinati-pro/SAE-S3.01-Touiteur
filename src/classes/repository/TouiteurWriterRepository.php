@@ -30,6 +30,24 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
     }
 
+    public function followTag(int $user_id, int $tag_id) : void {
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO user2tag (users_id, tag_id) VALUES (:user_id, :tag_id);
+        SQL);
+
+        $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
+    }
+
+    public function unfollowTag(int $user_id, int $tag_id) : void {
+        $stmt = $this->pdo->prepare(<<<SQL
+            DELETE FROM user2tag
+            WHERE users_id = :user_id
+            AND tag_id = :tag_id;
+        SQL);
+
+        $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/

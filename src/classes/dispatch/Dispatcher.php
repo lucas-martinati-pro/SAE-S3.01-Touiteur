@@ -11,6 +11,7 @@ use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
 use iutnc\touiteur\action\SubscribeAction;
+use iutnc\touiteur\action\SubscribeTagAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
 use iutnc\touiteur\repository\RepositoryFactory;
@@ -48,6 +49,7 @@ class Dispatcher {
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
             "subscribe" => (new SubscribeAction())(),
+            "subtag" => (new SubscribeTagAction())(),
             default => (new DisplayFeedAction())(),
         };
 
