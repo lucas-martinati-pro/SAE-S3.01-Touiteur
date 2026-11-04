@@ -89,10 +89,12 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        if (!$res) return null;
+
         return $this->rowsToFeed($res);
     }
 
-    public function findAllTouitesByUserId(int $id) {
+    public function findAllTouitesByUserId(int $id): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite

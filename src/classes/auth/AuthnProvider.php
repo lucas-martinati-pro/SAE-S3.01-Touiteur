@@ -79,7 +79,7 @@ class AuthnProvider {
             throw new AuthnException("Le mot de passe doit contenir au moins une lettre majuscule.");
         }
 
-        $rWrite->adduser($email, $password, $nom, $prenom);
+        $rWrite->addUser($email, $password, $nom, $prenom);
     }
 
     /**
@@ -89,10 +89,15 @@ class AuthnProvider {
      * @throws AuthnException Si aucun utilisateur n'est connecté en session.
      */
     public static function getSignedInUser(): array {
-        if (!isset($_SESSION['user']) || !isset(unserialize($_SESSION['user'])['id'])) {
+        if (!isset($_SESSION['user']) || !is_string($_SESSION['user'])) {
             throw new AuthnException("Vous devez être connecté pour accéder à cette page.");
         }
 
-        return unserialize($_SESSION['user']);
+        $user = unserialize($_SESSION['user'], ['allowed_classes' => false]);
+        if (!is_array($user) || !isset($user['id'])) {
+            throw new AuthnException("Vous devez être connecté pour accéder à cette page.");
+        }
+
+        return $user;
     }
 }

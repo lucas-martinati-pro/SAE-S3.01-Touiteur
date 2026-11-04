@@ -37,7 +37,7 @@ class Dispatcher {
     public function run(): void {
         $html = match ($this->action) {
             "displayTouite" => (new DisplayTouite())(),
-            "DisplayProfile" => (new DisplayProfile)(),
+            "displayProfile" => (new DisplayProfile)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
@@ -88,6 +88,20 @@ class Dispatcher {
                         <main class="page-content">
                             $html
                         </main>
+                        <aside class="right-sidebar">
+                            <section class="trends">
+                                <h2>Tags populaires</h2>
+                                <div class="tag-list">
+                                    <a href="?action=displayFeed&tag=annonce">#annonce</a>
+                                    <a href="?action=displayFeed&tag=cinema">#cinema</a>
+                                    <a href="?action=displayFeed&tag=code">#code</a>
+                                    <a href="?action=displayFeed&tag=culture">#culture</a>
+                                    <a href="?action=displayFeed&tag=musique">#musique</a>
+                                    <a href="?action=displayFeed&tag=sport">#sport</a>
+                                    <a href="?action=displayFeed&tag=technologie">#technologie</a>
+                                </div>
+                            </section>
+                        </aside>
                     </div>
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
                     <script src="js/script.js"></script>
@@ -112,27 +126,25 @@ class Dispatcher {
         try {
             $user = AuthnProvider::getSignedInUser();
 
+            $userId = (int) $user['id'];
+            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+
             return <<<HTML
                 <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=displayFeedFollowed">
-                            Mon feed
+                        <a class="nav-link" href="?action=displayFeed&type=global">
+                            Pour vous
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="?action=displayFeed">
-                            Feed général
+                            Abonnements
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=addTouite">
-                            Poster un touite
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=DisplayProfile&id=1">
-                            Profile
+                        <a class="nav-link" href="?action=displayProfile&id={$userId}">
+                            Profil
                         </a>
                     </li>
                 </ul>
@@ -144,7 +156,7 @@ class Dispatcher {
                 <div class="sidebar-user">
                     <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-circle/ -->
                     <i class="bi bi-person-circle"></i>
-                    <span class="sidebar-email">{$user['email']}</span>
+                    <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
                         <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
                         <i class="bi bi-box-arrow-right"></i>

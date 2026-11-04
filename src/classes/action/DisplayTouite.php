@@ -34,9 +34,4 @@ class DisplayTouite extends Action {
             RendererFactory::getRenderer($touite)->render(TypeRender::LONG) .
             '</div>';
     }
-
-    #[Override]
-    public function post(): string {
-        return '';
-    }
 }

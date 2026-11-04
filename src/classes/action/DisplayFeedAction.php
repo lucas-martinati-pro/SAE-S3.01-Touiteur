@@ -52,9 +52,4 @@ class DisplayFeedAction extends Action {
 
         return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT);
     }
-
-    #[Override]
-    public function post(): string {
-        return '';
-    }
 }

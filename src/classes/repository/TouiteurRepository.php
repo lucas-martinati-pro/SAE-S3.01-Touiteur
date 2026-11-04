@@ -2,7 +2,7 @@
 
 namespace iutnc\touiteur\repository;
 
-use iutnc\touiteur\touite\Touite;
+use iutnc\touiteur\exception\ConfigIOException;
 
 class TouiteurRepository {
     protected \PDO $pdo;
@@ -15,7 +15,9 @@ class TouiteurRepository {
 
     public static function setConfig(string $file): void {
         $conf = parse_ini_file($file);
-        if ($conf === false) throw new \Exception("Error reading configuration file");
+        if ($conf === false) {
+            throw new ConfigIOException("Error reading configuration file");
+        }
         self::$config = [
             'dsn' => "{$conf['driver']}:host={$conf['host']};dbname={$conf['database']}",
             'user' => $conf['username'],
