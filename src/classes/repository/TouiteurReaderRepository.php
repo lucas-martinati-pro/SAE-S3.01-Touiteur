@@ -109,16 +109,21 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToFeed($res);
     }
 
-    public function getUserIdByTouiteId(int $touite_id) : int {
+    public function getUserByTouiteId(int $touite_id) : ?array {
         $stmt = $this->pdo->prepare(<<<SQL
-            SELECT users_id
+            SELECT users_id, nom, prenom
             FROM touite
-            WHERE id = :id
+            INNER JOIN users on users.id = touite.users_id
+            WHERE touite.id = :id
         SQL);
 
         $stmt->execute(['id' => $touite_id]);
 
-        return $stmt->fetchColumn();
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $res;
     }
 
     /**============================================
