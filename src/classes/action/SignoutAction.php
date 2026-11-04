@@ -14,7 +14,7 @@ class SignoutAction extends Action {
         // Si l'utilisateur n'est même pas connecté
         if (!isset($_SESSION['user'])) {
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/
-            $title = HtmlHelper::title("Déconnexion", "bi-box-arrow-right", "secondary");
+            $title = HtmlHelper::title("Déconnexion", "bi-box-arrow-right", "text-secondary");
             return <<<HTML
                 {$title}
                 <p>Vous n'êtes pas connecté.</p>
@@ -28,7 +28,7 @@ class SignoutAction extends Action {
         }
 
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/
-        $title = HtmlHelper::title("Déconnexion", "bi-box-arrow-right", "danger");
+        $title = HtmlHelper::title("Déconnexion", "bi-box-arrow-right", "text-danger");
         return <<<HTML
             {$title}
             <p>Êtes-vous sûr de vouloir vous déconnecter ?</p>
@@ -48,7 +48,7 @@ class SignoutAction extends Action {
     #[Override]
     public function post(): string {
         unset($_SESSION['user']);
-        
+
         return <<<HTML
             <h1 class="h2 fw-bold text-success mb-3 d-flex align-items-center">
                 <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/check-circle-fill/ -->

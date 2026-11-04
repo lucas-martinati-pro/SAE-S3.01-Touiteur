@@ -76,14 +76,18 @@ abstract class Action {
      *
      * @return string Code HTML généré pour l'affichage (formulaire, vue, etc.).
      */
-    abstract public function get(): string;
+    public function get(): string {
+        return '';
+    }
 
     /**
      * Traite les requêtes HTTP de type POST.
      *
      * @return string Code HTML résultant du traitement (succès, redirection, erreur).
      */
-    abstract public function post(): string;
+    public function post(): string {
+        return '';
+    }
 
     /**
      * Vérifie les conditions de l'action (existence des paramètres, droits, ressources).
