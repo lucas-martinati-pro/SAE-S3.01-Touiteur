@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\render;
 
+use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\enum\TypeRender;
@@ -49,15 +50,41 @@ class TouiteRenderer implements Renderer {
             $image = "<img class=\"touite-image\" src=\"{$path}\" alt=\"{$description}\">";
         }
 
+        $subBtn = "";
+        $currentUser = AuthnProvider::getSignedInUser();
+        $currentUserId = $currentUser['id'];
+
+        if ($this->user_id !== $currentUserId && $selector === TypeRender::LONG) {
+            $r = RepositoryFactory::getReader();
+            if ($r->isSub($this->user_id, $currentUserId)) {
+                $subBtn = <<<HTML
+                    <form method="POST" action="?action=subscribe" class="ms-auto">
+                        <input type="hidden" name="type" value="unsub">
+                        <input type="hidden" name="id" value="{$this->user_id}">
+                        <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Abonné</button>
+                    </form>
+                HTML;
+            } else {
+                $subBtn = <<<HTML
+                    <form method="POST" action="?action=subscribe" class="ms-auto">
+                        <input type="hidden" name="type" value="sub">
+                        <input type="hidden" name="id" value="{$this->user_id}">
+                        <button type="submit" class="btn btn-sm btn-primary rounded-pill">S'abonner</button>
+                    </form>
+                HTML;
+            }
+        }
+
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
         $card = <<<HTML
                 <article class="{$class}">
                     <div class="touite-row">
                         <div class="touite-avatar">{$premiereLettre}</div>
                         <div class="touite-body">
-                            <div class="touite-header">
-                                <a class="" href="?action=displayProfile&id={$this->user_id}"> <strong>{$completeName}</strong> <a>
+                            <div class="touite-header d-flex align-items-center">
+                                <a class="text-decoration-none text-reset fw-bold" href="?action=displayProfile&id={$this->user_id}"><strong>{$completeName}</strong></a>
                                 <span>@{$completeName} · <time datetime="{$date}">{$date}</time></span>
+                                {$subBtn}
                             </div>
                             <p class="touite-content">{$content}</p>
                             {$image}
