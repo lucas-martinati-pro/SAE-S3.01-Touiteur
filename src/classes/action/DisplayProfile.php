@@ -25,13 +25,24 @@ class DisplayProfile extends Action {
         $subBtn = "";
 
         if ($id !== $this->user['id']) {
-            $subBtn = <<<HTML
-                        <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">S'abonner</a>
-                    HTML;
-        } else if ($r->isSub($id, $this->user['id'])){
-            $subBtn = <<<HTML
-                        <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">Abonné</a>
-                    HTML;
+            if ($r->isSub($id, $this->user['id'])) {
+
+                    $subBtn = <<<HTML
+                    <form method="POST" action="?action=subscribe">
+                        <input type="hidden" name="type" value="unsub">
+                        <input type="hidden" name="id" value="{$id}">
+                        <button type="submit" class="btn btn-outline-primary profile-button">Abonné</button>
+                    </form>
+                HTML;
+            } else {
+                $subBtn = <<<HTML
+                    <form method="POST" action="?action=subscribe">
+                        <input type="hidden" name="type" value="sub">
+                        <input type="hidden" name="id" value="{$id}">
+                        <button type="submit" class="btn btn-primary profile-button">S'abonner</button>
+                    </form>
+                HTML;
+            }
         }
 
         $page = <<< HTML

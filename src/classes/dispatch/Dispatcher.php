@@ -8,6 +8,7 @@ use iutnc\touiteur\action\DisplayTouite;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
+use iutnc\touiteur\action\SubscribeAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
 
@@ -41,6 +42,7 @@ class Dispatcher {
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
+            "subscribe" => (new SubscribeAction())(),
             default => (new DisplayFeedAction())(),
         };
 
