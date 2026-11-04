@@ -21,7 +21,7 @@ class TouiteRenderer implements Renderer {
     }
 
     private function completeUserDetails() {
-        $r = RepositoryFactory::getReader(); 
+        $r = RepositoryFactory::getReader();
         $details = $r->getUserByTouiteId($this->touite->getId());
 
         $this->nom = $details['nom'];
@@ -34,6 +34,7 @@ class TouiteRenderer implements Renderer {
         $touite_id = $this->touite->getId();
         $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
         $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
+        $note = $this->touite->getNote();
         $image = '';
         // TODO
         $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
@@ -77,6 +78,23 @@ class TouiteRenderer implements Renderer {
             }
         }
 
+        $noteActions = $selector === TypeRender::LONG
+            ? <<<HTML
+                <span aria-label="Note du touite"><i class="bi bi-heart"></i> {$note}</span>
+                <form method="POST" action="?action=LikeAction&id={$touite_id}&type=like">
+                    <button type="submit" aria-label="J'aime"><i class="bi bi-hand-thumbs-up"></i> J'aime</button>
+                </form>
+                <form method="POST" action="?action=LikeAction&id={$touite_id}&type=dislike">
+                    <button type="submit" aria-label="Je n'aime pas"><i class="bi bi-hand-thumbs-down"></i> Je n'aime pas</button>
+                </form>
+                <form method="POST" action="?action=LikeAction&id={$touite_id}&type=annuler">
+                    <button type="submit" aria-label="Annuler ma note"><i class="bi bi-x-circle"></i> Annuler</button>
+                </form>
+            HTML
+            : <<<HTML
+                <span aria-label="Note du touite"><i class="bi bi-heart"></i> {$note}</span>
+            HTML;
+
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
         $card = <<<HTML
                 <article class="{$class}">
@@ -92,7 +110,7 @@ class TouiteRenderer implements Renderer {
                             <p class="touite-content">{$content}</p>
                             {$image}
                             <div class="touite-actions" aria-label="Actions du touite">
-                                <button type="button" aria-label="J'aime"><i class="bi bi-heart"></i></button>
+                                {$noteActions}
                             </div>
                         </div>
                     </div>

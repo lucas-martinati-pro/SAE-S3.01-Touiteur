@@ -49,12 +49,25 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
     }
 
-    public function noteTouite(int $user_id, int $touite_id, TypeNote $note) {
+    public function noteTouite(int $user_id, int $touite_id, TypeNote $state) {
+        if ($state === TypeNote::annuler) {
+            $stmt = $this->pdo->prepare(<<<SQL
+                DELETE FROM note2touite
+                WHERE users_id = :user_id
+                AND touite_id = :touite_id
+            SQL);
+
+            $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id]);
+            return;
+        }
+
         $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO note2touite (users_id, touite_id, note) VALUES (:user_id, :touite_id, :note);
+            INSERT INTO note2touite (users_id, touite_id, state)
+            VALUES (:user_id, :touite_id, :state)
+            ON DUPLICATE KEY UPDATE state = VALUES(state)
         SQL);
 
-        $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id, 'note' => $note::note]);
+        $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id, 'state' => $state->getNote()]);
     }
 
     /**============================================

@@ -20,6 +20,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $touite = new Touite(
                 $res['content'],
                 $res['posted_at'],
+                $res['note'],
                 $res['image_path'] ?? null,
                 $res['image_description'] ?? null,
                 $res['id']

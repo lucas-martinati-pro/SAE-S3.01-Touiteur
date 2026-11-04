@@ -2,19 +2,19 @@
 
 namespace iutnc\touiteur\touite;
 
-use iutnc\touiteur\repository\RepositoryFactory;
-
 class Touite {
     private ?int $id;
     private string $content;
     private string $posted_at;
+    private int $note;
     private ?string $image_path;
     private ?string $image_description;
 
-    public function __construct(string $content, string $posted_at, ?string $image_path, ?string $image_description, ?int $id = null) {
+    public function __construct(string $content, string $posted_at, int $note, ?string $image_path, ?string $image_description, ?int $id = null) {
         $this->id = $id;
         $this->content = $content;
         $this->posted_at = $posted_at;
+        $this->note = $note;
         $this->image_path = $image_path;
         $this->image_description = $image_description;
     }
@@ -30,12 +30,19 @@ class Touite {
     public function getContent(): string {
         return $this->content;
     }
+
     public function getPosted_at(): string {
         return $this->posted_at;
     }
+
+    public function getNote(): int {
+        return $this->note;
+    }
+
     public function getImage_path(): ?string {
         return $this->image_path;
     }
+
     public function getImage_description(): ?string {
         return $this->image_description;
     }

@@ -15,7 +15,7 @@ enum TypeNote {
         };
     }
 
-    public function note(): string {
+    public function getNote(): string {
         return match($this) {
             self::like => 1,
             self::annuler => 0,
