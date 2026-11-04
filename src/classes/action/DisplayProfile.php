@@ -18,9 +18,10 @@ class DisplayProfile extends Action {
 
         $id = (int) ($_GET['id'] ?? 0);
         $feed = $r->findAllTouitesByUserId($id);
-        
+
         $details = $r->getUserById($id);
         $completeName = $details['nom'] . " " . $details['prenom'];
+        $premiereLettre = $completeName[0];
 
         $subBtn = "";
 
@@ -55,7 +56,7 @@ class DisplayProfile extends Action {
             <section class="profile-header">
                 <div class="profile-cover"></div>
                 <div class="profile-main">
-                    <div class="profile-avatar">T</div>
+                    <div class="profile-avatar">{$premiereLettre}</div>
                     {$subBtn}
                     <h2>{$completeName}</h2>
                     <p class="profile-handle">@{$completeName}</p>

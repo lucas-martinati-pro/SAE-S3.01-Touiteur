@@ -37,6 +37,7 @@ class TouiteRenderer implements Renderer {
         // TODO
         $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
         $completeName = $this->nom . " " . $this->prenom;
+        $premiereLettre = $completeName[0];
 
         if ($this->touite->getImage_path() !== null) {
             $path = htmlspecialchars($this->touite->getImage_path(), ENT_QUOTES, 'UTF-8');
@@ -52,7 +53,7 @@ class TouiteRenderer implements Renderer {
         $card = <<<HTML
                 <article class="{$class}">
                     <div class="touite-row">
-                        <div class="touite-avatar">T</div>
+                        <div class="touite-avatar">{$premiereLettre}</div>
                         <div class="touite-body">
                             <div class="touite-header">
                                 <a class="" href="?action=displayProfile&id={$this->user_id}"> <strong>{$completeName}</strong> <a>
