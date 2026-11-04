@@ -34,6 +34,8 @@ class TouiteRenderer implements Renderer {
         $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
         $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
         $image = '';
+        // TODO
+        $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
         $completeName = $this->nom . " " . $this->prenom;
 
         if ($this->touite->getImage_path() !== null) {

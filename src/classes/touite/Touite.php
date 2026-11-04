@@ -11,7 +11,7 @@ class Touite {
     private ?string $image_path;
     private ?string $image_description;
 
-    function __construct(string $content, string $posted_at, ?string $image_path, ?string $image_description, ?int $id = null) {
+    public function __construct(string $content, string $posted_at, ?string $image_path, ?string $image_description, ?int $id = null) {
         $this->id = $id;
         $this->content = $content;
         $this->posted_at = $posted_at;
