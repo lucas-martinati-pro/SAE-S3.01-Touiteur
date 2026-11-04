@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\repository;
 
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\touite\Feed;
 use iutnc\touiteur\tag\Tag;
@@ -59,21 +60,16 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $tags;
     }
 
-    public function findFeed(int $page = 1): ?Feed {
-        // TODO DUPLICATION
-        if ($page < 1) $page = 1;
-        $nb_touite = 20;
-        $offset = ($page - 1) * $nb_touite;
-
+    public function findFeed(Pagination $pagination = new Pagination): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
             ORDER BY posted_at DESC
-            LIMIT :nb_touite OFFSET :offset;
+            LIMIT :limit OFFSET :offset;
         SQL);
 
-        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
+        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
         $stmt->execute(); // vide
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -82,12 +78,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToFeed($res);
     }
 
-    public function findFollowedFeed(int $id, int $page = 1): ?Feed {
-        // TODO DUPLICATION
-        if ($page < 1) $page = 1;
-        $nb_touite = 20;
-        $offset = ($page - 1) * $nb_touite;
-
+    public function findFollowedFeed(int $id, Pagination $pagination = new Pagination): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT touite.*
             FROM touite
@@ -103,13 +94,13 @@ class TouiteurReaderRepository extends TouiteurRepository {
                 WHERE user2tag.users_id = :tag_user_id
             )
             ORDER BY posted_at DESC
-            LIMIT :nb_touite OFFSET :offset;
+            LIMIT :limit OFFSET :offset;
         SQL);
 
         $stmt->bindValue('follower_id', $id, PDO::PARAM_INT);
         $stmt->bindValue('tag_user_id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
+        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
         $stmt->execute();
 
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -119,22 +110,17 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToFeed($res);
     }
 
-    public function findFeedByUserId(int $id, int $page = 1): ?Feed {
-        // TODO DUPLICATION
-        if ($page < 1) $page = 1;
-        $nb_touite = 20;
-        $offset = ($page - 1) * $nb_touite;
-
+    public function findFeedByUserId(int $id, Pagination $pagination = new Pagination): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
             WHERE users_id = :id
-            LIMIT :nb_touite OFFSET :offset;
+            LIMIT :limit OFFSET :offset;
         SQL);
 
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
+        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
         $stmt->execute();
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -143,24 +129,19 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToFeed($res);
     }
 
-    public function findFeedByTagId(int $id, int $page = 1): ?Feed {
-        // TODO DUPLICATION
-        if ($page < 1) $page = 1;
-        $nb_touite = 20;
-        $offset = ($page - 1) * $nb_touite;
-
+    public function findFeedByTagId(int $id, Pagination $pagination = new Pagination): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT touite.*
             FROM touite
             INNER JOIN tag2touite on touite.id = tag2touite.touite_id
             WHERE tag2touite.tag_id = :id
             ORDER BY posted_at DESC
-            LIMIT :nb_touite OFFSET :offset;
+            LIMIT :limit OFFSET :offset;
         SQL);
 
         $stmt->bindValue('id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('nb_touite', $nb_touite, PDO::PARAM_INT);
-        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
+        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
         $stmt->execute();
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

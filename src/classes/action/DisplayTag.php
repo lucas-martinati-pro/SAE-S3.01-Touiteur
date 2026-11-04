@@ -5,6 +5,7 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\enum\TypeRender;
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
@@ -17,18 +18,13 @@ class DisplayTag extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        // TODO DUPLICATION
-        $pageNumber = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT);
-        $pageNumber = $pageNumber !== false && $pageNumber > 0 ? $pageNumber : 1;
-        $feed = $r->findFeedByTagId($id, $pageNumber);
+
+        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+        $pagination = new Pagination($page);
+
+        $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);
         $tagLabel = $tag->getLibelle();
-
-        $previousPage = max(1, $pageNumber - 1);
-        $nextPage = $pageNumber + 1;
-        $previousAttributes = $pageNumber === 1
-            ? ' aria-disabled="true" tabindex="-1"'
-            : '';
 
         $page = <<< HTML
             <header class="feed-header detail-header">
@@ -44,17 +40,23 @@ class DisplayTag extends Action {
             </section>
         HTML;
 
+        $previous = $pagination->previous();
+        $next = $pagination->next();
+        $pageNumber = $pagination->getPage();
+        $previousAttributes = $pageNumber === 1
+            ? ' aria-disabled="true" tabindex="-1"'
+            : '';
         $pagination = <<< HTML
             <nav class="feed-pagination" aria-label="Pagination du tag">
                 <a class="btn btn-outline-secondary"
                    {$previousAttributes}
-                   href="?action=displayTag&id={$id}&page={$previousPage}">
+                   href="?action=displayTag&id={$id}&page={$previous}">
                     <i class="bi bi-chevron-left"></i>
                     Page précédente
                 </a>
                 <span>Page {$pageNumber}</span>
                 <a class="btn btn-outline-secondary"
-                   href="?action=displayTag&id={$id}&page={$nextPage}">
+                   href="?action=displayTag&id={$id}&page={$next}">
                     Page suivante
                     <i class="bi bi-chevron-right"></i>
                 </a>
