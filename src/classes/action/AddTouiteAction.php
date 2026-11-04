@@ -1,31 +1,26 @@
 <?php
 namespace iutnc\touiteur\action;
 
-use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\repository\RepositoryFactory;
-use \iutnc\touiteur\touite\Touite;
 use \iutnc\touiteur\render\RendererFactory;
 use Override;
-class AddTouiteAction extends Action
-{
+class AddTouiteAction extends Action {
     protected bool $requireAuth = true;
 
     #[Override]
-    public function get(): string
-    {
-
+    public function get(): string {
         $page = <<<HTML
          <form method="post" action="?action=addTouite" enctype="multipart/form-data">
-                    <label> contenu : </label>
-                    <input type="text" name="contenu" maxlength="235" required>
+            <label> contenu : </label>
+            <input type="text" name="contenu" maxlength="235" required>
 
-                    <label> image : </label>
-                    <input type="file" name="img">
+            <label> image : </label>
+            <input type="file" name="img">
 
-                    <label> description image: </label>
-                    <input type="text" name="descrip_img" maxlength="235">
+            <label> description image: </label>
+            <input type="text" name="descrip_img" maxlength="235">
 
-                    <button type="submit" name="publier"> publier </button>
+            <button type="submit">publier</button>
         </form>
         HTML;
 
@@ -33,29 +28,22 @@ class AddTouiteAction extends Action
     }
 
     #[Override]
-    public function post(): string
-    {
+    public function post(): string {
         //values input
         $contenu = filter_var($_POST["contenu"], FILTER_SANITIZE_SPECIAL_CHARS);
         $desc_img = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
-        $dateClic = "";
         $destination = "";
 
         //capture de la date
-        if (isset($_POST['publier'])) {
-            // Définit le fuseau horaire 
-            date_default_timezone_set('Europe/Paris');
+        date_default_timezone_set('Europe/Paris');
+        // Format AAAA-MM-JJ HH:MM:SS
+        $date = date('Y-m-d H:i:s');
 
-            // Format AAAA-MM-JJ HH:MM:SS
-            $dateClic = date('Y-m-d H:i:s');
-        }
-
-
-        if (isset($_FILES['img'] )&& $_FILES['img']['error'] === UPLOAD_ERR_OK) {
+        if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
             //capture de l'image
 
             $img = "";
-            $img_name = basename($_FILES['img']['name']); // on capture le nom du fichier en s'assurant d'avoir que le nom du fichier
+            $img_name = basename($_FILES['img']['name']); // le nom de l'image
             $type = mime_content_type($_FILES['img']['tmp_name']); // contient le type du fichier ex : image/png
             
             $img = $_FILES["img"]["tmp_name"];// chemin temporaire
@@ -64,47 +52,29 @@ class AddTouiteAction extends Action
 
             // on regarde le type du fichier pour avoir la bonne destination final
             if ($type === "image/png") {
-                $destination =  "image/touite_img/" . $filename . ".png";
+                $destination = "image/touite_img/" . $filename . ".png";
             } else if ($type === "image/jpeg") {
-                $destination = "image/touite_img/"  . $filename . ".jpg";
+                $destination = "image/touite_img/" . $filename . ".jpg";
             } else {
-                return "<p>" . $_FILES["img"]["tmp_name"] . "n'est pas un fichier jpeg ou png</p>";
+                return "<p>{$_FILES["img"]["tmp_name"]} n'est pas un fichier jpeg ou png</p>";
             }
 
-            $res = "";
-
-            if (move_uploaded_file($img, $destination)) {
-                $res = "<p> voici votre touite </p>";
-            } else {
-                return "<p> téléchargement non valide</p>";
+            if (!move_uploaded_file($img, $destination)) {
+                return "<p>téléchargement non valide</p>";
             }
-
         }
 
         // ajout à la bd
-        $repositoryW= RepositoryFactory::getWriter();
-        $touite =  $repositoryW->addTouite($contenu, $dateClic, $destination, $desc_img, $this->user["id"]);
-        
-        
-
-        // recup l'id du touite
-        
-        $repositoryR= RepositoryFactory::getReader();
-
+        $w= RepositoryFactory::getWriter();
+        $touite =  $w->addTouite($contenu, $date, $destination, $desc_img, $this->user["id"]);
 
         // affichage
-        
         $render = RendererFactory::getRenderer($touite);
-
         $html = $render->render();
-        
-var_dump($touite);
-        $page = <<<HTML
-            $res
-            $html
-            <a href="?action=displayFeed"> retourner vers votre feeds</a>
-        HTML;
 
-        return $page;
+        return <<<HTML
+            $html
+            <a href="?action=displayFeed">Retourner vers votre feeds</a>
+        HTML;
     }
 }
