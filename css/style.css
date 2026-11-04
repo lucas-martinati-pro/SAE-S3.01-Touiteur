@@ -102,19 +102,34 @@ h1, h2, h3 { letter-spacing: -.035em; }
 }
 
 .theme-switch {
+    padding: .75rem 0;
+}
+.theme-toggle {
     display: flex;
     align-items: center;
-    gap: .65rem;
-    padding: .75rem 1rem;
-    color: var(--muted);
-    font-size: .85rem;
-}
-.theme-switch button {
-    padding: .45rem .6rem;
+    width: 100%;
+    gap: .7rem;
+    padding: .7rem 1rem;
     border: 1px solid var(--border);
-    border-radius: 50%;
+    border-radius: 999px;
     background: var(--surface);
     color: var(--text);
+    text-align: left;
+    transition: background .2s, border-color .2s, color .2s;
+}
+.theme-toggle:hover, .theme-toggle:focus-visible {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+    color: var(--brand);
+}
+.theme-toggle-icon {
+    width: 1.1rem;
+    color: var(--brand);
+    text-align: center;
+}
+.theme-toggle-label {
+    font-size: .9rem;
+    font-weight: 700;
 }
 .sidebar-user {
     display: flex;
@@ -170,6 +185,15 @@ h1, h2, h3 { letter-spacing: -.035em; }
 .feed-heading h1, .detail-header h1 { margin: 0; font-size: 1.25rem; font-weight: 800; }
 .back-link { color: var(--text); font-size: 1.2rem; }
 .back-link:hover { color: var(--brand); }
+.tag-intro {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+.tag-description {
+    margin: 0;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
 
 .feed-tabs, .profile-tabs { display: flex; }
 .feed-tabs a, .profile-tabs a {
@@ -280,6 +304,40 @@ h1, h2, h3 { letter-spacing: -.035em; }
     text-decoration: none;
 }
 .tag-list a:hover { background: var(--brand); color: #fff; }
+
+.followed-tags {
+    border-bottom: 1px solid var(--border);
+}
+.followed-tag {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    min-height: 64px;
+    padding: .8rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    transition: background .2s, color .2s;
+}
+.followed-tag:last-child { border-bottom: 0; }
+.followed-tag:hover {
+    background: var(--brand-soft);
+}
+.followed-tag-icon {
+    width: 1.2rem;
+    color: var(--brand);
+    font-size: 1.35rem;
+    line-height: 1;
+}
+.followed-tag-label {
+    flex: 1;
+    font-weight: 700;
+}
+.followed-tag-arrow {
+    color: var(--muted);
+    font-size: .85rem;
+}
+.followed-tags-empty { padding: 1.25rem; }
 
 .profile-cover { height: 150px; background: linear-gradient(135deg, #1d9bf0, #7856ff); }
 .profile-main { position: relative; padding: 1rem 1.25rem 1.3rem; border-bottom: 1px solid var(--border); }

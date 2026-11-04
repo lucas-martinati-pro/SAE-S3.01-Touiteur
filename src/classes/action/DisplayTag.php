@@ -25,10 +25,9 @@ class DisplayTag extends Action {
         $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);
         $tagLabel = $tag->getLibelle();
-
-        if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
-        }
+        $tagDescription = $tag->getDescription();
+        $escapedTagLabel = htmlspecialchars($tagLabel, ENT_QUOTES, 'UTF-8');
+        $escapedTagDescription = htmlspecialchars($tagDescription, ENT_QUOTES, 'UTF-8');
 
         $subTagBtn = "";
 
@@ -55,9 +54,12 @@ class DisplayTag extends Action {
                 <a class="back-link" href="?action=displayFeed" aria-label="Retour au feed">
                     <i class="bi bi-arrow-left"></i>
                 </a>
-                <h1 class="mb-0">#{$tagLabel}</h1>
+                <h1 class="mb-0">#{$escapedTagLabel}</h1>
                 {$subTagBtn}
             </header>
+            <section class="tag-intro">
+                <p class="tag-description">{$escapedTagDescription}</p>
+            </section>
         HTML;
 
         $previous = $pagination->previous();
@@ -69,6 +71,10 @@ class DisplayTag extends Action {
             "?action=displayTag&id={$id}&page={$next}",
             $pageNumber
         );
+
+        if ($feed === null) {
+            return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
+        }
 
         return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }

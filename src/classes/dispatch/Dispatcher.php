@@ -134,9 +134,9 @@ class Dispatcher {
      */
     private function renderNavbar(): string {
         $toggleThemeButton = <<<HTML
-            <button id="toggle-theme" class="btn btn-outline-secondary btn-sm d-flex align-items-center" title="Changer de thème">
-                <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/circle-half/ -->
-                <i class="bi bi-circle-half"></i>
+            <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Changer de thème">
+                <i class="bi bi-circle-half theme-toggle-icon" aria-hidden="true"></i>
+                <span class="theme-toggle-label">Changer de thème</span>
             </button>
         HTML;
 
@@ -167,7 +167,6 @@ class Dispatcher {
                 </ul>
                 <div class="theme-switch">
                     {$toggleThemeButton}
-                    <span>Changer le thème</span>
                 </div>
                 </div>
                 <div class="sidebar-user">
@@ -194,7 +193,6 @@ class Dispatcher {
                 </div>
                 <div class="theme-switch">
                     {$toggleThemeButton}
-                    <span>Changer le thème</span>
                 </div>
                 <div class="sidebar-user guest-user">
                     <a class="btn btn-sm btn-dark rounded-3" href="?action=signin">

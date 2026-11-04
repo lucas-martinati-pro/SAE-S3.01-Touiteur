@@ -5,9 +5,11 @@ namespace iutnc\touiteur\tag;
 class Tag {
     private ?int $id;
     private String $libelle;
+    private String $description;
 
-    public function __construct(String $libelle, ?int $id = null) {
+    public function __construct(String $libelle, String $descrion, ?int $id = null) {
         $this->id = $id;
+        $this->description = $descrion;
         $this->libelle = $libelle;
     }
 
@@ -17,5 +19,9 @@ class Tag {
 
     public function getLibelle(): String {
         return $this->libelle;
+    }
+
+    public function getDescription(): String {
+        return $this->description;
     }
 }

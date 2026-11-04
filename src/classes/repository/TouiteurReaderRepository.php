@@ -42,6 +42,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     public function rowToTag(array $res): Tag {
         $tag = new Tag(
                 $res['libelle'],
+                $res['description'],
                 $res['id']
             );
 
