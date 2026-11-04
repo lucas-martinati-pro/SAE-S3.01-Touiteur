@@ -100,7 +100,10 @@ class TouiteRenderer implements Renderer {
                 <article class="{$class}">
                     {$this->touiteLink($touite_id, $completeName, $selector)}
                     <div class="touite-row">
-                        <div class="touite-avatar">{$premiereLettre}</div>
+                        <a class="touite-profile-link" href="?action=displayProfile&id={$this->user_id}"
+                           aria-label="Voir le profil de {$completeName}">
+                            <div class="touite-avatar">{$premiereLettre}</div>
+                        </a>
                         <div class="touite-body">
                             <div class="touite-header">
                                 <a class="touite-author" href="?action=displayProfile&id={$this->user_id}"><strong>{$completeName}</strong></a>

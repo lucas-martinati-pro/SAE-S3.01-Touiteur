@@ -227,6 +227,7 @@ h1, h2, h3 { letter-spacing: -.035em; }
 }
 .touite-card:hover, .touite-card:focus-within { background: color-mix(in srgb, var(--surface-muted) 50%, transparent); }
 .touite-main-link {
+    display: block;
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -248,6 +249,17 @@ h1, h2, h3 { letter-spacing: -.035em; }
     font-weight: 800;
 }
 .touite-avatar { width: 44px; height: 44px; }
+.touite-profile-link {
+    position: relative;
+    z-index: 3;
+    flex-shrink: 0;
+    pointer-events: auto;
+    border-radius: 50%;
+}
+.touite-profile-link:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 3px;
+}
 .touite-body { min-width: 0; flex: 1; }
 .touite-header {
     display: flex;
