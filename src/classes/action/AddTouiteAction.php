@@ -60,13 +60,13 @@ class AddTouiteAction extends Action
         HTML;
     }
 
-    private function saveImage(array $_FILES): ?String {
-        if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
-            $extension = strtolower(pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION));
+    private function saveImage(array $imgFile): ?String {
+        if (isset($imgFile['img']) && $imgFile['img']['error'] === UPLOAD_ERR_OK) {
+            $extension = strtolower(pathinfo($imgFile['img']['name'], PATHINFO_EXTENSION));
             if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
                 $imgDir = 'image' . DIRECTORY_SEPARATOR . 'touite_img' . DIRECTORY_SEPARATOR;
                 $imageName = $imgDir . uniqid('touite_img_', true) . bin2hex(random_bytes(4)) . '.' . $extension;
-                if (move_uploaded_file($_FILES['img']['tmp_name'], $imageName)) {
+                if (move_uploaded_file($imgFile['img']['tmp_name'], $imageName)) {
                     return $imageName;
                 }
             }
