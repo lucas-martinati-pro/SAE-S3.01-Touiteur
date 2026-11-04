@@ -126,6 +126,22 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
+    public function getUserById(int $user_id) : ?array {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT id, nom, prenom
+            FROM users
+            WHERE id = :id
+        SQL);
+
+        $stmt->execute(['id' => $user_id]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $res;
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/

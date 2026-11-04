@@ -35,9 +35,4 @@ class Touite {
     public function getImage_description(): ?string {
         return $this->image_description;
     }
-
-    public function getCreatorId() : int {
-        $r = RepositoryFactory::getReader();
-        return $r->getUserIdByTouiteId($this->id);
-    }
 }

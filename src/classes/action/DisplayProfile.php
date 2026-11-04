@@ -18,6 +18,9 @@ class DisplayProfile extends Action {
 
         $id = (int) ($_GET['id'] ?? 0);
         $feed = $r->findAllTouitesByUserId($id);
+        
+        $details = $r->getUserById($id);
+        $completeName = $details['nom'] . " " . $details['prenom'];
 
         $page = <<< HTML
             <header class="feed-header detail-header">
@@ -31,8 +34,8 @@ class DisplayProfile extends Action {
                 <div class="profile-main">
                     <div class="profile-avatar">T</div>
                     <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">Retour au feed</a>
-                    <h2>Utilisateur {$id}</h2>
-                    <p class="profile-handle">@utilisateur{$id}</p>
+                    <h2>@{$completeName}</h2>
+                    <p class="profile-handle">{$completeName}</p>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>
