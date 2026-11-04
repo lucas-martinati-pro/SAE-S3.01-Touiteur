@@ -1,4 +1,6 @@
 :root {
+    --font-body: "DM Sans", system-ui, sans-serif;
+    --font-display: "Space Grotesk", "DM Sans", system-ui, sans-serif;
     --brand: #1d9bf0;
     --brand-strong: #147dcc;
     --brand-soft: rgba(29, 155, 240, .14);
@@ -36,8 +38,10 @@ body {
     min-width: 320px;
     background: var(--page);
     color: var(--text);
-    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-family: var(--font-body);
+    font-size: 15px;
     line-height: 1.5;
+    letter-spacing: -.01em;
 }
 
 a { color: var(--brand); }
@@ -45,6 +49,10 @@ a:hover { color: var(--brand-strong); }
 
 button, input, textarea { font: inherit; }
 button, .btn { cursor: pointer; }
+h1, h2, h3, .navbar-brand, .btn, .nav-link {
+    font-family: var(--font-display);
+}
+h1, h2, h3 { letter-spacing: -.035em; }
 
 .app-layout {
     display: grid;
@@ -231,6 +239,7 @@ button, .btn { cursor: pointer; }
 .touite-author:hover { color: var(--brand); text-decoration: underline; }
 .touite-header span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .touite-content { margin: .65rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.touite-content { letter-spacing: -.005em; }
 .touite-image {
     display: block;
     max-width: 100%;
