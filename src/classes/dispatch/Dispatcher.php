@@ -134,11 +134,24 @@ class Dispatcher {
      * @return string Balises HTML de la barre de navigation.
      */
     private function renderNavbar(): string {
-        $toggleThemeButton = <<<HTML
-            <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Changer de thème">
+        $sidebarLinks = <<<HTML
+            <div class="sidebar-links">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">
+                            <i class="bi bi-house-door-fill me-1"></i>Accueil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        HTML;
+        $themeSwitch = <<<HTML
+            <div class="theme-switch">
+                <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Changer de thème">
                 <i class="bi bi-circle-half theme-toggle-icon" aria-hidden="true"></i>
                 <span class="theme-toggle-label">Changer de thème</span>
             </button>
+            </div>
         HTML;
 
         try {
@@ -148,57 +161,31 @@ class Dispatcher {
             $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
             $profileAvatar = HtmlHelper::profileAvatar($user, 'sidebar-avatar');
 
-            return <<<HTML
-                <div class="sidebar-links">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=displayFeed">
-                            Accueil
-                        </a>
-                    </li>
-                </ul>
-                </div>
-                <div class="theme-switch">
-                    {$toggleThemeButton}
-                </div>
+            $accountArea = <<<HTML
                 <div class="sidebar-user">
                     <a class="sidebar-avatar-link" href="?action=displayProfile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
                         <i class="bi bi-box-arrow-right"></i>
                     </a>
                 </div>
             HTML;
         } catch (AuthnException) {
-            return <<<HTML
-                <div class="sidebar-links">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/house-door-fill/ -->
-                            <i class="bi bi-house-door-fill me-1"></i>Accueil
-                        </a>
-                    </li>
-                </ul>
-                </div>
-                <div class="theme-switch">
-                    {$toggleThemeButton}
-                </div>
+            $accountArea = <<<HTML
                 <div class="sidebar-user guest-user">
-                    <a class="btn btn-sm btn-dark rounded-3" href="?action=signin">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/ -->
-                        <i class="bi bi-box-arrow-in-right me-1"></i>
-                        Connexion
+                    <a class="btn btn-outline-primary" href="?action=signin">
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                        Se connecter
                     </a>
-                    <a class="btn btn-sm btn-primary rounded-3" href="?action=register">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/ -->
-                        <i class="bi bi-person-plus-fill me-1"></i>
-                        Inscription
+                    <a class="btn btn-primary" href="?action=register">
+                        <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                        Créer un compte
                     </a>
                 </div>
             HTML;
         }
+
+        return $sidebarLinks . $themeSwitch . $accountArea;
     }
 }
