@@ -22,11 +22,17 @@ class DisplayProfile extends Action {
         $details = $r->getUserById($id);
         $completeName = $details['nom'] . " " . $details['prenom'];
 
-        $subBtn = ($id == $this->user['id']) 
-                    ? "" 
-                    : <<<HTML
+        $subBtn = "";
+
+        if ($id !== $this->user['id']) {
+            $subBtn = <<<HTML
                         <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">S'abonner</a>
                     HTML;
+        } else if ($r->isSub($id, $this->user['id'])){
+            $subBtn = <<<HTML
+                        <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">Abonné</a>
+                    HTML;
+        }
 
         $page = <<< HTML
             <header class="feed-header detail-header">

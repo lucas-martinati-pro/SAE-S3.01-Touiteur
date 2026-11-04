@@ -142,6 +142,19 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
+    public function isSub(int $followed_id, int $follower_id) : bool {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT 1
+            FROM follow
+            WHERE follower_id = :follower_id
+            AND followed_id = :followed_id
+        SQL);
+
+        $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
+
+        return $stmt->fetch() !== false;
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/
