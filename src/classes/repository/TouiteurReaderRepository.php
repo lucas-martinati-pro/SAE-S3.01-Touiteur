@@ -6,7 +6,6 @@ use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\touite\Feed;
 use iutnc\touiteur\tag\Tag;
-use PDO;
 
 /**
  * Repository centralisant les opérations d'accès à la base de données.
@@ -63,17 +62,12 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFeed(Pagination $pagination = new Pagination): ?Feed {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchPage(<<<SQL
             SELECT *
             FROM touite
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
-        SQL);
-
-        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
-        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
-        $stmt->execute(); // vide
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        SQL, $pagination);
 
         if (!$res) return null;
 
@@ -81,7 +75,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFollowedFeed(int $id, Pagination $pagination = new Pagination): ?Feed {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
             WHERE touite.users_id IN (
@@ -97,15 +91,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             )
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
-        SQL);
-
-        $stmt->bindValue('follower_id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('tag_user_id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
-        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
-        $stmt->execute();
-
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        SQL, $pagination, ['follower_id' => $id, 'tag_user_id' => $id]);
 
         if (!$res) return null;
 
@@ -113,18 +99,12 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFeedByUserId(int $id, Pagination $pagination = new Pagination): ?Feed {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchPage(<<<SQL
             SELECT *
             FROM touite
             WHERE users_id = :id
             LIMIT :limit OFFSET :offset;
-        SQL);
-
-        $stmt->bindValue('id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
-        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
-        $stmt->execute();
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        SQL, $pagination, ['id' => $id]);
 
         if (!$res) return null;
 
@@ -132,20 +112,14 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFeedByTagId(int $id, Pagination $pagination = new Pagination): ?Feed {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
             INNER JOIN tag2touite on touite.id = tag2touite.touite_id
             WHERE tag2touite.tag_id = :id
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
-        SQL);
-
-        $stmt->bindValue('id', $id, PDO::PARAM_INT);
-        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
-        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
-        $stmt->execute();
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        SQL, $pagination, ['id' => $id]);
 
         if (!$res) return null;
 
@@ -153,15 +127,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findTouiteById(int $id) : ?Touite {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchOne(<<<SQL
             SELECT *
             FROM touite
             WHERE id = :id;
-        SQL);
-
-        $stmt->execute(['id' => $id]);
-
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        SQL, ['id' => $id]);
 
         if (!$res) return null;
 
@@ -169,15 +139,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findTagById(int $id): ?Tag {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchOne(<<<SQL
             SELECT *
             FROM tag
             WHERE id = :id;
-        SQL);
-
-        $stmt->execute(['id' => $id]);
-
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+        SQL, ['id' => $id]);
 
         if (!$res) return null;
 
@@ -188,15 +154,12 @@ class TouiteurReaderRepository extends TouiteurRepository {
      * @return Tag[] Touts les tags
      */
     public function findTagsByTouiteId(int $id): ?array {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchAll(<<<SQL
             SELECT tag.*
             FROM tag
             INNER JOIN tag2touite on tag.id = tag2touite.tag_id
             WHERE touite_id = :id;
-        SQL);
-
-        $stmt->execute(['id' => $id]);
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        SQL, ['id' => $id]);
 
         if (!$res) return null;
 
@@ -204,62 +167,38 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function getUserByTouiteId(int $touite_id) : ?array {
-        $stmt = $this->pdo->prepare(<<<SQL
+        return $this->fetchOne(<<<SQL
             SELECT users_id, nom, prenom
             FROM touite
             INNER JOIN users on users.id = touite.users_id
             WHERE touite.id = :id
-        SQL);
-
-        $stmt->execute(['id' => $touite_id]);
-
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$res) return null;
-
-        return $res;
+        SQL, ['id' => $touite_id]);
     }
 
     public function getUserById(int $user_id) : ?array {
-        $stmt = $this->pdo->prepare(<<<SQL
+        return $this->fetchOne(<<<SQL
             SELECT id, nom, prenom
             FROM users
             WHERE id = :id
-        SQL);
-
-        $stmt->execute(['id' => $user_id]);
-
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$res) return null;
-
-        return $res;
+        SQL, ['id' => $user_id]);
     }
 
     public function isSub(int $followed_id, int $follower_id) : bool {
-        $stmt = $this->pdo->prepare(<<<SQL
+        return $this->exists(<<<SQL
             SELECT 1
             FROM follow
             WHERE follower_id = :follower_id
             AND followed_id = :followed_id
-        SQL);
-
-        $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
-
-        return $stmt->fetch() !== false;
+        SQL, ['follower_id' => $follower_id, 'followed_id' => $followed_id]);
     }
 
     public function isTagSub(int $user_id, int $tag_id) : bool {
-        $stmt = $this->pdo->prepare(<<<SQL
+        return $this->exists(<<<SQL
             SELECT 1
             FROM users2tag
             WHERE users_id = :user_id
             AND tag_id = :tag_id
-        SQL);
-
-        $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
-
-        return $stmt->fetch() !== false;
+        SQL, ['user_id' => $user_id, 'tag_id' => $tag_id]);
     }
 
     /**
@@ -268,15 +207,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
     public function findAllTags(int $limit = 1844674407370955161): ?array {
         if ($limit < 0) $limit = 0;
 
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchAll(<<<SQL
             SELECT *
             FROM tag
             LIMIT :limit;
-        SQL);
-
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        SQL, ['limit' => $limit]);
 
         if (!$res) return null;
 
@@ -284,16 +219,12 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function getAllFollowedTag(int $user_id) : ?array {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $res = $this->fetchAll(<<<SQL
             SELECT libelle, tag.id
             FROM tag
             INNER JOIN users2tag on users2tag.tag_id = tag.id
             WHERE users2tag.users_id = :user_id
-        SQL);
-
-        $stmt->execute(['user_id' => $user_id]);
-
-        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        SQL, ['user_id' => $user_id]);
 
         if (!$res) return null;
 
@@ -311,19 +242,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
      * @return array|null Données de l'utilisateur ou null si introuvable.
      */
     public function findUserByEmail(string $email): ?array {
-        $stmt = $this->pdo->prepare(<<<SQL
+        return $this->fetchOne(<<<SQL
             SELECT id, email, passwd, nom, prenom, counter_touite
             FROM users
             WHERE email = :email
-        SQL);
-
-        $stmt->execute(['email' => $email]);
-
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$res) return null;
-
-        return $res;
+        SQL, ['email' => $email]);
     }
 
     /**
@@ -333,14 +256,10 @@ class TouiteurReaderRepository extends TouiteurRepository {
      * @return bool True si l'email existe déjà, false sinon.
      */
     public function existsByEmail(string $email): bool {
-        $stmt = $this->pdo->prepare(<<<SQL
+        return $this->exists(<<<SQL
             SELECT id
             FROM users
             WHERE email = :email
-        SQL);
-
-        $stmt->execute(['email' => $email]);
-
-        return $stmt->fetch() !== false;
+        SQL, ['email' => $email]);
     }
 }
