@@ -1,6 +1,6 @@
 -- MariaDB
 -- Datas
-DROP TABLE IF EXISTS user2tag;
+DROP TABLE IF EXISTS users2tag;
 DROP TABLE IF EXISTS note2touite;
 DROP TABLE IF EXISTS tag2touite;
 DROP TABLE IF EXISTS follow;
@@ -53,7 +53,7 @@ create table note2touite (
     PRIMARY KEY (users_id, touite_id)
 );
 
-create table user2tag (
+create table users2tag (
     users_id INT NOT NULL,
     tag_id INT NOT NULL,
     PRIMARY KEY (users_id, tag_id)
@@ -64,9 +64,9 @@ ALTER TABLE users
     ADD CONSTRAINT chk_counter_touite_positiv CHECK (counter_touite >= 0);
 ALTER TABLE tag
     ADD CONSTRAINT uq_tag_libelle UNIQUE (libelle);
-ALTER TABLE user2tag
-    ADD CONSTRAINT fk_user2tag_user FOREIGN KEY (users_id) REFERENCES users(id),
-    ADD CONSTRAINT fk_user2tag_tag FOREIGN KEY (tag_id) REFERENCES tag(id);
+ALTER TABLE users2tag
+    ADD CONSTRAINT fk_users2tag_user FOREIGN KEY (users_id) REFERENCES users(id),
+    ADD CONSTRAINT fk_users2tag_tag FOREIGN KEY (tag_id) REFERENCES tag(id);
 ALTER TABLE note2touite
     ADD CONSTRAINT fk_note_user FOREIGN KEY (users_id) REFERENCES users(id),
     ADD CONSTRAINT fk_note_touite FOREIGN KEY (touite_id) REFERENCES touite(id),

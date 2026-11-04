@@ -90,8 +90,8 @@ class TouiteurReaderRepository extends TouiteurRepository {
             OR touite.id IN (
                 SELECT tag2touite.touite_id
                 FROM tag2touite
-                INNER JOIN user2tag ON user2tag.tag_id = tag2touite.tag_id
-                WHERE user2tag.users_id = :tag_user_id
+                INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
+                WHERE users2tag.users_id = :tag_user_id
             )
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;

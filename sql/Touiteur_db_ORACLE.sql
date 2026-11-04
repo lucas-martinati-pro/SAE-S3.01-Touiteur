@@ -1,6 +1,6 @@
 -- Oracle
 -- Datas
-DROP TABLE user2tag CASCADE CONSTRAINT;
+DROP TABLE users2tag CASCADE CONSTRAINT;
 DROP TABLE note2touite CASCADE CONSTRAINT;
 DROP TABLE tag2touite CASCADE CONSTRAINT;
 DROP TABLE follow CASCADE CONSTRAINT;
@@ -56,15 +56,15 @@ CREATE TABLE note2touite (
     PRIMARY KEY (users_id, touite_id)
 );
 
-CREATE TABLE user2tag (
+CREATE TABLE users2tag (
     users_id NUMBER(11),
     tag_id NUMBER(11),
     PRIMARY KEY (users_id, tag_id)
 );
 
 -- Clés étrangères :
-ALTER TABLE user2tag ADD FOREIGN KEY (users_id) REFERENCES users(id);
-ALTER TABLE user2tag ADD FOREIGN KEY (tag_id) REFERENCES tag(id);
+ALTER TABLE users2tag ADD FOREIGN KEY (users_id) REFERENCES users(id);
+ALTER TABLE users2tag ADD FOREIGN KEY (tag_id) REFERENCES tag(id);
 ALTER TABLE note2touite ADD FOREIGN KEY (users_id) REFERENCES users(id);
 ALTER TABLE note2touite ADD FOREIGN KEY (touite_id) REFERENCES touite(id);
 ALTER TABLE tag2touite ADD FOREIGN KEY (touite_id) REFERENCES touite(id);
