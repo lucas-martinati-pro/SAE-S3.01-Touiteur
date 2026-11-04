@@ -9,7 +9,7 @@ use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
 /**
- * Action par défaut affichant la page d'accueil de l'application Touiteur.
+ * Action affichant le profil d'un utilisateur.
  */
 class DisplayProfile extends Action {
     #[Override]
@@ -22,6 +22,12 @@ class DisplayProfile extends Action {
         $details = $r->getUserById($id);
         $completeName = $details['nom'] . " " . $details['prenom'];
 
+        $subBtn = ($id == $this->user['id']) 
+                    ? "" 
+                    : <<<HTML
+                        <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">S'abonner</a>
+                    HTML;
+
         $page = <<< HTML
             <header class="feed-header detail-header">
                 <a class="back-link" href="?action=displayFeed" aria-label="Retour au feed">
@@ -33,9 +39,9 @@ class DisplayProfile extends Action {
                 <div class="profile-cover"></div>
                 <div class="profile-main">
                     <div class="profile-avatar">T</div>
-                    <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">Retour au feed</a>
-                    <h2>@{$completeName}</h2>
-                    <p class="profile-handle">{$completeName}</p>
+                    {$subBtn}
+                    <h2>{$completeName}</h2>
+                    <p class="profile-handle">@{$completeName}</p>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>
