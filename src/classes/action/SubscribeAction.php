@@ -14,7 +14,7 @@ class SubscribeAction extends Action {
     public function post(): string {
         $id = $_POST['id'] ?? null;
         $type = $_POST['type'] ?? null;
-        
+
         // redirection si l'id est null
         if (!$id) {
             header("Location: ?action=displayFeed");

@@ -3,6 +3,7 @@ namespace iutnc\touiteur\action;
 
 use iutnc\touiteur\repository\RepositoryFactory;
 use \iutnc\touiteur\render\RendererFactory;
+use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
 class AddTouiteAction extends Action {
@@ -10,22 +11,57 @@ class AddTouiteAction extends Action {
 
     #[Override]
     public function get(): string {
-        $page = <<<HTML
-         <form method="post" action="?action=addTouite" enctype="multipart/form-data">
-            <label> contenu : </label>
-            <input type="text" name="contenu" maxlength="235" required>
+        $title = HtmlHelper::title("Publier un touite", "bi-pencil-square");
 
-            <label> image : </label>
-            <input type="file" name="img">
+        return <<<HTML
+            {$title}
+            <form method="post" action="?action=addTouite" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="contenu" class="form-label">Contenu</label>
+                    <textarea
+                        name="contenu"
+                        class="form-control"
+                        id="contenu"
+                        maxlength="235"
+                        rows="4"
+                        placeholder="Quoi de neuf ?"
+                        required
+                    ></textarea>
+                    <div class="form-text">235 caractères maximum.</div>
+                </div>
 
-            <label> description image: </label>
-            <input type="text" name="descrip_img" maxlength="235">
+                <div class="mb-3">
+                    <label for="img" class="form-label">Image <span class="text-muted">(optionnelle)</span></label>
+                    <input
+                        type="file"
+                        name="img"
+                        class="form-control"
+                        id="img"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                    >
+                    <div class="form-text">Formats acceptés : JPG, PNG, WEBP et GIF.</div>
+                </div>
 
-            <button type="submit">publier</button>
-        </form>
+                <div class="mb-3">
+                    <label for="descrip_img" class="form-label">Description de l'image <span class="text-muted">(optionnelle)</span></label>
+                    <input
+                        type="text"
+                        name="descrip_img"
+                        class="form-control"
+                        id="descrip_img"
+                        maxlength="235"
+                        placeholder="Décrivez votre image"
+                    >
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
+                        <i class="bi bi-send-fill me-1"></i>Publier
+                    </button>
+                    <a href="?action=displayFeed" class="btn btn-outline-secondary">Annuler</a>
+                </div>
+            </form>
         HTML;
-
-        return $page;
     }
 
     #[Override]
@@ -45,14 +81,8 @@ class AddTouiteAction extends Action {
         $w = RepositoryFactory::getWriter();
         $touite = $w->addTouite($contenu, $date, $imageName, $desc_img, $this->user["id"]);
 
-        // affichage
-        $render = RendererFactory::getRenderer($touite);
-        $html = $render->render();
-
-        return <<<HTML
-            $html
-            <a href="?action=displayFeed">Retourner vers votre feeds</a>
-        HTML;
+        header("Location: ?action=displayTouite&id=" . $touite->getId());
+        exit;
     }
 
     private function saveImage(array $imgFile): ?String {
