@@ -283,7 +283,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     public function getAllFollowedTag(int $user_id) : ?array {
         $stmt = $this->pdo->prepare(<<<SQL
-            SELECT libelle
+            SELECT libelle, tag.id
             FROM tag
             INNER JOIN users2tag on users2tag.tag_id = tag.id
             WHERE users2tag.users_id = :user_id

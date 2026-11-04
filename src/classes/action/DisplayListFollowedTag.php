@@ -3,10 +3,6 @@
 namespace iutnc\touiteur\action;
 
 use iutnc\touiteur\repository\RepositoryFactory;
-use iutnc\touiteur\render\RendererFactory;
-use iutnc\touiteur\enum\TypeRender;
-use iutnc\touiteur\pagination\Pagination;
-use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
 /**
@@ -18,16 +14,20 @@ class DisplayListFollowedTag extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-        $id = $this->user['id'];
+        $id = (int) ($_GET['id'] ?? 0);
 
         $listOfTag = $r->getAllFollowedTag($id);
-
         $page = "";
 
-        foreach($listOfTag as $row){
-            $page .= <<<HTML
-                <p> {$row['libelle']}<p>
-            HTML;
+        if ($listOfTag !== null) {
+            foreach ($listOfTag as $row) {
+                
+                $page .= <<<HTML
+                    <a href="?action=displayTag&id={$row['id']}"> <p>{$row['libelle']}</p> </a>
+                HTML;
+            }
+        } else {
+            $page .= "<p>Cet utilisateur ne suit aucun tag.</p>";
         }
 
 
