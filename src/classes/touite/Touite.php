@@ -21,6 +21,10 @@ class Touite {
         return $this->id;
     }
 
+    public function setId(int $id): void {
+        $this->id = $id;
+    }
+
     public function getContent(): string {
         return $this->content;
     }

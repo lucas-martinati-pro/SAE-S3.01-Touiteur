@@ -71,8 +71,10 @@ class AddTouiteAction extends Action
                 return "<p>" . $_FILES["img"]["tmp_name"] . "n'est pas un fichier jpeg ou png</p>";
             }
 
+            $res = "";
+
             if (move_uploaded_file($img, $destination)) {
-                print "<p> voici votre touite </p>";
+                $res = "<p> voici votre touite </p>";
             } else {
                 return "<p> téléchargement non valide</p>";
             }
@@ -81,16 +83,24 @@ class AddTouiteAction extends Action
 
         // ajout à la bd
         $repositoryW= RepositoryFactory::getWriter();
-        $repositoryW->addTouite($contenu, $dateClic, $destination, $desc_img, $this->user["id"]);
+        $touite =  $repositoryW->addTouite($contenu, $dateClic, $destination, $desc_img, $this->user["id"]);
+        
         
 
+        // recup l'id du touite
+        
+        $repositoryR= RepositoryFactory::getReader();
+
+
         // affichage
-        $touite = new Touite($contenu, $dateClic, $destination, $desc_img, 1);
+        
         $render = RendererFactory::getRenderer($touite);
 
         $html = $render->render();
-
+        
+var_dump($touite);
         $page = <<<HTML
+            $res
             $html
             <a href="?action=displayFeed"> retourner vers votre feeds</a>
         HTML;
