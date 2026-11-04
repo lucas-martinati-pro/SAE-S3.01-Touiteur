@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" rx="32" fill="#9a3412"/>
+  <circle cx="260" cy="245" r="125" fill="#fed7aa"/>
+  <circle cx="260" cy="245" r="88" fill="#f97316"/>
+  <circle cx="220" cy="215" r="18" fill="#fde68a"/>
+  <circle cx="295" cy="270" r="18" fill="#fde68a"/>
+  <path d="M520 145v220M570 145v220M520 230h50M700 145v220M700 145c80 20 80 115 0 130" stroke="#fff" stroke-width="18" stroke-linecap="round"/>
+  <text x="485" y="430" fill="#fff" font-family="Arial, sans-serif" font-size="54" font-weight="700">Cuisine</text>
+</svg>

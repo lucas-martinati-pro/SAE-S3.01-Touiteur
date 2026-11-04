@@ -5,11 +5,12 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\enum\TypeRender;
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
 /**
- * Action par défaut affichant la page d'accueil de l'application Touiteur.
+ * Action affichant le profil d'un utilisateur.
  */
 class DisplayProfile extends Action {
     #[Override]
@@ -17,7 +18,38 @@ class DisplayProfile extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $feed = $r->findAllTouitesByUserId($id);
+
+        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+        $pagination = new Pagination($page);
+
+        $feed = $r->findFeedByUserId($id, $pagination);
+
+        $details = $r->getUserById($id);
+        $completeName = $details['nom'] . " " . $details['prenom'];
+        $premiereLettre = $completeName[0];
+
+        $subBtn = "";
+
+        if ($id !== $this->user['id']) {
+            if ($r->isSub($id, $this->user['id'])) {
+
+                    $subBtn = <<<HTML
+                    <form method="POST" action="?action=subscribe">
+                        <input type="hidden" name="type" value="unsub">
+                        <input type="hidden" name="id" value="{$id}">
+                        <button type="submit" class="btn btn-outline-primary profile-button">Abonné</button>
+                    </form>
+                HTML;
+            } else {
+                $subBtn = <<<HTML
+                    <form method="POST" action="?action=subscribe">
+                        <input type="hidden" name="type" value="sub">
+                        <input type="hidden" name="id" value="{$id}">
+                        <button type="submit" class="btn btn-primary profile-button">S'abonner</button>
+                    </form>
+                HTML;
+            }
+        }
 
         $page = <<< HTML
             <header class="feed-header detail-header">
@@ -29,10 +61,10 @@ class DisplayProfile extends Action {
             <section class="profile-header">
                 <div class="profile-cover"></div>
                 <div class="profile-main">
-                    <div class="profile-avatar">T</div>
-                    <a class="btn btn-outline-primary profile-button" href="?action=displayFeed">Retour au feed</a>
-                    <h2>Utilisateur {$id}</h2>
-                    <p class="profile-handle">@utilisateur{$id}</p>
+                    <div class="profile-avatar">{$premiereLettre}</div>
+                    {$subBtn}
+                    <h2>{$completeName}</h2>
+                    <p class="profile-handle">@{$completeName}</p>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>
@@ -44,10 +76,33 @@ class DisplayProfile extends Action {
             </section>
         HTML;
 
+        $previous = $pagination->previous();
+        $next = $pagination->next();
+        $pageNumber = $pagination->getPage();
+        $previousAttributes = $pageNumber === 1
+            ? ' aria-disabled="true" tabindex="-1"'
+            : '';
+        $pagination = <<< HTML
+            <nav class="feed-pagination" aria-label="Pagination du profil">
+                <a class="btn btn-outline-secondary"
+                   {$previousAttributes}
+                   href="?action=displayProfile&id={$id}&page={$previous}">
+                    <i class="bi bi-chevron-left"></i>
+                    Page précédente
+                </a>
+                <span>Page {$pageNumber}</span>
+                <a class="btn btn-outline-secondary"
+                   href="?action=displayProfile&id={$id}&page={$next}">
+                    Page suivante
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+        HTML;
+
         if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.');
+            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.') . $pagination;
         }
 
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }
 }

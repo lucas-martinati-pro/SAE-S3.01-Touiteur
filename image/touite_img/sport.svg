@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" rx="32" fill="#064e3b"/>
+  <circle cx="200" cy="145" r="52" fill="#fbbf24"/>
+  <path d="M200 205l-35 105 85 45M165 235l-90 50M168 305l-55 105M250 355l90 50" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+  <path d="M500 180h250M500 250h180M500 320h220" stroke="#6ee7b7" stroke-width="20" stroke-linecap="round"/>
+  <text x="500" y="410" fill="#fff" font-family="Arial, sans-serif" font-size="56" font-weight="700">Sport</text>
+</svg>

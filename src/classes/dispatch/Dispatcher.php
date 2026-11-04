@@ -10,6 +10,7 @@ use iutnc\touiteur\action\DisplayTouite;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
+use iutnc\touiteur\action\SubscribeAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
 use iutnc\touiteur\repository\RepositoryFactory;
@@ -41,11 +42,12 @@ class Dispatcher {
         $html = match ($this->action) {
             "addTouite" => (new AddTouiteAction())(),
             "displayTouite" => (new DisplayTouite())(),
-            "displayProfile" => (new DisplayProfile)(),
+            "displayProfile" => (new DisplayProfile())(),
             "displayTag" => (new DisplayTag)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
+            "subscribe" => (new SubscribeAction())(),
             default => (new DisplayFeedAction())(),
         };
 

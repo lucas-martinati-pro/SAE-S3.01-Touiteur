@@ -5,6 +5,7 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\enum\TypeRender;
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
@@ -16,14 +17,18 @@ class DisplayFeedAction extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
+        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+        $pagination = new Pagination($page);
+        $feedType = (isset($_GET['type']) && $_GET['type'] === 'global') ? 'global' : null;
+
         $feed = "";
         $activeGlobal = '';
         $activeFollow = '';
-        if (isset($_GET['type']) && $_GET['type'] == 'global') {
-            $feed = $r->findAllTouites();
+        if ($feedType === 'global') {
+            $feed = $r->findFeed($pagination);
             $activeGlobal = 'class="active"';
         } else {
-            $feed = $r->findFollowedFeed($this->user['id']);
+            $feed = $r->findFollowedFeed($this->user['id'], $pagination);
             $activeFollow = 'class="active"';
         }
 
@@ -46,10 +51,34 @@ class DisplayFeedAction extends Action {
             </div>
         HTML;
 
+        $feedQuery = $feedType === 'global' ? '&type=global' : '';
+        $previous = $pagination->previous();
+        $next = $pagination->next();
+        $pageNumber = $pagination->getPage();
+        $previousAttributes = $pageNumber === 1
+            ? ' aria-disabled="true" tabindex="-1"'
+            : '';
+        $pagination = <<< HTML
+            <nav class="feed-pagination" aria-label="Pagination du feed">
+                <a class="btn btn-outline-secondary"
+                    {$previousAttributes}
+                   href="?action=displayFeed{$feedQuery}&page={$previous}">
+                    <i class="bi bi-chevron-left"></i>
+                    Page précédente
+                </a>
+                <span>Page {$pageNumber}</span>
+                <a class="btn btn-outline-secondary"
+                   href="?action=displayFeed{$feedQuery}&page={$next}">
+                    Page suivante
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+        HTML;
+
         if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Aucun touite à afficher pour le moment.');
+            return $page . HtmlHelper::alert('info', 'Aucun touite à afficher pour le moment.') . $pagination;
         }
 
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }
 }

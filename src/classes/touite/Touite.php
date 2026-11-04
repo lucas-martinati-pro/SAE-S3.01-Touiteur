@@ -2,6 +2,8 @@
 
 namespace iutnc\touiteur\touite;
 
+use iutnc\touiteur\repository\RepositoryFactory;
+
 class Touite {
     private ?int $id;
     private string $content;

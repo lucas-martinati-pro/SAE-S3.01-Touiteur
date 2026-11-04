@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" rx="32" fill="#14532d"/>
+  <circle cx="190" cy="150" r="70" fill="#facc15"/>
+  <path d="M0 390c170-120 270-80 420 0 150 80 300 30 480-70v180H0z" fill="#22c55e"/>
+  <path d="M420 390c-10-125 35-190 100-245M420 330c-60-30-105-75-125-135M470 295c55-28 100-70 125-130" fill="none" stroke="#bbf7d0" stroke-width="18" stroke-linecap="round"/>
+  <text x="430" y="455" fill="#fff" font-family="Arial, sans-serif" font-size="50" font-weight="700">Balade nature</text>
+</svg>

@@ -12,7 +12,23 @@ class TouiteurWriterRepository extends TouiteurRepository {
      *               GESTION DES TOUITES
      *=============================================**/
 
-    
+    public function follow(int $follower_id, int $followed_id) : void {
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO follow (follower_id, followed_id) VALUES (:follower_id, :followed_id);
+        SQL);
+
+        $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
+    }
+
+    public function unfollow(int $follower_id, int $followed_id) : void {
+        $stmt = $this->pdo->prepare(<<<SQL
+            DELETE FROM follow 
+            WHERE follower_id = :follower_id
+            AND followed_id = :followed_id;
+        SQL);
+
+        $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
+    }
 
     /**============================================
      *               GESTION DE L'AUTH
