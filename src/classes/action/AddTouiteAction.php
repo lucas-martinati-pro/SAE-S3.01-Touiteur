@@ -4,13 +4,12 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\repository\RepositoryFactory;
 use \iutnc\touiteur\render\RendererFactory;
 use Override;
-class AddTouiteAction extends Action
-{
+
+class AddTouiteAction extends Action {
     protected bool $requireAuth = true;
 
     #[Override]
-    public function get(): string
-    {
+    public function get(): string {
         $page = <<<HTML
          <form method="post" action="?action=addTouite" enctype="multipart/form-data">
             <label> contenu : </label>
@@ -30,8 +29,7 @@ class AddTouiteAction extends Action
     }
 
     #[Override]
-    public function post(): string
-    {
+    public function post(): string {
         //values input
         $contenu = filter_var($_POST["contenu"], FILTER_SANITIZE_SPECIAL_CHARS);
         $desc_img = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
@@ -42,9 +40,6 @@ class AddTouiteAction extends Action
         $date = date('Y-m-d H:i:s');
 
         $imageName = $this->saveImage($_FILES);
-        if (!$imageName) return <<<HTML
-            // TODO
-        HTML;
 
         // ajout à la bd
         $w = RepositoryFactory::getWriter();
@@ -63,9 +58,11 @@ class AddTouiteAction extends Action
     private function saveImage(array $imgFile): ?String {
         if (isset($imgFile['img']) && $imgFile['img']['error'] === UPLOAD_ERR_OK) {
             $extension = strtolower(pathinfo($imgFile['img']['name'], PATHINFO_EXTENSION));
+
             if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
                 $imgDir = 'image' . DIRECTORY_SEPARATOR . 'touite_img' . DIRECTORY_SEPARATOR;
                 $imageName = $imgDir . uniqid('touite_img_', true) . bin2hex(random_bytes(4)) . '.' . $extension;
+
                 if (move_uploaded_file($imgFile['img']['tmp_name'], $imageName)) {
                     return $imageName;
                 }

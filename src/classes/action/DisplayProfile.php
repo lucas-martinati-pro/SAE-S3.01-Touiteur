@@ -20,7 +20,7 @@ class DisplayProfile extends Action {
         $id = (int) ($_GET['id'] ?? 0);
 
         $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
-        $pagination = new Pagination($page);    
+        $pagination = new Pagination($page);
 
         $feed = $r->findFeedByUserId($id, $pagination);
 

@@ -22,7 +22,7 @@ class TouiteurWriterRepository extends TouiteurRepository {
 
     public function unfollow(int $follower_id, int $followed_id) : void {
         $stmt = $this->pdo->prepare(<<<SQL
-            DELETE FROM follow 
+            DELETE FROM follow
             WHERE follower_id = :follower_id
             AND followed_id = :followed_id;
         SQL);
@@ -62,8 +62,12 @@ class TouiteurWriterRepository extends TouiteurRepository {
     public function addTouite(string $content, string $posted_at, ?string $image_path, ?string $image_description, $user_id): Touite {
         $content = filter_var($content, FILTER_SANITIZE_SPECIAL_CHARS);
         $posted_at = filter_var($posted_at, FILTER_SANITIZE_SPECIAL_CHARS);
-        $image_path = filter_var($image_path, FILTER_SANITIZE_SPECIAL_CHARS);
-        $image_description = filter_var($image_description, FILTER_SANITIZE_SPECIAL_CHARS);
+        $image_path = $image_path === null
+            ? null
+            : filter_var($image_path, FILTER_SANITIZE_SPECIAL_CHARS);
+        $image_description = $image_description === null
+            ? null
+            : filter_var($image_description, FILTER_SANITIZE_SPECIAL_CHARS);
         $user_id = filter_var($user_id, FILTER_SANITIZE_NUMBER_INT);
 
         $stmt = $this->pdo->prepare(<<<SQL

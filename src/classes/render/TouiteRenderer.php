@@ -41,8 +41,9 @@ class TouiteRenderer implements Renderer {
         $premiereLettre = $completeName[0];
 
 
-        if ($this->touite->getImage_path() !== null) {
-            $path = htmlspecialchars($this->touite->getImage_path(), ENT_QUOTES, 'UTF-8');
+        $imagePath = $this->touite->getImage_path();
+        if ($imagePath !== null && $imagePath !== '') {
+            $path = htmlspecialchars($imagePath, ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars(
                 $this->touite->getImage_description() ?? 'Image du touite',
                 ENT_QUOTES,
