@@ -1,6 +1,8 @@
 <?php
 namespace iutnc\touiteur\action;
 
+use iutnc\touiteur\auth\AuthnProvider;
+use iutnc\touiteur\repository\RepositoryFactory;
 use \iutnc\touiteur\touite\Touite;
 use \iutnc\touiteur\render\RendererFactory;
 use Override;
@@ -15,13 +17,13 @@ class AddTouiteAction extends Action
         $page = <<<HTML
          <form method="post" action="?action=addTouite" enctype="multipart/form-data">
                     <label> contenu : </label>
-                    <input type="text" name="contenu" required>
+                    <input type="text" name="contenu" maxlength="235" required>
 
                     <label> image : </label>
                     <input type="file" name="img">
 
                     <label> description image: </label>
-                    <input type="text" name="descrip_img">
+                    <input type="text" name="descrip_img" maxlength="235">
 
                     <button type="submit" name="publier"> publier </button>
         </form>
@@ -77,11 +79,15 @@ class AddTouiteAction extends Action
 
         }
 
+        // ajout à la bd
+
+        
+        $repositoryW= RepositoryFactory::getWriter();
+        $repositoryW->addTouite($contenu, $dateClic, $destination, $desc_img, $this->user["id"]);
         
 
         // affichage
         $touite = new Touite($contenu, $dateClic, $destination, $desc_img, 1);
-        $test = var_dump($touite);
         $render = RendererFactory::getRenderer($touite);
 
         $html = $render->render();
@@ -89,9 +95,6 @@ class AddTouiteAction extends Action
         $page = <<<HTML
             $html
             <a href="?action=displayFeed"> retourner vers votre feeds</a>
-
-            $test
-
         HTML;
 
         return $page;
