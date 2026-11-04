@@ -32,20 +32,28 @@ class AddTouiteAction extends Action {
                     <div class="form-text">235 caractères maximum.</div>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3 image-upload">
                     <label for="img" class="form-label">Image <span class="text-muted">(optionnelle)</span></label>
                     <input
                         type="file"
                         name="img"
-                        class="form-control"
+                        class="form-control image-input"
                         id="img"
                         accept="image/jpeg,image/png,image/webp,image/gif"
                     >
-                    <div class="form-text">Formats acceptés : JPG, PNG, WEBP et GIF.</div>
+                    <div class="image-upload-help">
+                        <i class="bi bi-image" aria-hidden="true"></i>
+                        <span>Ajoutez une image à votre touite</span>
+                        <small>JPG, PNG, WEBP ou GIF</small>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="descrip_img" class="form-label">Description de l'image <span class="text-muted">(optionnelle)</span></label>
+                <details class="image-description mb-3">
+                    <summary>
+                        <i class="bi bi-card-text" aria-hidden="true"></i>
+                        Ajouter une description à l'image
+                    </summary>
+                    <label for="descrip_img" class="form-label">Description <span class="text-muted">(optionnelle)</span></label>
                     <input
                         type="text"
                         name="descrip_img"
@@ -54,7 +62,7 @@ class AddTouiteAction extends Action {
                         maxlength="235"
                         placeholder="Décrivez votre image"
                     >
-                </div>
+                </details>
 
                 <div class="d-flex gap-2">
                     {$publishButton}
@@ -68,6 +76,19 @@ class AddTouiteAction extends Action {
     public function post(): string {
         //values input
         $contenu = filter_var($_POST["contenu"], FILTER_SANITIZE_SPECIAL_CHARS);
+        $longueur = mb_strlen($contenu);
+        if ($longueur === 0 || $longueur > 235) {
+            $message = $longueur === 0
+                ? 'Le contenu du touite ne peut pas être vide.'
+                : 'Le contenu du touite doit comporter entre 1 et 235 caractères.';
+
+            return HtmlHelper::formError(
+                errors: $message,
+                backUrl: '?action=addTouite',
+                backLabel: 'Modifier le touite',
+                title: 'Impossible de publier le touite'
+            );
+        }
         $desc_img = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
 
         //capture de la date

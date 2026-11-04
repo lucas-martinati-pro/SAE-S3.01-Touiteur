@@ -89,9 +89,15 @@ class RegisterAction extends Action {
                 return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=register&form=1", title: "Échec de la connexion");
             }
 
+            $displayName = htmlspecialchars(
+                $_POST['prenom'] . ' ' . $_POST['nom'],
+                ENT_QUOTES,
+                'UTF-8'
+            );
+
             return HtmlHelper::successPage(
                 title: "Connexion réussie",
-                message: "Bienvenue, <strong>{$_POST['email']}</strong> ! Vous êtes maintenant connecté à Touiteur.",
+                message: "Bienvenue, <strong>{$displayName}</strong> ! Vous êtes maintenant connecté à Touiteur.",
                 backLabel: "Accéder à mon feed"
             );
         }

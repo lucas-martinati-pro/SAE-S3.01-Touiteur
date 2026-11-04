@@ -116,7 +116,7 @@ class TouiteurWriterRepository extends TouiteurRepository {
 
         $stmt->execute(['content' => $content, 'note' => 0, 'img_path' => $image_path,'img_desc' => $image_description, 'date' => $posted_at, 'user_id' => $user_id]);
 
-        $touite = new Touite($content, $posted_at, $image_path, $image_description, $user_id);
+        $touite = new Touite($content, $posted_at, 0, $image_path, $image_description, $user_id);
         $touite->setId($this->pdo->lastInsertId());
 
         return $touite;
