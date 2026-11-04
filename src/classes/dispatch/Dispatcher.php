@@ -5,12 +5,14 @@ namespace iutnc\touiteur\dispatch;
 use iutnc\touiteur\action\AddTouiteAction;
 use iutnc\touiteur\action\DisplayFeedAction;
 use iutnc\touiteur\action\DisplayProfile;
+use iutnc\touiteur\action\DisplayTag;
 use iutnc\touiteur\action\DisplayTouite;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
+use iutnc\touiteur\repository\RepositoryFactory;
 
 /**
  * Contrôleur de l'affichage.
@@ -40,6 +42,7 @@ class Dispatcher {
             "addTouite" => (new AddTouiteAction())(),
             "displayTouite" => (new DisplayTouite())(),
             "displayProfile" => (new DisplayProfile)(),
+            "displayTag" => (new DisplayTag)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
@@ -58,6 +61,16 @@ class Dispatcher {
     private function renderPage(string $html): void {
         $navbar = $this->renderNavbar();
         $theme = (($_COOKIE['theme'] ?? 'dark') === 'light') ? 'light' : 'dark';
+        $r = RepositoryFactory::getReader();
+        $tags = $r->findAllTags(10);
+
+        $tagsHtml = "";
+
+        foreach ($tags as $tag) {
+            $tagsHtml .= <<<HTML
+                <a href="?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
+            HTML;
+        }
 
         echo <<<HTML
             <!DOCTYPE html>
@@ -94,13 +107,7 @@ class Dispatcher {
                             <section class="trends">
                                 <h2>Tags populaires</h2>
                                 <div class="tag-list">
-                                    <a href="?action=displayFeed&tag=annonce">#annonce</a>
-                                    <a href="?action=displayFeed&tag=cinema">#cinema</a>
-                                    <a href="?action=displayFeed&tag=code">#code</a>
-                                    <a href="?action=displayFeed&tag=culture">#culture</a>
-                                    <a href="?action=displayFeed&tag=musique">#musique</a>
-                                    <a href="?action=displayFeed&tag=sport">#sport</a>
-                                    <a href="?action=displayFeed&tag=technologie">#technologie</a>
+                                    $tagsHtml
                                 </div>
                             </section>
                         </aside>

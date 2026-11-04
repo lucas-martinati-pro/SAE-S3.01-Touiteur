@@ -4,6 +4,7 @@ namespace iutnc\touiteur\render;
 
 use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\enum\TypeRender;
+use iutnc\touiteur\repository\RepositoryFactory;
 use Override;
 
 class TouiteRenderer implements Renderer {
@@ -19,6 +20,8 @@ class TouiteRenderer implements Renderer {
         $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
         $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
         $image = '';
+        // TODO
+        $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
 
         if ($this->touite->getImage_path() !== null) {
             $path = htmlspecialchars($this->touite->getImage_path(), ENT_QUOTES, 'UTF-8');
