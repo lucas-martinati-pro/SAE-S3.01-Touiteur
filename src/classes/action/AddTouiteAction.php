@@ -80,8 +80,6 @@ class AddTouiteAction extends Action
         }
 
         // ajout à la bd
-
-        
         $repositoryW= RepositoryFactory::getWriter();
         $repositoryW->addTouite($contenu, $dateClic, $destination, $desc_img, $this->user["id"]);
         
