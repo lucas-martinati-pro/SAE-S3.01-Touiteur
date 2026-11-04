@@ -18,21 +18,7 @@ class SigninAction extends Action {
         try {
             $user = AuthnProvider::getSignedInUser();
             $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
-
-            // Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/
-            $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
-            $feedButton = HtmlHelper::linkButton('Mon feed', '?action=displayFeed', 'bi-collection-play-fill');
-            $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
-            $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
-            return <<<HTML
-                {$title}
-                <p>Vous êtes déjà connecté avec l'adresse <strong>{$email}</strong>.</p>
-                <p>
-                    {$feedButton}
-                    {$signoutButton}
-                    {$homeButton}
-                </p>
-            HTML;
+            return HtmlHelper::alreadyLogin($email);
         } catch (AuthnException) {
             $require = '<span class="text-danger">*</span>';
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/
@@ -80,22 +66,36 @@ class SigninAction extends Action {
 
     #[Override]
     public function post(): string {
-        if (!isset($_POST['email'], $_POST['password'])) {
-            return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin&form=1", title: "Échec de la connexion");
-        }
-
-        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-
         try {
-            AuthnProvider::signin($email, $_POST['password']);
-        } catch (AuthnException $error) {
-            return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin&form=1", title: "Échec de la connexion");
-        }
+            $user = AuthnProvider::getSignedInUser();
+            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+            return HtmlHelper::alreadyLogin($email);
+        } catch (AuthnException) {
+            if (!isset($_POST['email'], $_POST['password'])) {
+                return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin&form=1", title: "Échec de la connexion");
+            }
 
-        return HtmlHelper::successPage(
-            title: "Connexion réussie",
-            message: "Bienvenue, <strong>" . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . "</strong> ! Vous êtes maintenant connecté à Touiteur.",
-            backLabel: "Accéder à mon feed"
-        );
+            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+
+            try {
+                AuthnProvider::signin($email, $_POST['password']);
+            } catch (AuthnException $error) {
+                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin&form=1", title: "Échec de la connexion");
+            }
+
+            $user = AuthnProvider::getSignedInUser();
+
+            $displayName = htmlspecialchars(
+                    $user['prenom'] . ' ' . $user['nom'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                );
+
+            return HtmlHelper::successPage(
+                title: "Connexion réussie",
+                message: "Bienvenue, <strong>" . $displayName . "</strong> ! Vous êtes maintenant connecté à Touiteur.",
+                backLabel: "Accéder à mon feed"
+            );
+        }
     }
 }

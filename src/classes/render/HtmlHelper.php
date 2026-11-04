@@ -8,6 +8,22 @@ use iutnc\touiteur\enum\TypeRender;
  * Classe d'assistance pour la génération des composants HTML de Touiteur.
  */
 class HtmlHelper {
+    public static function alreadyLogin(string $email): string {
+        $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
+        $feedButton = HtmlHelper::linkButton('Mon feed', '?action=displayFeed', 'bi-collection-play-fill');
+        $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
+        $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
+        return <<<HTML
+            {$title}
+            <p>Vous êtes déjà connecté avec l'adresse <strong>{$email}</strong>.</p>
+            <p>
+                {$feedButton}
+                {$signoutButton}
+                {$homeButton}
+            </p>
+        HTML;
+    }
+
 
     public static function profileColor(int $userId): string {
         $colors = [
