@@ -17,6 +17,7 @@ class DisplayTag extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
+        // TODO DUPLICATION
         $pageNumber = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT);
         $pageNumber = $pageNumber !== false && $pageNumber > 0 ? $pageNumber : 1;
         $feed = $r->findFeedByTagId($id, $pageNumber);

@@ -19,6 +19,7 @@ class DisplayFeedAction extends Action {
         $feed = "";
         $activeGlobal = '';
         $activeFollow = '';
+        // TODO DUPLICATION
         $pageNumber = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT);
         $pageNumber = $pageNumber !== false && $pageNumber > 0 ? $pageNumber : 1;
         $feedType = isset($_GET['type']) && $_GET['type'] === 'global' ? 'global' : null;

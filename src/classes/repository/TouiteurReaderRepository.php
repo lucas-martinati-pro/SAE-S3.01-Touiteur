@@ -60,6 +60,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFeed(int $page = 1): ?Feed {
+        // TODO DUPLICATION
         if ($page < 1) $page = 1;
         $nb_touite = 20;
         $offset = ($page - 1) * $nb_touite;
@@ -82,6 +83,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFollowedFeed(int $id, int $page = 1): ?Feed {
+        // TODO DUPLICATION
         if ($page < 1) $page = 1;
         $nb_touite = 20;
         $offset = ($page - 1) * $nb_touite;
@@ -118,6 +120,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFeedByUserId(int $id, int $page = 1): ?Feed {
+        // TODO DUPLICATION
         if ($page < 1) $page = 1;
         $nb_touite = 20;
         $offset = ($page - 1) * $nb_touite;
@@ -141,6 +144,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     }
 
     public function findFeedByTagId(int $id, int $page = 1): ?Feed {
+        // TODO DUPLICATION
         if ($page < 1) $page = 1;
         $nb_touite = 20;
         $offset = ($page - 1) * $nb_touite;
