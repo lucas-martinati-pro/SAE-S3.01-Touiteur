@@ -14,7 +14,7 @@ create table touite (
     note INT,
     image_description VARCHAR(235),
     image_path VARCHAR(256),
-    posted_at DATE NOT NULL,
+    posted_at DATETIME NOT NULL,
     users_id INT NOT NULL
 );
 
