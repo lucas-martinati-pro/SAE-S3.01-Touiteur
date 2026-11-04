@@ -33,25 +33,25 @@ class AddTouiteAction extends Action {
                 </div>
 
                 <div class="mb-3 image-upload">
-                    <label for="img" class="form-label">Image <span class="text-muted">(optionnelle)</span></label>
+                    <label for="img" class="form-label">Image ou vidéo <span class="text-muted">(optionnelle)</span></label>
                     <input
                         type="file"
                         name="img"
                         class="form-control image-input"
                         id="img"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
                     >
                     <div class="image-upload-help">
                         <i class="bi bi-image" aria-hidden="true"></i>
-                        <span>Ajoutez une image à votre touite</span>
-                        <small>JPG, PNG, WEBP ou GIF</small>
+                        <span>Ajoutez une image ou une vidéo à votre touite</span>
+                        <small>JPG, PNG, WEBP, GIF ou MP4 · 2 Mo maximum</small>
                     </div>
                 </div>
 
                 <details class="image-description mb-3">
                     <summary>
                         <i class="bi bi-card-text" aria-hidden="true"></i>
-                        Ajouter une description à l'image
+                        Ajouter une description au média
                     </summary>
                     <label for="descrip_img" class="form-label">Description <span class="text-muted">(optionnelle)</span></label>
                     <input
@@ -60,7 +60,7 @@ class AddTouiteAction extends Action {
                         class="form-control"
                         id="descrip_img"
                         maxlength="235"
-                        placeholder="Décrivez votre image"
+                        placeholder="Décrivez votre image ou votre vidéo"
                     >
                 </details>
 
@@ -91,6 +91,19 @@ class AddTouiteAction extends Action {
         }
         $desc_img = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
 
+        if (
+            isset($_FILES['img']) &&
+            $_FILES['img']['error'] === UPLOAD_ERR_OK &&
+            $_FILES['img']['size'] > 2 * 1024 * 1024
+        ) {
+            return HtmlHelper::formError(
+                errors: 'Le fichier ne doit pas dépasser 2 Mo.',
+                backUrl: '?action=addTouite',
+                backLabel: 'Modifier le touite',
+                title: 'Impossible de publier le touite'
+            );
+        }
+
         //capture de la date
         date_default_timezone_set('Europe/Paris');
         // Format AAAA-MM-JJ HH:MM:SS
@@ -110,7 +123,7 @@ class AddTouiteAction extends Action {
         if (isset($imgFile['img']) && $imgFile['img']['error'] === UPLOAD_ERR_OK) {
             $extension = strtolower(pathinfo($imgFile['img']['name'], PATHINFO_EXTENSION));
 
-            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4'])) {
                 $imgDir = 'image' . DIRECTORY_SEPARATOR . 'touite_img' . DIRECTORY_SEPARATOR;
                 $imageName = $imgDir . uniqid('touite_img_', true) . bin2hex(random_bytes(4)) . '.' . $extension;
 

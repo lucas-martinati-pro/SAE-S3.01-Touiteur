@@ -378,6 +378,11 @@ h1, h2, h3 { letter-spacing: -.02em; }
     border-radius: 1rem;
     object-fit: cover;
 }
+.touite-video {
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
+}
 .touite-actions {
     display: flex;
     align-items: center;

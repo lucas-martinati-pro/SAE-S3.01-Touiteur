@@ -47,7 +47,19 @@ class TouiteRenderer implements Renderer {
                 ENT_QUOTES,
                 'UTF-8'
             );
-            $image = "<img class=\"touite-image\" src=\"{$path}\" alt=\"{$description}\">";
+
+            $extension = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+
+            if ($extension === 'mp4') {
+                $image = <<<HTML
+                    <video class="touite-image touite-video" controls width="100%" preload="metadata">
+                        <source src="{$path}" type="video/mp4">
+                        Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+                HTML;
+            } else {
+                $image = "<img class=\"touite-image\" src=\"{$path}\" alt=\"{$description}\">";
+            }
         }
 
         $rawName = $this->nom . " " . $this->prenom;
