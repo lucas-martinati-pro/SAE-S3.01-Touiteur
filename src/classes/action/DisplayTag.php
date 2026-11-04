@@ -30,17 +30,36 @@ class DisplayTag extends Action {
             return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
         }
 
+        $subTagBtn = "";
+
+        if ($r->isTagSub($this->user['id'], $id)) {
+            $subTagBtn = <<<HTML
+                <form method="POST" action="?action=" class="ms-auto">
+                    <input type="hidden" name="type" value="unsub">
+                    <input type="hidden" name="id" value="{$id}">
+                    <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Abonné</button>
+                </form>
+            HTML;
+        } else {
+            $subTagBtn = <<<HTML
+                <form method="POST" action="?action=" class="ms-auto">
+                    <input type="hidden" name="type" value="sub">
+                    <input type="hidden" name="id" value="{$id}">
+                    <button type="submit" class="btn btn-sm btn-primary rounded-pill">S'abonner</button>
+                </form>
+            HTML;
+        }
+
         $page = <<< HTML
-            <header class="feed-header detail-header">
+            <header class="feed-header detail-header d-flex align-items-center">
                 <a class="back-link" href="?action=displayFeed" aria-label="Retour au feed">
                     <i class="bi bi-arrow-left"></i>
                 </a>
-                <h1>#{$tagLabel}</h1>
+                <h1 class="mb-0">#{$tagLabel}</h1>
+                {$subTagBtn}
             </header>
             <section class="tag-feed">
-                <div class="feed-heading">
-                    <h2>Touites associés au tag #{$tagLabel}</h2>
-                </div>
+                
             </section>
         HTML;
 
