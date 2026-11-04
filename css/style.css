@@ -146,9 +146,9 @@ button, .btn { cursor: pointer; }
 .feed-header {
     position: sticky;
     top: 0;
-    z-index: 2;
+    z-index: 20;
     border-bottom: 1px solid var(--border);
-    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    background: var(--surface);
     backdrop-filter: blur(14px);
 }
 .feed-heading, .detail-header {
@@ -188,17 +188,24 @@ button, .btn { cursor: pointer; }
 .compose-box p { margin: .25rem 0 .85rem; color: var(--muted); }
 
 .touite-card {
+    position: relative;
     padding: 1.1rem 1.25rem;
     border-bottom: 1px solid var(--border);
     transition: background .2s;
 }
-.touite-card:hover { background: color-mix(in srgb, var(--surface-muted) 50%, transparent); }
-.touite-link, .touite-link:hover, .touite-link:focus, .touite-link:visited {
-    display: block;
-    color: inherit;
-    text-decoration: none;
+.touite-card:hover, .touite-card:focus-within { background: color-mix(in srgb, var(--surface-muted) 50%, transparent); }
+.touite-main-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+.touite-main-link:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: -3px;
 }
 .touite-row { display: flex; gap: .8rem; }
+.touite-row { position: relative; z-index: 2; pointer-events: none; }
 .touite-avatar, .profile-avatar {
     display: grid;
     place-items: center;
@@ -218,7 +225,10 @@ button, .btn { cursor: pointer; }
     color: var(--muted);
     font-size: .88rem;
 }
-.touite-header a { overflow: hidden; color: var(--text) !important; text-overflow: ellipsis; white-space: nowrap; }
+.touite-header form { margin-left: auto; }
+.touite-header form, .touite-author, .touite-actions { pointer-events: auto; }
+.touite-author { overflow: hidden; color: var(--text); font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.touite-author:hover { color: var(--brand); text-decoration: underline; }
 .touite-header span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .touite-content { margin: .65rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .touite-image {
@@ -230,7 +240,13 @@ button, .btn { cursor: pointer; }
     border-radius: 1rem;
     object-fit: cover;
 }
-.touite-actions { display: flex; max-width: 430px; margin-top: .75rem; }
+.touite-actions {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    max-width: 430px;
+    margin-top: .9rem;
+}
 .touite-actions button {
     padding: .35rem .5rem;
     border: 0;
