@@ -174,7 +174,7 @@ h1, h2, h3 { letter-spacing: -.035em; }
     border-left: 1px solid var(--border);
     background: var(--surface);
 }
-.page-content > :not(.feed-header):not(.profile-header):not(.feed):not(.touite-detail) {
+.page-content > :not(.feed-header):not(.profile-header):not(.feed):not(.touite-detail):not(.compose-box) {
     margin-right: auto;
     margin-left: auto;
     max-width: 540px;
@@ -271,11 +271,16 @@ h1, h2, h3 { letter-spacing: -.035em; }
 
 .compose-box {
     display: flex;
+    align-items: flex-start;
     gap: .8rem;
     padding: 1.1rem 1.25rem;
     border-bottom: 1px solid var(--border);
 }
-.compose-box p { margin: .25rem 0 .85rem; color: var(--muted); }
+.compose-content {
+    min-width: 0;
+    padding-top: .1rem;
+}
+.compose-box p { margin: 0 0 .85rem; color: var(--muted); }
 
 .touite-card {
     position: relative;

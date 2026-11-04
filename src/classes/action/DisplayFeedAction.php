@@ -79,7 +79,7 @@ class DisplayFeedAction extends Action {
             </header>
             <div class="compose-box">
                 {$profileAvatar}
-                <div>
+                <div class="compose-content">
                     <p>Quoi de neuf ?</p>
                     <a class="btn btn-primary" href="?action=addTouite">Touiter</a>
                 </div>
