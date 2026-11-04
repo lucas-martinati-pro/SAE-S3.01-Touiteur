@@ -165,9 +165,9 @@ class Dispatcher {
                         </a>
                     </li>
                 </ul>
+                </div>
                 <div class="theme-switch">
                     {$toggleThemeButton}
-                </div>
                 </div>
                 <div class="sidebar-user">
                     <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-circle/ -->

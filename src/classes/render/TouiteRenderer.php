@@ -39,7 +39,9 @@ class TouiteRenderer implements Renderer {
         // TODO
         $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
         $rawName = $this->nom . " " . $this->prenom;
+        $rawNameId = $this->nom . "_" . $this->prenom;
         $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
+        $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
         $premiereLettre = htmlspecialchars(mb_substr($rawName, 0, 1), ENT_QUOTES, 'UTF-8');
 
         $imagePath = $this->touite->getImage_path();
@@ -78,9 +80,11 @@ class TouiteRenderer implements Renderer {
             }
         }
 
+        $noteClass = $note < 0 ? 'touite-note-negative' : ($note > 0 ? 'touite-note-positive' : 'touite-note-neutral');
+        $actionsClass = $selector === TypeRender::LONG ? 'touite-actions-long' : 'touite-actions-compact';
         $noteActions = $selector === TypeRender::LONG
             ? <<<HTML
-                <span aria-label="Note du touite"><i class="bi bi-heart"></i> {$note}</span>
+                <span class="touite-note {$noteClass}" aria-label="Note du touite"><i class="bi bi-heart"></i> {$note}</span>
                 <form method="POST" action="?action=LikeAction&id={$touite_id}&type=like">
                     <button type="submit" aria-label="J'aime"><i class="bi bi-hand-thumbs-up"></i> J'aime</button>
                 </form>
@@ -92,7 +96,7 @@ class TouiteRenderer implements Renderer {
                 </form>
             HTML
             : <<<HTML
-                <span aria-label="Note du touite"><i class="bi bi-heart"></i> {$note}</span>
+                <span class="touite-note {$noteClass}" aria-label="Note du touite"><i class="bi bi-heart"></i> {$note}</span>
             HTML;
 
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
@@ -107,12 +111,12 @@ class TouiteRenderer implements Renderer {
                         <div class="touite-body">
                             <div class="touite-header">
                                 <a class="touite-author" href="?action=displayProfile&id={$this->user_id}"><strong>{$completeName}</strong></a>
-                                <span>@{$completeName} · <time datetime="{$date}">{$date}</time></span>
+                                <span>@{$completeNameId} · <time datetime="{$date}">{$date}</time></span>
                                 {$subBtn}
                             </div>
                             <p class="touite-content">{$content}</p>
                             {$image}
-                            <div class="touite-actions" aria-label="Actions du touite">
+                            <div class="touite-actions {$actionsClass}" aria-label="Actions du touite">
                                 {$noteActions}
                             </div>
                         </div>

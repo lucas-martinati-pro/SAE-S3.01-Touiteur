@@ -270,7 +270,8 @@ h1, h2, h3 { letter-spacing: -.035em; }
     font-size: .88rem;
 }
 .touite-header form { margin-left: auto; }
-.touite-header form, .touite-author, .touite-actions { pointer-events: auto; }
+.touite-header form, .touite-author, .touite-actions-long { pointer-events: auto; }
+.touite-actions-compact { pointer-events: none; }
 .touite-author { overflow: hidden; color: var(--text); font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
 .touite-author:hover { color: var(--brand); text-decoration: underline; }
 .touite-header span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -300,6 +301,9 @@ h1, h2, h3 { letter-spacing: -.035em; }
     color: var(--muted);
 }
 .touite-actions button:hover { color: var(--danger); }
+.touite-note-positive { color: var(--success); }
+.touite-note-negative { color: var(--danger); }
+.touite-note-neutral { color: var(--muted); }
 .touite-detail .touite-card { min-height: 260px; padding: 1.5rem 1.25rem; }
 .touite-detail .touite-content { font-size: 1.25rem; line-height: 1.45; }
 
@@ -511,6 +515,7 @@ textarea.form-control { resize: vertical; }
     align-items: center;
     gap: .65rem;
     margin: 0 0 1.5rem;
+    padding-top: 2rem;
     font-size: 1.5rem;
 }
 .page-title i { color: var(--brand); }
@@ -527,6 +532,7 @@ textarea.form-control { resize: vertical; }
     border-radius: .9rem;
     background: var(--surface-muted);
 }
+.page-content > .alert:first-child { margin-top: 2rem; }
 .alert-success { border-color: rgba(22, 131, 75, .35); color: var(--success); }
 .alert-danger { border-color: rgba(224, 36, 94, .35); color: var(--danger); }
 .alert-warning { border-color: rgba(168, 100, 0, .35); color: var(--warning); }
