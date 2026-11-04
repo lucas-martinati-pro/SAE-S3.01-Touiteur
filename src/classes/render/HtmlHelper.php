@@ -9,6 +9,28 @@ use iutnc\touiteur\enum\TypeRender;
  */
 class HtmlHelper {
 
+    public static function profileColor(int $userId): string {
+        $colors = [
+            'profile-color-blue',
+            'profile-color-purple',
+            'profile-color-green',
+            'profile-color-orange',
+            'profile-color-pink',
+            'profile-color-teal',
+        ];
+
+        return $colors[$userId % count($colors)];
+    }
+
+    public static function profileAvatar(array $user, string $class = 'touite-avatar'): string {
+        $userId = (int) $user['id'];
+        $displayName = trim(($user['nom'] ?? '') . ' ' . ($user['prenom'] ?? ''));
+        $initial = htmlspecialchars(mb_substr($displayName, 0, 1), ENT_QUOTES, 'UTF-8');
+        $color = self::profileColor($userId);
+
+        return "<div class=\"{$class} {$color}\">{$initial}</div>";
+    }
+
     public static function subscriptionButton(int $userId, bool $isSubscribed): string {
         $type = $isSubscribed ? 'unsub' : 'sub';
         $label = $isSubscribed ? 'Abonné' : "S'abonner";

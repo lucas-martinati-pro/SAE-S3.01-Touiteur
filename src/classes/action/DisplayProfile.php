@@ -25,8 +25,12 @@ class DisplayProfile extends Action {
         $feed = $r->findFeedByUserId($id, $pagination);
 
         $details = $r->getUserById($id);
-        $completeName = $details['nom'] . " " . $details['prenom'];
-        $premiereLettre = $completeName[0];
+        $rawName = $details['nom'] . " " . $details['prenom'];
+        $rawNameId = $details['nom'] . "_" . $details['prenom'];
+        $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
+        $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
+        $profileAvatar = HtmlHelper::profileAvatar($details, 'profile-avatar');
+        $profileColor = HtmlHelper::profileColor($id);
 
         $subBtn = "";
 
@@ -53,12 +57,12 @@ class DisplayProfile extends Action {
 
         $page = HtmlHelper::detailHeader('Profil') . <<< HTML
             <section class="profile-header">
-                <div class="profile-cover"></div>
+                <div class="profile-cover {$profileColor}"></div>
                 <div class="profile-main">
-                    <div class="profile-avatar">{$premiereLettre}</div>
+                    {$profileAvatar}
                     {$subBtn}
                     <h2>{$completeName}</h2>
-                    <p class="profile-handle">@{$completeName}</p>
+                    <p class="profile-handle">@{$completeNameId}</p>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>
