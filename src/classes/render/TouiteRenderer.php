@@ -40,6 +40,7 @@ class TouiteRenderer implements Renderer {
         $completeName = $this->nom . " " . $this->prenom;
         $premiereLettre = $completeName[0];
 
+
         if ($this->touite->getImage_path() !== null) {
             $path = htmlspecialchars($this->touite->getImage_path(), ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars(

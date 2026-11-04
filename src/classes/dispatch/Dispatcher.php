@@ -41,7 +41,7 @@ class Dispatcher {
         $html = match ($this->action) {
             "displayTouite" => (new DisplayTouite())(),
             "displayProfile" => (new DisplayProfile())(),
-            "displayTag" => (new DisplayTag())(),
+            "displayTag" => (new DisplayTag)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),

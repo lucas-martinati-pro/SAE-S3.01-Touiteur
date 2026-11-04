@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" rx="32" fill="#0c4a6e"/>
+  <circle cx="730" cy="120" r="65" fill="#fde68a"/>
+  <path d="M0 365c150-75 250-45 390 20 160 75 310 50 510-55v170H0z" fill="#38bdf8"/>
+  <path d="M150 225l220 45-80 35-70 95-35-10 35-100-100-45z" fill="#fff" opacity=".92"/>
+  <text x="430" y="400" fill="#fff" font-family="Arial, sans-serif" font-size="58" font-weight="700">Carnet de voyage</text>
+</svg>

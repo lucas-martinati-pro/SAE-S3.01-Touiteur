@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" rx="32" fill="#312e81"/>
+  <path d="M225 105v115l-90 155c-12 22 4 50 30 50h180c26 0 42-28 30-50l-90-155V105" fill="#c7d2fe" stroke="#fff" stroke-width="12"/>
+  <path d="M165 305h180M190 265h130" stroke="#6366f1" stroke-width="22"/>
+  <circle cx="240" cy="230" r="12" fill="#fbbf24"/>
+  <circle cx="285" cy="245" r="12" fill="#fbbf24"/>
+  <text x="510" y="275" fill="#fff" font-family="Arial, sans-serif" font-size="58" font-weight="700">Science</text>
+</svg>

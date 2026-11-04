@@ -5,6 +5,7 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\enum\TypeRender;
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
@@ -17,7 +18,11 @@ class DisplayProfile extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $feed = $r->findAllTouitesByUserId($id);
+
+        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+        $pagination = new Pagination($page);
+
+        $feed = $r->findFeedByUserId($id, $pagination);
 
         $details = $r->getUserById($id);
         $completeName = $details['nom'] . " " . $details['prenom'];
@@ -71,10 +76,33 @@ class DisplayProfile extends Action {
             </section>
         HTML;
 
+        $previous = $pagination->previous();
+        $next = $pagination->next();
+        $pageNumber = $pagination->getPage();
+        $previousAttributes = $pageNumber === 1
+            ? ' aria-disabled="true" tabindex="-1"'
+            : '';
+        $pagination = <<< HTML
+            <nav class="feed-pagination" aria-label="Pagination du profil">
+                <a class="btn btn-outline-secondary"
+                   {$previousAttributes}
+                   href="?action=displayProfile&id={$id}&page={$previous}">
+                    <i class="bi bi-chevron-left"></i>
+                    Page précédente
+                </a>
+                <span>Page {$pageNumber}</span>
+                <a class="btn btn-outline-secondary"
+                   href="?action=displayProfile&id={$id}&page={$next}">
+                    Page suivante
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+        HTML;
+
         if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.');
+            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.') . $pagination;
         }
 
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }
 }

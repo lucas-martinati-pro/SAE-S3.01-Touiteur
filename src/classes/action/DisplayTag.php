@@ -5,6 +5,7 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\enum\TypeRender;
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\render\HtmlHelper;
 use Override;
 
@@ -17,9 +18,17 @@ class DisplayTag extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $feed = $r->findAllTouitesByTagId($id);
+
+        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+        $pagination = new Pagination($page);
+
+        $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);
         $tagLabel = $tag->getLibelle();
+
+        if ($feed === null) {
+            return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
+        }
 
         $page = <<< HTML
             <header class="feed-header detail-header">
@@ -35,10 +44,29 @@ class DisplayTag extends Action {
             </section>
         HTML;
 
-        if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
-        }
+        $previous = $pagination->previous();
+        $next = $pagination->next();
+        $pageNumber = $pagination->getPage();
+        $previousAttributes = $pageNumber === 1
+            ? ' aria-disabled="true" tabindex="-1"'
+            : '';
+        $pagination = <<< HTML
+            <nav class="feed-pagination" aria-label="Pagination du tag">
+                <a class="btn btn-outline-secondary"
+                   {$previousAttributes}
+                   href="?action=displayTag&id={$id}&page={$previous}">
+                    <i class="bi bi-chevron-left"></i>
+                    Page précédente
+                </a>
+                <span>Page {$pageNumber}</span>
+                <a class="btn btn-outline-secondary"
+                   href="?action=displayTag&id={$id}&page={$next}">
+                    Page suivante
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+        HTML;
 
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }
 }
