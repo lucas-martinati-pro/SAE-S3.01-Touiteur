@@ -12,6 +12,8 @@ class AddTouiteAction extends Action {
     #[Override]
     public function get(): string {
         $title = HtmlHelper::title("Publier un touite", "bi-pencil-square");
+        $publishButton = HtmlHelper::button('Publier', 'bi-send-fill');
+        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=displayFeed', '', 'outline-secondary');
 
         return <<<HTML
             {$title}
@@ -55,10 +57,8 @@ class AddTouiteAction extends Action {
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
-                        <i class="bi bi-send-fill me-1"></i>Publier
-                    </button>
-                    <a href="?action=displayFeed" class="btn btn-outline-secondary">Annuler</a>
+                    {$publishButton}
+                    {$cancelButton}
                 </div>
             </form>
         HTML;

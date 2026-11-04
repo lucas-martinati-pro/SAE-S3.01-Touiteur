@@ -37,9 +37,9 @@ class TouiteRenderer implements Renderer {
         $image = '';
         // TODO
         $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
-        $completeName = $this->nom . " " . $this->prenom;
-        $premiereLettre = $completeName[0];
-
+        $rawName = $this->nom . " " . $this->prenom;
+        $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
+        $premiereLettre = htmlspecialchars(mb_substr($rawName, 0, 1), ENT_QUOTES, 'UTF-8');
 
         $imagePath = $this->touite->getImage_path();
         if ($imagePath !== null && $imagePath !== '') {
@@ -60,18 +60,18 @@ class TouiteRenderer implements Renderer {
             $r = RepositoryFactory::getReader();
             if ($r->isSub($this->user_id, $currentUserId)) {
                 $subBtn = <<<HTML
-                    <form method="POST" action="?action=subscribe" class="ms-auto">
+                    <form method="POST" action="?action=subscribe">
                         <input type="hidden" name="type" value="unsub">
                         <input type="hidden" name="id" value="{$this->user_id}">
-                        <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Abonné</button>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Abonné</button>
                     </form>
                 HTML;
             } else {
                 $subBtn = <<<HTML
-                    <form method="POST" action="?action=subscribe" class="ms-auto">
+                    <form method="POST" action="?action=subscribe">
                         <input type="hidden" name="type" value="sub">
                         <input type="hidden" name="id" value="{$this->user_id}">
-                        <button type="submit" class="btn btn-sm btn-primary rounded-pill">S'abonner</button>
+                        <button type="submit" class="btn btn-sm btn-primary">S'abonner</button>
                     </form>
                 HTML;
             }
@@ -80,11 +80,12 @@ class TouiteRenderer implements Renderer {
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
         $card = <<<HTML
                 <article class="{$class}">
+                    {$this->touiteLink($touite_id, $completeName, $selector)}
                     <div class="touite-row">
                         <div class="touite-avatar">{$premiereLettre}</div>
                         <div class="touite-body">
-                            <div class="touite-header d-flex align-items-center">
-                                <a class="text-decoration-none text-reset fw-bold" href="?action=displayProfile&id={$this->user_id}"><strong>{$completeName}</strong></a>
+                            <div class="touite-header">
+                                <a class="touite-author" href="?action=displayProfile&id={$this->user_id}"><strong>{$completeName}</strong></a>
                                 <span>@{$completeName} · <time datetime="{$date}">{$date}</time></span>
                                 {$subBtn}
                             </div>
@@ -98,8 +99,18 @@ class TouiteRenderer implements Renderer {
                 </article>
         HTML;
 
-        return $selector === TypeRender::LONG
-            ? $card
-            : "<a class=\"touite-link\" href=\"?action=displayTouite&id={$touite_id}\">{$card}</a>";
+        return $card;
+    }
+
+    private function touiteLink(int $touiteId, string $author, TypeRender $selector): string {
+        if ($selector === TypeRender::LONG) {
+            return '';
+        }
+
+        return <<<HTML
+            <a class="touite-main-link" href="?action=displayTouite&id={$touiteId}"
+               aria-label="Voir le touite de {$author}">
+            </a>
+        HTML;
     }
 }

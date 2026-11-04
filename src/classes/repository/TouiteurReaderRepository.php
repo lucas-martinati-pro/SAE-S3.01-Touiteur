@@ -250,7 +250,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     public function isTagSub(int $user_id, int $tag_id) : bool {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT 1
-            FROM user2tag
+            FROM users2tag
             WHERE users_id = :user_id
             AND tag_id = :tag_id
         SQL);

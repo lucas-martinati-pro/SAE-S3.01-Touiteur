@@ -3,29 +3,78 @@
 namespace iutnc\touiteur\render;
 
 /**
- * Classe d'assistance pour la génération de composants HTML Bootstrap.
+ * Classe d'assistance pour la génération des composants HTML de Touiteur.
  */
 class HtmlHelper {
 
+    public static function button(string $label, string $icon = '', string $variant = 'primary', string $type = 'submit'): string {
+        $iconHtml = $icon !== '' ? "<i class=\"bi {$icon}\" aria-hidden=\"true\"></i>" : '';
+
+        return "<button type=\"{$type}\" class=\"btn btn-{$variant}\">{$iconHtml}{$label}</button>";
+    }
+
+    public static function linkButton(string $label, string $url, string $icon = '', string $variant = 'primary'): string {
+        $iconHtml = $icon !== '' ? "<i class=\"bi {$icon}\" aria-hidden=\"true\"></i>" : '';
+
+        return "<a class=\"btn btn-{$variant}\" href=\"{$url}\">{$iconHtml}{$label}</a>";
+    }
+
+    public static function backLink(string $url = '?action=displayFeed', string $label = 'Retour au feed'): string {
+        return <<<HTML
+            <a class="back-link" href="{$url}" aria-label="{$label}">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            </a>
+        HTML;
+    }
+
+    public static function detailHeader(string $title, string $backUrl = '?action=displayFeed'): string {
+        $backLink = self::backLink($backUrl);
+
+        return <<<HTML
+            <header class="feed-header detail-header">
+                {$backLink}
+                <h1>{$title}</h1>
+            </header>
+        HTML;
+    }
+
+    public static function pagination(string $ariaLabel, string $previousUrl, string $nextUrl, int $page): string {
+        $previousAttributes = $page === 1 ? ' aria-disabled="true" tabindex="-1"' : '';
+
+        return <<<HTML
+            <nav class="feed-pagination" aria-label="{$ariaLabel}">
+                <a class="btn btn-outline-secondary"{$previousAttributes} href="{$previousUrl}">
+                    <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                    Page précédente
+                </a>
+                <span>Page {$page}</span>
+                <a class="btn btn-outline-secondary" href="{$nextUrl}">
+                    Page suivante
+                    <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </a>
+            </nav>
+        HTML;
+    }
+
     /**
-     * Génère un titre de page stylisé Bootstrap avec icône et couleur optionnelles.
+     * Génère un titre de page cohérent avec le design de Touiteur.
      *
      * @param string $title Texte du titre à afficher.
      * @param string $icon Nom ou classe de l'icône Bootstrap Icons (ex: 'bi-music-note', 'music-note' ou 'bi bi-music-note').
-     * @param string $color Classe CSS complète de couleur Bootstrap (ex: 'text-primary', 'text-danger'). Défaut: 'text-primary'.
+     * @param string $color Classe CSS de couleur (ex: 'text-primary', 'text-danger'). Défaut: 'text-primary'.
      * @return string Balises HTML du titre formaté.
      */
     public static function title(string $title = '', string $icon = '', string $color = 'text-primary'): string {
         return <<<HTML
-            <h1 class="h2 fw-bold mb-3 d-flex align-items-center">
-                <i class="bi {$icon} {$color} me-2"></i>
+            <h1 class="page-title {$color}">
+                <i class="bi {$icon}" aria-hidden="true"></i>
                 {$title}
             </h1>
         HTML;
     }
 
     /**
-     * Génère une alerte Bootstrap (texte simple ou liste non ordonnée).
+     * Génère une alerte Touiteur (texte simple ou liste non ordonnée).
      *
      * @param string $type Type d'alerte ('success', 'warning', 'danger', 'info'). Par défaut 'info'.
      * @param string|array $content Texte unique ou tableau de messages à afficher.
@@ -51,9 +100,9 @@ class HtmlHelper {
         }
 
         return <<<HTML
-            <div class="alert alert-{$type} d-flex align-items-center" role="alert">
-                <i class="bi {$icon} me-2 fs-5 flex-shrink-0"></i>
-                <div class="flex-grow-1">
+            <div class="alert alert-{$type}" role="alert">
+                <i class="bi {$icon}" aria-hidden="true"></i>
+                <div>
                     {$body}
                 </div>
             </div>

@@ -55,25 +55,12 @@ class DisplayFeedAction extends Action {
         $previous = $pagination->previous();
         $next = $pagination->next();
         $pageNumber = $pagination->getPage();
-        $previousAttributes = $pageNumber === 1
-            ? ' aria-disabled="true" tabindex="-1"'
-            : '';
-        $pagination = <<< HTML
-            <nav class="feed-pagination" aria-label="Pagination du feed">
-                <a class="btn btn-outline-secondary"
-                    {$previousAttributes}
-                   href="?action=displayFeed{$feedQuery}&page={$previous}">
-                    <i class="bi bi-chevron-left"></i>
-                    Page précédente
-                </a>
-                <span>Page {$pageNumber}</span>
-                <a class="btn btn-outline-secondary"
-                   href="?action=displayFeed{$feedQuery}&page={$next}">
-                    Page suivante
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </nav>
-        HTML;
+        $pagination = HtmlHelper::pagination(
+            'Pagination du feed',
+            "?action=displayFeed{$feedQuery}&page={$previous}",
+            "?action=displayFeed{$feedQuery}&page={$next}",
+            $pageNumber
+        );
 
         if ($feed === null) {
             return $page . HtmlHelper::alert('info', 'Aucun touite à afficher pour le moment.') . $pagination;
