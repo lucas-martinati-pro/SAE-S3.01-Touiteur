@@ -4,6 +4,7 @@ namespace iutnc\touiteur\repository;
 
 use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\touite\Feed;
+use iutnc\touiteur\tag\Tag;
 use PDO;
 
 /**
@@ -36,11 +37,33 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return new Feed($touites);
     }
 
+    public function rowToTag(array $res): Tag {
+        $tag = new Tag(
+                $res['libelle'],
+                $res['id']
+            );
+
+        return $tag;
+    }
+
+    /**
+     * @return Tag[] Touts les tags de la base de données
+     */
+    public function rowsToTag(array $res): array {
+        $tags = [];
+
+        foreach ($res as $tag) {
+            $tags[] = $this->rowToTag($tag);
+        }
+
+        return $tags;
+    }
+
     public function findAllTouites(): ?Feed {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
-            order by posted_at desc;
+            ORDER BY posted_at DESC;
         SQL);
 
         $stmt->execute();
@@ -55,7 +78,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
-            where id = :id;
+            WHERE id = :id;
         SQL);
 
         $stmt->execute(['id' => $id]);
@@ -98,7 +121,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $stmt = $this->pdo->prepare(<<<SQL
             SELECT *
             FROM touite
-            where users_id = :id;
+            WHERE users_id = :id;
         SQL);
 
         $stmt->execute(['id' => $id]);
@@ -107,6 +130,78 @@ class TouiteurReaderRepository extends TouiteurRepository {
         if (!$res) return null;
 
         return $this->rowsToFeed($res);
+    }
+
+    public function findAllTouitesByTagId(int $id): ?Feed {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT touite.*
+            FROM touite
+            INNER JOIN tag2touite on touite.id = tag2touite.touite_id
+            WHERE tag2touite.tag_id = :id;
+        SQL);
+
+        $stmt->execute(['id' => $id]);
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowsToFeed($res);
+    }
+
+    public function findTagById(int $id): ?Tag {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT *
+            FROM tag
+            WHERE id = :id;
+        SQL);
+
+        $stmt->execute(['id' => $id]);
+
+        $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowToTag($res);
+    }
+
+    /**
+     * @return Tag[] Touts les tags
+     */
+    public function findTagsByTouiteId(int $id): ?array {
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT tag.*
+            FROM tag
+            INNER JOIN tag2touite on tag.id = tag2touite.tag_id
+            WHERE touite_id = :id;
+        SQL);
+
+        $stmt->execute(['id' => $id]);
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowsToTag($res);
+    }
+
+    /**
+     * @return Tag[] Touts les tags
+     */
+    public function findAllTags(int $limit = 1844674407370955161): ?array {
+        if ($limit < 0) $limit = 0;
+
+        $stmt = $this->pdo->prepare(<<<SQL
+            SELECT *
+            FROM tag
+            LIMIT :limit;
+        SQL);
+
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$res) return null;
+
+        return $this->rowsToTag($res);
     }
 
     /**============================================
