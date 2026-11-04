@@ -62,24 +62,26 @@ class AddTouiteAction extends Action
 
             // on regarde le type du fichier pour avoir la bonne destination final
             if ($type === "image/png") {
-                $destination = __DIR__ . "/../../../image/touite_img/" . $filename . ".png";
+                $destination =  "image/touite_img/" . $filename . ".png";
             } else if ($type === "image/jpeg") {
-                $destination = __DIR__ . "/../../../image/touite_img/"  . $filename . ".jpg";
+                $destination = "image/touite_img/"  . $filename . ".jpg";
             } else {
                 return "<p>" . $_FILES["img"]["tmp_name"] . "n'est pas un fichier jpeg ou png</p>";
             }
 
             if (move_uploaded_file($img, $destination)) {
-                print "<p> téléchargement avec succès </p>";
+                print "<p> voici votre touite </p>";
             } else {
                 return "<p> téléchargement non valide</p>";
             }
 
         }
 
+        
+
         // affichage
         $touite = new Touite($contenu, $dateClic, $destination, $desc_img, 1);
-
+        $test = var_dump($touite);
         $render = RendererFactory::getRenderer($touite);
 
         $html = $render->render();
@@ -87,6 +89,9 @@ class AddTouiteAction extends Action
         $page = <<<HTML
             $html
             <a href="?action=displayFeed"> retourner vers votre feeds</a>
+
+            $test
+
         HTML;
 
         return $page;
