@@ -369,7 +369,7 @@ h1, h2, h3 { letter-spacing: -.02em; }
 .touite-author:hover { color: var(--brand); text-decoration: underline; }
 .touite-header span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .touite-content { margin: .65rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.touite-image {
+.touite-media {
     display: block;
     max-width: 100%;
     max-height: 400px;
@@ -377,6 +377,11 @@ h1, h2, h3 { letter-spacing: -.02em; }
     border: 1px solid var(--border);
     border-radius: 1rem;
     object-fit: cover;
+}
+.touite-video {
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
 }
 .touite-actions {
     display: flex;
@@ -507,20 +512,20 @@ form { max-width: 540px; }
 .form-control:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }
 textarea.form-control { resize: vertical; }
 .form-text { display: block; margin-top: .35rem; color: var(--muted); font-size: .85rem; }
-.image-upload {
+.media-upload {
     position: relative;
     padding: 1rem;
     border: 1px solid var(--border);
     border-radius: 1rem;
     background: var(--surface-muted);
 }
-.image-input {
+.media-input {
     position: relative;
     z-index: 1;
     padding: .5rem;
     background: var(--surface);
 }
-.image-input::file-selector-button {
+.media-input::file-selector-button {
     margin-right: .7rem;
     padding: .45rem .8rem;
     border: 1px solid var(--border);
@@ -530,12 +535,12 @@ textarea.form-control { resize: vertical; }
     font-weight: 700;
     cursor: pointer;
 }
-.image-input::file-selector-button:hover {
+.media-input::file-selector-button:hover {
     border-color: var(--brand);
     background: var(--brand-soft);
     color: var(--brand);
 }
-.image-upload-help {
+.media-upload-help {
     display: flex;
     align-items: center;
     gap: .5rem;
@@ -543,12 +548,12 @@ textarea.form-control { resize: vertical; }
     color: var(--muted);
     font-size: .85rem;
 }
-.image-upload-help i { color: var(--brand); font-size: 1.1rem; }
-.image-upload-help small { margin-left: auto; }
-.image-description {
+.media-upload-help i { color: var(--brand); font-size: 1.1rem; }
+.media-upload-help small { margin-left: auto; }
+.media-description {
     border-bottom: 1px solid var(--border);
 }
-.image-description summary {
+.media-description summary {
     display: flex;
     align-items: center;
     gap: .5rem;
@@ -559,16 +564,16 @@ textarea.form-control { resize: vertical; }
     cursor: pointer;
     list-style: none;
 }
-.image-description summary::-webkit-details-marker { display: none; }
-.image-description summary::after {
+.media-description summary::-webkit-details-marker { display: none; }
+.media-description summary::after {
     margin-left: auto;
     content: '+';
     color: var(--brand);
     font-size: 1.2rem;
     font-weight: 400;
 }
-.image-description[open] summary::after { content: '−'; }
-.image-description .form-label { margin-top: .35rem; }
+.media-description[open] summary::after { content: '−'; }
+.media-description .form-label { margin-top: .35rem; }
 .form-check { display: flex; align-items: center; gap: .5rem; }
 .form-check-input { width: 1.1rem; height: 1.1rem; accent-color: var(--brand); }
 .demo-accounts {

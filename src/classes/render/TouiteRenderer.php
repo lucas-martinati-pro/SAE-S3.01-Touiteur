@@ -35,26 +35,37 @@ class TouiteRenderer implements Renderer {
         $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
         $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
         $note = $this->touite->getNote();
-        $image = '';
+        $media = '';
         // TODO
         $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
 
-        $imagePath = $this->touite->getImage_path();
-        if ($imagePath !== null && $imagePath !== '') {
-            $path = htmlspecialchars($imagePath, ENT_QUOTES, 'UTF-8');
+        $mediaPath = $this->touite->getmedia_path();
+        if ($mediaPath !== null && $mediaPath !== '') {
+            $path = htmlspecialchars($mediaPath, ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars(
-                $this->touite->getImage_description() ?? 'Image du touite',
+                $this->touite->getmedia_description() ?? 'Média du touite',
                 ENT_QUOTES,
                 'UTF-8'
             );
-            $image = "<img class=\"touite-image\" src=\"{$path}\" alt=\"{$description}\">";
+
+            $extension = strtolower(pathinfo($mediaPath, PATHINFO_EXTENSION));
+
+            if ($extension === 'mp4') {
+                $media = <<<HTML
+                    <video class="touite-media touite-video" controls width="100%" preload="metadata">
+                        <source src="{$path}" type="video/mp4">
+                        Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+                HTML;
+            } else {
+                $media = "<img class=\"touite-media\" src=\"{$path}\" alt=\"{$description}\">";
+            }
         }
 
         $rawName = $this->nom . " " . $this->prenom;
         $rawNameId = $this->nom . "_" . $this->prenom;
         $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
         $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
-        $premiereLettre = htmlspecialchars(mb_substr($rawName, 0, 1), ENT_QUOTES, 'UTF-8');
         $subBtn = "";
         $currentUser = AuthnProvider::getSignedInUser();
         $currentUserId = $currentUser['id'];
@@ -91,7 +102,7 @@ class TouiteRenderer implements Renderer {
                                 {$subBtn}
                             </div>
                             <p class="touite-content">{$content}</p>
-                            {$image}
+                            {$media}
                             <div class="touite-actions {$actionsClass}" aria-label="Actions du touite">
                                 {$noteActions}
                             </div>

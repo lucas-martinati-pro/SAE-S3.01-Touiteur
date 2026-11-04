@@ -13,8 +13,8 @@ CREATE TABLE touite (
     id NUMBER(38) GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content varchar2(235) NOT NULL,
     note NUMBER(5),
-    image_description varchar2(235),
-    image_path varchar2(256),
+    media_description varchar2(235),
+    media_path varchar2(256),
     posted_at DATE NOT NULL,
     users_id NUMBER(11) NOT NULL
 );
