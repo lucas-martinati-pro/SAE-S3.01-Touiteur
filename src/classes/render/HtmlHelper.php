@@ -2,10 +2,50 @@
 
 namespace iutnc\touiteur\render;
 
+use iutnc\touiteur\enum\TypeRender;
+
 /**
  * Classe d'assistance pour la génération des composants HTML de Touiteur.
  */
 class HtmlHelper {
+
+    public static function subscriptionButton(int $userId, bool $isSubscribed): string {
+        $type = $isSubscribed ? 'unsub' : 'sub';
+        $label = $isSubscribed ? 'Abonné' : "S'abonner";
+        $variant = $isSubscribed ? 'outline-primary' : 'primary';
+
+        return <<<HTML
+            <form method="POST" action="?action=subscribe">
+                <input type="hidden" name="type" value="{$type}">
+                <input type="hidden" name="id" value="{$userId}">
+                <button type="submit" class="btn btn-sm btn-{$variant}">{$label}</button>
+            </form>
+        HTML;
+    }
+
+    public static function touiteActions(int $touiteId, int $note, TypeRender $selector): string {
+        $noteClass = $note < 0
+            ? 'touite-note-negative'
+            : ($note > 0 ? 'touite-note-positive' : 'touite-note-neutral');
+        $noteHtml = "<span class=\"touite-note {$noteClass}\" aria-label=\"Note du touite\"><i class=\"bi bi-heart\"></i> {$note}</span>";
+
+        if ($selector === TypeRender::COMPACT) {
+            return $noteHtml;
+        }
+
+        return <<<HTML
+            {$noteHtml}
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=like">
+                <button type="submit" aria-label="J'aime"><i class="bi bi-hand-thumbs-up"></i> J'aime</button>
+            </form>
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=dislike">
+                <button type="submit" aria-label="Je n'aime pas"><i class="bi bi-hand-thumbs-down"></i> Je n'aime pas</button>
+            </form>
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=annuler">
+                <button type="submit" aria-label="Annuler ma note"><i class="bi bi-x-circle"></i> Annuler</button>
+            </form>
+        HTML;
+    }
 
     public static function button(string $label, string $icon = '', string $variant = 'primary', string $type = 'submit'): string {
         $iconHtml = $icon !== '' ? "<i class=\"bi {$icon}\" aria-hidden=\"true\"></i>" : '';
