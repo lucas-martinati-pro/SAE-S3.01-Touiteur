@@ -16,6 +16,7 @@ class RegisterAction extends Action {
     #[Override]
     public function get(): string {
         $require = '<span class="text-danger">*</span>';
+        $registerButton = HtmlHelper::button('Inscription', 'bi-person-plus-fill');
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/
         $title = HtmlHelper::title("Inscription", "bi-person-plus-fill");
         return <<<HTML
@@ -56,10 +57,7 @@ class RegisterAction extends Action {
                 <input type="checkbox" class="form-check-input" id="connect-auto" name="connect-auto" checked>
                 <label class="form-check-label" for="connect-auto">Se connecter automatiquement</label>
             </div>
-            <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
-                <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/ -->
-                <i class="bi bi-person-plus-fill me-1"></i>Inscription
-            </button>
+            {$registerButton}
         </form>
         HTML;
     }

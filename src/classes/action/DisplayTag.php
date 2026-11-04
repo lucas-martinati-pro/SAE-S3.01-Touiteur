@@ -30,13 +30,7 @@ class DisplayTag extends Action {
             return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
         }
 
-        $page = <<< HTML
-            <header class="feed-header detail-header">
-                <a class="back-link" href="?action=displayFeed" aria-label="Retour au feed">
-                    <i class="bi bi-arrow-left"></i>
-                </a>
-                <h1>#{$tagLabel}</h1>
-            </header>
+        $page = HtmlHelper::detailHeader("#{$tagLabel}") . <<< HTML
             <section class="tag-feed">
                 <div class="feed-heading">
                     <h2>Touites associés au tag #{$tagLabel}</h2>
@@ -47,25 +41,12 @@ class DisplayTag extends Action {
         $previous = $pagination->previous();
         $next = $pagination->next();
         $pageNumber = $pagination->getPage();
-        $previousAttributes = $pageNumber === 1
-            ? ' aria-disabled="true" tabindex="-1"'
-            : '';
-        $pagination = <<< HTML
-            <nav class="feed-pagination" aria-label="Pagination du tag">
-                <a class="btn btn-outline-secondary"
-                   {$previousAttributes}
-                   href="?action=displayTag&id={$id}&page={$previous}">
-                    <i class="bi bi-chevron-left"></i>
-                    Page précédente
-                </a>
-                <span>Page {$pageNumber}</span>
-                <a class="btn btn-outline-secondary"
-                   href="?action=displayTag&id={$id}&page={$next}">
-                    Page suivante
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </nav>
-        HTML;
+        $pagination = HtmlHelper::pagination(
+            'Pagination du tag',
+            "?action=displayTag&id={$id}&page={$previous}",
+            "?action=displayTag&id={$id}&page={$next}",
+            $pageNumber
+        );
 
         return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
     }

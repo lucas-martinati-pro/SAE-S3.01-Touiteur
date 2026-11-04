@@ -21,25 +21,16 @@ class SigninAction extends Action {
 
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/
             $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
+            $feedButton = HtmlHelper::linkButton('Mon feed', '?action=displayFeed', 'bi-collection-play-fill');
+            $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
+            $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
             return <<<HTML
                 {$title}
                 <p>Vous êtes déjà connecté avec l'adresse <strong>{$email}</strong>.</p>
                 <p>
-                    <a class="btn btn-primary d-inline-flex align-items-center" href="?action=displayFeed">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/collection-play-fill/ -->
-                        <i class="bi bi-collection-play-fill me-2"></i>
-                        Mon feed
-                    </a>
-                    <a class="btn btn-danger ms-2 d-inline-flex align-items-center" href="?action=signout">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
-                        <i class="bi bi-box-arrow-right me-1"></i>
-                        Se déconnecter
-                    </a>
-                    <a class="btn btn-secondary ms-2 d-inline-flex align-items-center" href="index.php">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/house-door-fill/ -->
-                        <i class="bi bi-house-door-fill me-1"></i>
-                        Accueil
-                    </a>
+                    {$feedButton}
+                    {$signoutButton}
+                    {$homeButton}
                 </p>
             HTML;
         } catch (AuthnException) {

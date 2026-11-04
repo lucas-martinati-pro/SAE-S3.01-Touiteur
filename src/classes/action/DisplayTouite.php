@@ -17,14 +17,7 @@ class DisplayTouite extends Action {
         $reader = RepositoryFactory::getReader();
         $touite = $reader->findTouiteById((int) ($_GET['id'] ?? 0));
 
-        $page = <<< HTML
-            <header class="feed-header detail-header">
-                <a class="back-link" href="?action=displayFeed" aria-label="Retour au feed">
-                    <i class="bi bi-arrow-left"></i>
-                </a>
-                <h1>Touite</h1>
-            </header>
-        HTML;
+        $page = HtmlHelper::detailHeader('Touite');
 
         if ($touite === null) {
             return $page . HtmlHelper::alert('info', 'Ce touite est introuvable.');
