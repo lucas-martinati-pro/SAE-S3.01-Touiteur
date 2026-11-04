@@ -37,6 +37,7 @@ class SigninAction extends Action {
             $require = '<span class="text-danger">*</span>';
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/
             $title = HtmlHelper::title("Connexion", "bi-box-arrow-in-right");
+            $loginButton = HtmlHelper::button('Connexion', 'bi-box-arrow-in-right');
             return <<<HTML
                 {$title}
                 <form method="post" action="?action=signin">
@@ -50,11 +51,29 @@ class SigninAction extends Action {
                         <input type="password" name="password" class="form-control" id="password" aria-describedby="passwordHelp" required>
                         <div id="passwordHelp" class="form-text">Saisissez le mot de passe associé à votre compte.</div>
                     </div>
-                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/ -->
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Connexion
-                    </button>
+                    {$loginButton}
                 </form>
+                <section class="demo-accounts" aria-labelledby="demo-accounts-title">
+                    <h2 id="demo-accounts-title">Comptes de démonstration</h2>
+                    <p>Utilisez l'un de ces comptes pour vous connecter.</p>
+                    <div class="demo-account-list">
+                        <div class="demo-account">
+                            <strong>User 1</strong>
+                            <span>user1@mail.com</span>
+                            <code>Mot de passe : user1</code>
+                        </div>
+                        <div class="demo-account">
+                            <strong>User 2</strong>
+                            <span>user2@mail.com</span>
+                            <code>Mot de passe : user2</code>
+                        </div>
+                        <div class="demo-account">
+                            <strong>Admin</strong>
+                            <span>admin@mail.com</span>
+                            <code>Mot de passe : admin</code>
+                        </div>
+                    </div>
+                </section>
             HTML;
         }
     }
