@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" rx="32" fill="#581c87"/>
+  <circle cx="220" cy="250" r="105" fill="#f0abfc"/>
+  <circle cx="220" cy="250" r="38" fill="#581c87"/>
+  <path d="M220 145v105M220 145l210-55v105" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="430" cy="195" r="38" fill="#fff"/>
+  <text x="500" y="275" fill="#fff" font-family="Arial, sans-serif" font-size="66" font-weight="700">Musique</text>
+</svg>

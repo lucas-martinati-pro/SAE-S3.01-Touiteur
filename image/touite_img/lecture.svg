@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" rx="32" fill="#7c2d12"/>
+  <rect x="150" y="115" width="220" height="280" rx="10" fill="#fed7aa" transform="rotate(-8 260 255)"/>
+  <rect x="365" y="105" width="220" height="280" rx="10" fill="#fdba74" transform="rotate(8 475 245)"/>
+  <path d="M205 180h115M195 220h125M420 175h115M410 215h125" stroke="#9a3412" stroke-width="14" stroke-linecap="round"/>
+  <text x="610" y="270" fill="#fff" font-family="Arial, sans-serif" font-size="54" font-weight="700">Lecture</text>
+</svg>
