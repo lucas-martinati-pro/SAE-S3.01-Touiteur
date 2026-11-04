@@ -149,3 +149,28 @@ BEGIN
     END IF;
 END;
 /
+
+-- Triggers persos :
+-- Triggers permettant de mettre à jour automatiquement les notes d'un touites lors de l'ajout d'une note
+CREATE OR REPLACE TRIGGER update_note
+AFTER INSERT OR UPDATE ON note2touite
+FOR EACH ROW
+DECLARE
+    touite_note NUMBER;
+BEGIN
+    UPDATE touite
+    SET note = NVL(note, 0) + :NEW.state
+    WHERE touite_id = :NEW.touite_id;
+END;
+
+CREATE OR REPLACE TRIGGER update_note
+AFTER DELETE ON note2touite
+FOR EACH ROW
+DECLARE
+    touite_note NUMBER;
+BEGIN
+    UPDATE touite
+    SET note = NVL(note, 0) - :OLD.state
+    WHERE touite_id = :OLD.touite_id;
+END;
+/

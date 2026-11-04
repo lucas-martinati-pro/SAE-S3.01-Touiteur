@@ -256,6 +256,7 @@ h1, h2, h3 { letter-spacing: -.035em; }
     max-width: 430px;
     margin-top: .9rem;
 }
+.touite-actions form { margin: 0; }
 .touite-actions button {
     padding: .35rem .5rem;
     border: 0;

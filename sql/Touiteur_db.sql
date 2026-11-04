@@ -154,4 +154,34 @@ BEGIN
     END IF;
 END//
 
+-- Mettre à jour automatiquement la note d'un touite lors de l'ajout d'une note :
+CREATE TRIGGER update_note_insert
+AFTER INSERT ON note2touite
+FOR EACH ROW
+BEGIN
+    UPDATE touite
+    SET note = COALESCE(note, 0) + NEW.state
+    WHERE id = NEW.touite_id;
+END//
+
+-- Prendre en compte le remplacement d'une note existante :
+CREATE TRIGGER update_note_update
+AFTER UPDATE ON note2touite
+FOR EACH ROW
+BEGIN
+    UPDATE touite
+    SET note = COALESCE(note, 0) + NEW.state - OLD.state
+    WHERE id = NEW.touite_id;
+END//
+
+-- Prendre en compte l'annulation d'une note :
+CREATE TRIGGER update_note_delete
+AFTER DELETE ON note2touite
+FOR EACH ROW
+BEGIN
+    UPDATE touite
+    SET note = COALESCE(note, 0) - OLD.state
+    WHERE id = OLD.touite_id;
+END//
+
 DELIMITER ;

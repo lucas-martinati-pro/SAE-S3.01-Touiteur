@@ -8,6 +8,7 @@ use iutnc\touiteur\action\DisplayListFollowedTag;
 use iutnc\touiteur\action\DisplayProfile;
 use iutnc\touiteur\action\DisplayTag;
 use iutnc\touiteur\action\DisplayTouite;
+use iutnc\touiteur\action\LikeAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
@@ -42,9 +43,10 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "addTouite" => (new AddTouiteAction())(),
             "displayTouite" => (new DisplayTouite())(),
             "displayProfile" => (new DisplayProfile())(),
+            "addTouite" => (new AddTouiteAction())(),
+            "LikeAction" => (new LikeAction())(),
             "displayTag" => (new DisplayTag)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
