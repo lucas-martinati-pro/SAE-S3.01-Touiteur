@@ -299,6 +299,26 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return (float) $res[0]['moyenne'];
     }
 
+    public function isLikedBy(int $user_id, int $touite_id) : bool {
+        return $this->exists(<<<SQL
+            SELECT 1
+            FROM note2touite
+            WHERE users_id = :user_id
+            AND touite_id = :touite_id
+            AND state = 1
+        SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
+    }
+
+    public function isDislikedBy(int $user_id, int $touite_id) : bool {
+        return $this->exists(<<<SQL
+            SELECT 1
+            FROM note2touite
+            WHERE users_id = :user_id
+            AND touite_id = :touite_id
+            AND state = -1
+        SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/

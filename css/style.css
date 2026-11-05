@@ -403,8 +403,29 @@ h1, h2, h3 { letter-spacing: -.02em; }
     border: 0;
     background: transparent;
     color: var(--muted);
+    transition: background .2s, color .2s;
 }
 .touite-actions button:hover { color: var(--danger); }
+.touite-actions button.is-liked {
+    color: var(--success);
+    background-color: rgba(22, 131, 75, .15);
+    border-radius: 999px;
+    font-weight: 700;
+}
+.touite-actions button.is-liked:hover {
+    color: var(--success);
+    background-color: rgba(22, 131, 75, .25);
+}
+.touite-actions button.is-disliked {
+    color: var(--danger);
+    background-color: rgba(224, 36, 94, .15);
+    border-radius: 999px;
+    font-weight: 700;
+}
+.touite-actions button.is-disliked:hover {
+    color: var(--danger);
+    background-color: rgba(224, 36, 94, .25);
+}
 .touite-note-positive { color: var(--success); }
 .touite-note-negative { color: var(--danger); }
 .touite-note-neutral { color: var(--muted); }

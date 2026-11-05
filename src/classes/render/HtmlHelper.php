@@ -2,7 +2,10 @@
 
 namespace iutnc\touiteur\render;
 
+use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\enum\TypeRender;
+use iutnc\touiteur\exception\AuthnException;
+use iutnc\touiteur\repository\RepositoryFactory;
 
 /**
  * Classe d'assistance pour la génération des composants HTML de Touiteur.
@@ -71,13 +74,32 @@ class HtmlHelper {
             return $noteHtml;
         }
 
+        $r = RepositoryFactory::getReader();
+        $isLiked = false;
+        $isDisliked = false;
+
+        try {
+            $user = AuthnProvider::getSignedInUser();
+            $userId = (int) $user['id'];
+            $isLiked = $r->isLikedBy($userId, $touiteId);
+            $isDisliked = $r->isDislikedBy($userId, $touiteId);
+        } catch (AuthnException) {
+            // Utilisateur non connecté
+        }
+
+        $likeClass = $isLiked ? 'is-liked' : '';
+        $likeIcon = $isLiked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up';
+
+        $dislikeClass = $isDisliked ? 'is-disliked' : '';
+        $dislikeIcon = $isDisliked ? 'bi-hand-thumbs-down-fill' : 'bi-hand-thumbs-down';
+
         return <<<HTML
             {$noteHtml}
             <form method="POST" action="?action=LikeAction&id={$touiteId}&type=like">
-                <button type="submit" aria-label="J'aime"><i class="bi bi-hand-thumbs-up"></i> J'aime</button>
+                <button type="submit" class="{$likeClass}" aria-label="J'aime"><i class="bi {$likeIcon}"></i> J'aime</button>
             </form>
             <form method="POST" action="?action=LikeAction&id={$touiteId}&type=dislike">
-                <button type="submit" aria-label="Je n'aime pas"><i class="bi bi-hand-thumbs-down"></i> Je n'aime pas</button>
+                <button type="submit" class="{$dislikeClass}" aria-label="Je n'aime pas"><i class="bi {$dislikeIcon}"></i> Je n'aime pas</button>
             </form>
             <form method="POST" action="?action=LikeAction&id={$touiteId}&type=annuler">
                 <button type="submit" aria-label="Annuler ma note"><i class="bi bi-x-circle"></i> Annuler</button>
