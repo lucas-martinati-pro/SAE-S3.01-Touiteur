@@ -42,12 +42,12 @@ class TouiteRenderer implements Renderer {
 
         foreach ($mots as $mot) {
             if ($tags && str_starts_with($mot, '#')) {
-                $tagLibelle = substr($mot, 1);
+                $tagLibelle = rtrim(substr($mot, 1), '.,');
                 foreach ($tags as $tag) {
                     $id = $tag->getId();
                     $libelle = $tag->getLibelle();
                     if ($tagLibelle == $libelle) {
-                        $mot = "<a href=\"?action=displayTag&id={$id}\">#{$libelle}</a>";
+                        $mot = str_replace("#{$libelle}", "<a href=\"?action=displayTag&id={$id}\">#{$libelle}</a>", $mot);
                         break;
                     }
                 }
