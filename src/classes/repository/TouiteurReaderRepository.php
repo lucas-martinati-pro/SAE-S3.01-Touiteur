@@ -247,8 +247,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
         if ($limit < 0) $limit = 0;
 
         $res = $this->fetchAll(<<<SQL
-            SELECT *
+            SELECT tag.*
             FROM tag
+            INNER JOIN tag2touite ON tag2touite.tag_id = tag.id
+            GROUP BY tag_id
+            ORDER BY COUNT(touite_id)
             LIMIT :limit;
         SQL, ['limit' => $limit]);
 
