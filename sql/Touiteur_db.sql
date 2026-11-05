@@ -70,7 +70,7 @@ ALTER TABLE users2tag
 ALTER TABLE note2touite
     ADD CONSTRAINT fk_note_user FOREIGN KEY (users_id) REFERENCES users(id),
     ADD CONSTRAINT fk_note_touite FOREIGN KEY (touite_id) REFERENCES touite(id),
-    ADD CONSTRAINT chk_note_bool CHECK (state IN (-1, 0, 1));
+    ADD CONSTRAINT chk_note_bool CHECK (state IN (-1, 1));
 ALTER TABLE tag2touite
     ADD CONSTRAINT fk_tag2touite_touite FOREIGN KEY (touite_id) REFERENCES touite(id),
     ADD CONSTRAINT fk_tag2touite_tag FOREIGN KEY (tag_id) REFERENCES tag(id);
