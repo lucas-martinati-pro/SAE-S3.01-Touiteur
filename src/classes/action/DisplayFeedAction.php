@@ -23,21 +23,45 @@ class DisplayFeedAction extends Action {
 
         $r = RepositoryFactory::getReader();
 
-        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
-        $pagination = new Pagination($page);
+        $pageNumber = (int) ($_GET['page'] ?? 1);
+        $pagination = new Pagination($pageNumber);
 
-        $feed = '';
-        $feedType = '';
-        $activeGlobal = '';
-        $activeFollow = '';
-        $search = (isset($_GET['search'])) ? $_GET['search'] : '';
-        if (isset($_GET['type']) && $_GET['type'] == 'global') {
-            $feed = (!$search) ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination);
-            $activeGlobal = 'class="active"';
-            $feedType = 'global';
-        } else {
-            $feed = (!$search) ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination);
-            $activeFollow = 'class="active"';
+        $type = $_GET['type'] ?? 'followed';
+        $search = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
+        $feed = match ($type) {
+            'global' => ($search === '') ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination),
+            default => ($search === '') ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination),
+        };
+
+        $tabs = [
+            'global' => 'Pour vous',
+            'followed' => 'Abonnements',
+        ];
+
+        $ongletsHtml = '';
+
+        foreach ($tabs as $value => $label) {
+            $active = $type === $value ? 'active' : '';
+            $url = '?' . http_build_query([
+                'action' => 'displayFeed',
+                'type' => $value,
+                'search' => $search,
+            ]);
+            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+            $ongletsHtml .= <<<HTML
+                <a class="{$active}" href="{$url}">{$label}</a>
+            HTML;
+        }
+
+        $searchSummary = '';
+        if ($search !== '') {
+            $clearUrl = '?action=displayFeed&type=' . $type;
+            $searchSummary = <<<HTML
+                <div class="px-3 py-2 border-bottom">
+                    <p class="mb-1">Résultats pour : <strong>{$search}</strong></p>
+                    <a href="{$clearUrl}">Effacer la recherche</a>
+                </div>
+            HTML;
         }
 
         $profileAvatar = HtmlHelper::profileAvatar($this->user);
@@ -47,10 +71,10 @@ class DisplayFeedAction extends Action {
                     <h1>Accueil</h1>
                 </div>
                 <nav class="feed-tabs" aria-label="Fil d'actualité">
-                    <a {$activeGlobal} href="?action=displayFeed&type=global">Pour vous</a>
-                    <a {$activeFollow} href="?action=displayFeed">Abonnements</a>
+                    {$ongletsHtml}
                 </nav>
             </header>
+            {$searchSummary}
             <div class="compose-box">
                 {$profileAvatar}
                 <div class="compose-content">
@@ -60,13 +84,22 @@ class DisplayFeedAction extends Action {
             </div>
         HTML;
 
-        $action = ($feedType === 'global') ? 'displayFeed&type=global' : 'displayFeed';
+        // Le http_build_query permet d'automatiquement créer la query
+        $action = 'displayFeed&' . http_build_query([
+            'type' => $type,
+            'search' => $search,
+        ]);
         return $page . RendererFactory::getRenderer($feed, $pagination, $action)->render(TypeRender::COMPACT);
     }
 
     #[Override]
     public function post(): string {
-        header("Location: ?action=displayFeed&type=global&id=&search=" . $_POST['search']);
+        $query = http_build_query([
+            'action' => 'displayFeed',
+            'type' => 'global',
+            'search' => trim($_POST['search'] ?? ''),
+        ]);
+        header('Location: ?' . $query);
         exit;
     }
 

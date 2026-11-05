@@ -126,6 +126,7 @@ class Dispatcher {
                 HTML;
             }
 
+            $searchValue = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
             $search = <<<HTML
                 <form method="post" action="?action=displayFeed" class="search-form mb-3" role="search">
                     <label for="search" class="visually-hidden">Rechercher un touite</label>
@@ -133,6 +134,7 @@ class Dispatcher {
                         type="search"
                         name="search"
                         id="search"
+                        value="{$searchValue}"
                         class="form-control search-input"
                         placeholder="Rechercher un touite"
                         aria-label="Rechercher un touite"
