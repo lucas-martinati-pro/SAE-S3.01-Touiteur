@@ -270,6 +270,19 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
+    public function getFollowers(int $user_id) : ?array {
+        $res = $this->fetchAll(<<<SQL
+            SELECT nom, prenom
+            FROM users
+            INNER JOIN follow on follow.follower_id = users.id
+            WHERE followed_id = :user_id
+        SQL, ['user_id' => $user_id]);
+
+        if (!$res) return null;
+
+        return $res;
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/
