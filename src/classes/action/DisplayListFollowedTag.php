@@ -30,6 +30,7 @@ class DisplayListFollowedTag extends Action {
         foreach ($listOfTag as $row) {
             $tagId = (int) $row['id'];
             $libelle = htmlspecialchars($row['libelle'], ENT_QUOTES, 'UTF-8');
+            $descr = htmlspecialchars($row['description'], ENT_QUOTES, 'UTF-8');
 
             $items .= <<<HTML
                 <a href="?action=displayTag&id={$tagId}" class="followed-tag">
@@ -37,6 +38,7 @@ class DisplayListFollowedTag extends Action {
                         <i class="bi bi-hash"></i>
                     </span>
                     <span class="followed-tag-label">#{$libelle}</span>
+                    <p>{$descr}</p>
                     <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
                 </a>
             HTML;
