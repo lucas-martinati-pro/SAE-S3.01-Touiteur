@@ -11,6 +11,33 @@ use iutnc\touiteur\repository\RepositoryFactory;
  * Classe d'assistance pour la génération des composants HTML de Touiteur.
  */
 class HtmlHelper {
+    /**
+     * Génère les liens à placer dans la balise nav des onglets.
+     *
+     * @param array<string, string> $tabs Types d'onglets associés à leurs libellés.
+     * @param array<string, mixed> $params Paramètres à conserver, comme id ou search.
+     */
+    public static function tabs(array $tabs, string $active, string $action, array $params = []): string {
+        $html = '';
+
+        foreach ($tabs as $value => $label) {
+            $class = (string) $value === $active ? 'active' : '';
+            $current = $class === 'active' ? ' aria-current="page"' : '';
+            $url = '?' . http_build_query(array_merge($params, [
+                'action' => $action,
+                'type' => $value,
+            ]));
+            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+            $label = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
+
+            $html .= <<<HTML
+                <a class="{$class}" href="{$url}"{$current}>{$label}</a>
+            HTML;
+        }
+
+        return $html;
+    }
+
     public static function alreadyLogin(string $email): string {
         $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
         $feedButton = HtmlHelper::linkButton('Mon feed', '?action=displayFeed', 'bi-collection-play-fill');

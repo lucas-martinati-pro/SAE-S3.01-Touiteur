@@ -85,20 +85,8 @@ class DisplayProfile extends Action {
             'medias' => 'Médias',
         ];
 
-        $ongletsHtml = '';
+        $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'displayProfile', ['id' => $id]);
 
-        foreach ($tabs as $value => $label) {
-            $active = $type === $value ? 'active' : '';
-            $url = '?' . http_build_query([
-                'action' => 'displayProfile',
-                'type' => $value,
-                'id' => $id,
-            ]);
-            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
-            $ongletsHtml .= <<<HTML
-                <a class="{$active}" href="{$url}">{$label}</a>
-            HTML;
-        }
         $backLink = HtmlHelper::backLink('?action=displayFeed');
         $page = <<<HTML
             <header class="feed-header detail-header">
@@ -116,10 +104,10 @@ class DisplayProfile extends Action {
                     <h2>{$completeName}</h2>
                     <p class="profile-handle">@{$completeNameId}</p>
                     <div class="d-flex flex-wrap gap-2 my-2 align-items-center">
-                        <a href="?action=listFollowed&id={$id}" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <a href="?action=displayUsers&id={$id}&type=followed" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-person-check me-1"></i> <strong>{$nbFollowed}</strong> abonnements
                         </a>
-                        <a href="?action=listFollowers&id={$id}" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <a href="?action=displayUsers&id={$id}&type=followers" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-people me-1"></i> <strong>{$nbFollowers}</strong> abonnés
                         </a>
                         <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">

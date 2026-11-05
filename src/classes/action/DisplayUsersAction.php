@@ -9,7 +9,7 @@ use Override;
 /**
  * Action affichant la liste des abonnés d'un utilisateur.
  */
-class DisplayFollowersAction extends Action {
+class DisplayUsersAction extends Action {
 
     #[Override]
     public function get(): string {
@@ -17,18 +17,29 @@ class DisplayFollowersAction extends Action {
 
         $id = (int) ($_GET['id'] ?? $this->user['id']);
 
-        $backUrl = $id > 0 ? "?action=displayProfile&id={$id}" : "?action=displayFeed";
-        $header = HtmlHelper::detailHeader('Abonnés', $backUrl);
+        $backUrl = "?action=displayProfile&id={$id}";
+        $type = $_GET['type'] ?? 'followed';
 
-        $followers = $r->getFollowers($id);
+        $header = match ($type) {
+            'followers' => HtmlHelper::detailHeader('Abonnés', $backUrl),
+            default => HtmlHelper::detailHeader('Abonnements', $backUrl),
+        };
 
-        if ($followers === null || empty($followers)) {
-            return $header . '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n’a aucun abonné.') . '</div>';
-        }
+        $users = match ($type) {
+            'followers' => $r->getFollowers($id),
+            default => $r->getFollowed($id),
+        };
+
+        if ($users === null || empty($users)) {
+            return $header . match ($type) {
+                'followers' => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n’a aucun abonné.') . '</div>',
+                default => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur ne suit personne.') . '</div>',
+            };
+        };
 
         $items = '';
-        foreach ($followers as $row) {
-            $followerId = (int) $row['id'];
+        foreach ($users as $row) {
+            $userId = (int) $row['id'];
             $nom = htmlspecialchars($row['nom'], ENT_QUOTES, 'UTF-8');
             $prenom = htmlspecialchars($row['prenom'], ENT_QUOTES, 'UTF-8');
             $completeName = "{$nom} {$prenom}";
@@ -36,7 +47,7 @@ class DisplayFollowersAction extends Action {
             $avatar = HtmlHelper::profileAvatar($row);
 
             $items .= <<<HTML
-                <a href="?action=displayProfile&id={$followerId}" class="followed-tag">
+                <a href="?action=displayProfile&id={$userId}" class="followed-tag">
                     {$avatar}
                     <div class="followed-tag-label">
                         <div class="fw-bold">{$completeName}</div>
@@ -47,8 +58,9 @@ class DisplayFollowersAction extends Action {
             HTML;
         }
 
+        $listLabel = $type === 'followers' ? 'Liste des abonnés' : 'Liste des abonnements';
         return $header . <<<HTML
-            <section class="followed-tags" aria-label="Liste des abonnés">
+            <section class="followed-tags" aria-label="{$listLabel}">
                 {$items}
             </section>
         HTML;
