@@ -26,6 +26,15 @@ class DisplayProfile extends Action {
         $feed = $r->findFeedByUserId($id, $pagination);
 
         $details = $r->getUserById($id);
+        if (!$details) {
+            return HtmlHelper::formError(
+                errors: "Le profil demandé est introuvable.",
+                backUrl: "?action=displayFeed",
+                backLabel: "Retour à l'accueil",
+                title: "Profil introuvable"
+            );
+        }
+
         $rawName = $details['nom'] . " " . $details['prenom'];
         $rawNameId = $details['nom'] . "_" . $details['prenom'];
         $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
@@ -88,20 +97,6 @@ class DisplayProfile extends Action {
             </section>
         HTML;
 
-        $previous = $pagination->previous();
-        $next = $pagination->next();
-        $pageNumber = $pagination->getPage();
-        $pagination = HtmlHelper::pagination(
-            'Pagination du profil',
-            "?action=displayProfile&id={$id}&page={$previous}",
-            "?action=displayProfile&id={$id}&page={$next}",
-            $pageNumber
-        );
-
-        if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.') . $pagination;
-        }
-
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
+        return $page . RendererFactory::getRenderer($feed, $pagination, "displayProfile&id=" . $id)->render(TypeRender::COMPACT);
     }
 }
