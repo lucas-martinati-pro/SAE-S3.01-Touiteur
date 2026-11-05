@@ -88,6 +88,6 @@ class DisplayProfile extends Action {
             </section>
         HTML;
 
-        return $page . RendererFactory::getRenderer($feed, $pagination, "displayProfile")->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed, $pagination, "displayProfile&id=" . $id)->render(TypeRender::COMPACT);
     }
 }
