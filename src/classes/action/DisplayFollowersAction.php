@@ -7,7 +7,7 @@ use iutnc\touiteur\repository\RepositoryFactory;
 use Override;
 
 /**
- * Action affichant la liste des tags suivis par un utilisateur.
+ * Action affichant la liste des abonnés d'un utilisateur.
  */
 class DisplayFollowersAction extends Action {
 
@@ -15,37 +15,40 @@ class DisplayFollowersAction extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-        $id = $this->user['id'];
+        $id = (int) ($_GET['id'] ?? $this->user['id']);
 
         $backUrl = $id > 0 ? "?action=displayProfile&id={$id}" : "?action=displayFeed";
+        $header = HtmlHelper::detailHeader('Abonnés', $backUrl);
 
         $followers = $r->getFollowers($id);
 
-        $header = HtmlHelper::detailHeader('Mon compte', $backUrl);
-
-        if ($followers === null) {
-            return $header . '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n\'a pas de follower.') . '</div>';
+        if ($followers === null || empty($followers)) {
+            return $header . '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n’a aucun abonné.') . '</div>';
         }
 
         $items = '';
         foreach ($followers as $row) {
-            $follower_id = (int) $row['id'];
+            $followerId = (int) $row['id'];
             $nom = htmlspecialchars($row['nom'], ENT_QUOTES, 'UTF-8');
             $prenom = htmlspecialchars($row['prenom'], ENT_QUOTES, 'UTF-8');
+            $completeName = "{$nom} {$prenom}";
+            $completeNameId = "{$nom}_{$prenom}";
+            $avatar = HtmlHelper::profileAvatar($row);
 
             $items .= <<<HTML
-                <a href="?action=displayProfile&id={$follower_id}" class="">
-                    <span class="" aria-hidden="true">
-                        <i class=""></i>
-                    </span>
-                    <span class="">@{$nom}_{$prenom}</span>
-                    <i class="" aria-hidden="true"></i>
+                <a href="?action=displayProfile&id={$followerId}" class="followed-tag">
+                    {$avatar}
+                    <div class="followed-tag-label">
+                        <div class="fw-bold">{$completeName}</div>
+                        <div class="text-secondary small fw-normal">@{$completeNameId}</div>
+                    </div>
+                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
                 </a>
             HTML;
         }
 
         return $header . <<<HTML
-            <section class="" aria-label="Liste des mes followers">
+            <section class="followed-tags" aria-label="Liste des abonnés">
                 {$items}
             </section>
         HTML;

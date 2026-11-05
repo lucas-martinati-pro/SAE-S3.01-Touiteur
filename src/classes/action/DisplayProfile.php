@@ -32,8 +32,8 @@ class DisplayProfile extends Action {
         $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
         $profileAvatar = HtmlHelper::profileAvatar($details, 'profile-avatar');
         $profileColor = HtmlHelper::profileColor($id);
-        $nbFollowers = count($r->getFollowers($user_id));
-        $nbFollowed = count($r->getFollowed($user_id));
+        $nbFollowers = count($r->getFollowers($id) ?? []);
+        $nbFollowed = count($r->getFollowed($id) ?? []);
 
         $subBtn = "";
 
@@ -66,25 +66,21 @@ class DisplayProfile extends Action {
                     {$subBtn}
                     <h2>{$completeName}</h2>
                     <p class="profile-handle">@{$completeNameId}</p>
-                    <a href="?action=listFollowers" class="mt-3">
-                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="bi bi-tags me-1"></i> {$nbFollowers} followers
-                        </button>
-                    </a>
-                    <a href="?action=listFollowed" class="mt-3">
-                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="bi bi-tags me-1"></i> {$nbFollowed} following
-                        </button>
-                    </a>
+                    <div class="d-flex flex-wrap gap-2 my-2">
+                        <a href="?action=listFollowed&id={$id}" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="bi bi-person-check me-1"></i> <strong>{$nbFollowed}</strong> abonnements
+                        </a>
+                        <a href="?action=listFollowers&id={$id}" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="bi bi-people me-1"></i> <strong>{$nbFollowers}</strong> abonnés
+                        </a>
+                        <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            <i class="bi bi-tags me-1"></i> Tags suivis
+                        </a>
+                    </div>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>
                     </div>
-                    <a href="?action=listFollowTag&id={$id}" class="mt-3">
-                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="bi bi-tags me-1"></i> Tags suivis
-                        </button>
-                    </a>
                 </div>
                 <nav class="profile-tabs" aria-label="Navigation du profil">
                     <a class="active" href="?action=displayProfile&id={$id}">Touites</a>
