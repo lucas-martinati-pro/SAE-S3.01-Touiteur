@@ -32,10 +32,10 @@ class DisplayProfile extends Action {
         $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
         $profileAvatar = HtmlHelper::profileAvatar($details, 'profile-avatar');
         $profileColor = HtmlHelper::profileColor($id);
-        $nbFollows = count($r->getFollowers($user_id));
+        $nbFollowers = count($r->getFollowers($user_id));
+        $nbFollowed = count($r->getFollowed($user_id));
 
         $subBtn = "";
-        $listBtn = "";
 
         if ($id !== $user_id) {
             if ($r->isSub($id, $user_id)) {
@@ -56,16 +56,7 @@ class DisplayProfile extends Action {
                     </form>
                 HTML;
             }
-        } else {
-            $listBtn = <<<HTML
-                <a href="?action=listFollow&id={$user_id}" class="mt-3">
-                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="bi bi-tags me-1"></i> {$nbFollows} follows
-                        </button>
-                </a>
-            HTML;
         }
-
 
         $page = HtmlHelper::detailHeader('Profil') . <<< HTML
             <section class="profile-header">
@@ -75,7 +66,16 @@ class DisplayProfile extends Action {
                     {$subBtn}
                     <h2>{$completeName}</h2>
                     <p class="profile-handle">@{$completeNameId}</p>
-                    {$listBtn}
+                    <a href="?action=listFollowers" class="mt-3">
+                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="bi bi-tags me-1"></i> {$nbFollowers} followers
+                        </button>
+                    </a>
+                    <a href="?action=listFollowed" class="mt-3">
+                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="bi bi-tags me-1"></i> {$nbFollowed} following
+                        </button>
+                    </a>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>

@@ -4,6 +4,8 @@ namespace iutnc\touiteur\dispatch;
 
 use iutnc\touiteur\action\AddTouiteAction;
 use iutnc\touiteur\action\DisplayFeedAction;
+use iutnc\touiteur\action\DisplayFollowedAction;
+use iutnc\touiteur\action\DisplayFollowersAction;
 use iutnc\touiteur\action\DisplayListFollowedTag;
 use iutnc\touiteur\action\DisplayProfile;
 use iutnc\touiteur\action\DisplayTag;
@@ -55,6 +57,8 @@ class Dispatcher {
             "subscribe" => (new SubscribeAction())(),
             "subtag" => (new SubscribeTagAction())(),
             "listFollowTag" => (new DisplayListFollowedTag())(),
+            "listFollowers" => (new DisplayFollowersAction())(),
+            "listFollowed" => (new DisplayFollowedAction())(),
             default => (new DisplayFeedAction())(),
         };
 

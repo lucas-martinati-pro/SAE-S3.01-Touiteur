@@ -272,10 +272,23 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     public function getFollowers(int $user_id) : ?array {
         $res = $this->fetchAll(<<<SQL
-            SELECT nom, prenom
+            SELECT users.id, nom, prenom
             FROM users
             INNER JOIN follow on follow.follower_id = users.id
             WHERE followed_id = :user_id
+        SQL, ['user_id' => $user_id]);
+
+        if (!$res) return null;
+
+        return $res;
+    }
+
+    public function getFollowed(int $user_id) : ?array {
+        $res = $this->fetchAll(<<<SQL
+            SELECT users.id, nom, prenom
+            FROM users
+            INNER JOIN follow on follow.followed_id = users.id
+            WHERE follower_id = :user_id
         SQL, ['user_id' => $user_id]);
 
         if (!$res) return null;
