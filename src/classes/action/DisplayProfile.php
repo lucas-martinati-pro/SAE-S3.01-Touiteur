@@ -44,6 +44,10 @@ class DisplayProfile extends Action {
         $nbFollowers = count($r->getFollowers($id) ?? []);
         $nbFollowed = count($r->getFollowed($id) ?? []);
         $noteMoyenne = $r->getMoyenneNoteTouite($id);
+        $noteClass = $noteMoyenne < 0
+            ? 'touite-note-negative'
+            : ($noteMoyenne > 0 ? 'touite-note-positive' : 'touite-note-neutral');
+        $noteFormatted = ($noteMoyenne > 0 ? '+' : '') . $noteMoyenne;
 
         $subBtn = "";
 
@@ -76,7 +80,7 @@ class DisplayProfile extends Action {
                     {$subBtn}
                     <h2>{$completeName}</h2>
                     <p class="profile-handle">@{$completeNameId}</p>
-                    <div class="d-flex flex-wrap gap-2 my-2">
+                    <div class="d-flex flex-wrap gap-2 my-2 align-items-center">
                         <a href="?action=listFollowed&id={$id}" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-person-check me-1"></i> <strong>{$nbFollowed}</strong> abonnements
                         </a>
@@ -86,7 +90,9 @@ class DisplayProfile extends Action {
                         <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">
                             <i class="bi bi-tags me-1"></i> Tags suivis
                         </a>
-                        <p>{$noteMoyenne}</p>
+                        <span class="d-inline-flex align-items-center px-3 py-1 rounded-pill border {$noteClass} fw-semibold" style="font-size: .85rem; min-height: 32px; border-color: var(--border) !important;">
+                            <i class="bi bi-heart me-1"></i> <strong>{$noteFormatted}</strong>
+                        </span>
                     </div>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
