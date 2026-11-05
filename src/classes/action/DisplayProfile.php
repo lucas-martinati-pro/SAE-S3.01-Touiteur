@@ -43,6 +43,7 @@ class DisplayProfile extends Action {
         $profileColor = HtmlHelper::profileColor($id);
         $nbFollowers = count($r->getFollowers($id) ?? []);
         $nbFollowed = count($r->getFollowed($id) ?? []);
+        $noteMoyenne = $r->getMoyenneNoteTouite($id);
 
         $subBtn = "";
 
@@ -85,6 +86,7 @@ class DisplayProfile extends Action {
                         <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">
                             <i class="bi bi-tags me-1"></i> Tags suivis
                         </a>
+                        <p>{$noteMoyenne}</p>
                     </div>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">

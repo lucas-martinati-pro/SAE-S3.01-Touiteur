@@ -284,6 +284,21 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
+    public function getMoyenneNoteTouite(int $user_id) : float {
+        $res = $this->fetchAll(<<<SQL
+            SELECT ROUND(AVG(note),2) AS moyenne
+            FROM note2touite
+            INNER JOIN touite on touite.id = note2touite.touite_id
+            WHERE touite.users_id = :user_id
+        SQL, ['user_id' => $user_id]);
+
+        if (!$res) {
+            return 0.0;
+        }
+
+        return (float) $res[0]['moyenne'];
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/
