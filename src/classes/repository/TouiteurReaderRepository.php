@@ -207,7 +207,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     public function getUserByTouiteId(int $touite_id) : ?array {
         return $this->fetchOne(<<<SQL
-            SELECT users_id, nom, prenom
+            SELECT users_id as id, nom, prenom
             FROM touite
             INNER JOIN users on users.id = touite.users_id
             WHERE touite.id = :id
