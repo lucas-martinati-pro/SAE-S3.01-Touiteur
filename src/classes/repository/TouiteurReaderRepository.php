@@ -98,6 +98,45 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToFeed($res);
     }
 
+    public function findFeedSearched(string $search, Pagination $pagination = new Pagination): ?Feed {
+        $res = $this->fetchPage(<<<SQL
+            SELECT *
+            FROM touite
+            WHERE content LIKE :search
+            ORDER BY posted_at DESC
+            LIMIT :limit OFFSET :offset;
+        SQL, $pagination, ['search' => '%' . $search . '%']);
+
+        if (!$res) return null;
+
+        return $this->rowsToFeed($res);
+    }
+
+    public function findFollowedFeedSearched(int $id, string $search, Pagination $pagination = new Pagination): ?Feed {
+        $res = $this->fetchPage(<<<SQL
+            SELECT touite.*
+            FROM touite
+            WHERE touite.users_id IN (
+                SELECT followed_id
+                FROM follow
+                WHERE follower_id = :follower_id
+            )
+            OR touite.id IN (
+                SELECT tag2touite.touite_id
+                FROM tag2touite
+                INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
+                WHERE users2tag.users_id = :tag_user_id
+            )
+            ORDER BY posted_at DESC
+            WHERE content LIKE :search
+            LIMIT :limit OFFSET :offset;
+        SQL, $pagination, ['follower_id' => $id, 'tag_user_id' => $id, 'search' => '%' . $search . '%']);
+
+        if (!$res) return null;
+
+        return $this->rowsToFeed($res);
+    }
+
     public function findFeedByUserId(int $id, Pagination $pagination = new Pagination): ?Feed {
         $res = $this->fetchPage(<<<SQL
             SELECT *
