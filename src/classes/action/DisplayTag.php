@@ -24,6 +24,14 @@ class DisplayTag extends Action {
 
         $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);
+        if ($tag === null) {
+            return HtmlHelper::errorPage(
+                title: "Tag introuvable",
+                message: "Le tag demandé est introuvable.",
+                backUrl: "?action=displayFeed",
+                backLabel: "Retour à l'accueil"
+            );
+        }
         $tagLabel = $tag->getLibelle();
         $tagDescription = $tag->getDescription();
         $escapedTagLabel = htmlspecialchars($tagLabel, ENT_QUOTES, 'UTF-8');
@@ -62,20 +70,6 @@ class DisplayTag extends Action {
             </section>
         HTML;
 
-        $previous = $pagination->previous();
-        $next = $pagination->next();
-        $pageNumber = $pagination->getPage();
-        $pagination = HtmlHelper::pagination(
-            'Pagination du tag',
-            "?action=displayTag&id={$id}&page={$previous}",
-            "?action=displayTag&id={$id}&page={$next}",
-            $pageNumber
-        );
-
-        if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Aucun touite associé à ce tag.');
-        }
-
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
+        return $page . RendererFactory::getRenderer($feed, $pagination, 'displayTags')->render(TypeRender::COMPACT);
     }
 }

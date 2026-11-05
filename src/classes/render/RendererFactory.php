@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\render;
 
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\touite\Feed;
 
@@ -16,10 +17,10 @@ class RendererFactory {
      * @return Renderer Instance de Renderer adaptée.
      * @throws \InvalidArgumentException Si l'objet n'est pas pris en charge.
      */
-    public static function getRenderer(object $element): Renderer {
+    public static function getRenderer(object $element, Pagination $pagination = new Pagination(), String $url = 'DisplayFeed'): Renderer {
         return match (true) {
             $element instanceof Touite => new TouiteRenderer($element),
-            $element instanceof Feed => new FeedRenderer($element),
+            $element instanceof Feed => new FeedRenderer($element, $pagination, $url),
             default => throw new \InvalidArgumentException('Type de rendu non pris en charge.'),
         };
     }

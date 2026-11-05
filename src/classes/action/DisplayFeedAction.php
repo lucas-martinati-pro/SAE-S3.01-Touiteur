@@ -59,22 +59,9 @@ class DisplayFeedAction extends Action {
             </div>
         HTML;
 
-        $feedQuery = $feedType === 'global' ? '&type=global' : '';
-        $previous = $pagination->previous();
-        $next = $pagination->next();
-        $pageNumber = $pagination->getPage();
-        $pagination = HtmlHelper::pagination(
-            'Pagination du feed',
-            "?action=displayFeed{$feedQuery}&page={$previous}",
-            "?action=displayFeed{$feedQuery}&page={$next}",
-            $pageNumber
-        );
-
-        if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Aucun touite à afficher pour le moment.') . $pagination;
-        }
-
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
+        $action = ($feedType === 'global') ? 'DisplayFeed&type=global' : 'DisplayFeed';
+        $render = RendererFactory::getRenderer($feed, $pagination, $action);
+        return $page . $render->render(TypeRender::COMPACT);
     }
 
     #[Override]
