@@ -140,6 +140,18 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToFeed($res);
     }
 
+    public function findFeedWithMediasByUserId(int $id, Pagination $pagination = new Pagination): Feed {
+        $res = $this->fetchPage(<<<SQL
+            SELECT *
+            FROM touite
+            WHERE users_id = :id
+            AND media_path IS NOT NULL
+            LIMIT :limit OFFSET :offset;
+        SQL, $pagination, ['id' => $id]);
+
+        return $this->rowsToFeed($res);
+    }
+
     public function findFeedByTagId(int $id, Pagination $pagination = new Pagination): Feed {
         $res = $this->fetchPage(<<<SQL
             SELECT touite.*

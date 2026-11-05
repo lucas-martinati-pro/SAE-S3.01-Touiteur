@@ -25,15 +25,16 @@ class DisplayFeedAction extends Action {
 
         $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
         $pagination = new Pagination($page);
-        $feedType = (isset($_GET['type']) && $_GET['type'] === 'global') ? 'global' : null;
 
-        $feed = "";
+        $feed = '';
+        $feedType = '';
         $activeGlobal = '';
         $activeFollow = '';
         $search = (isset($_GET['search'])) ? $_GET['search'] : '';
-        if ($feedType === 'global') {
+        if (isset($_GET['type']) && $_GET['type'] == 'global') {
             $feed = (!$search) ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination);
             $activeGlobal = 'class="active"';
+            $feedType = 'global';
         } else {
             $feed = (!$search) ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination);
             $activeFollow = 'class="active"';
@@ -59,9 +60,8 @@ class DisplayFeedAction extends Action {
             </div>
         HTML;
 
-        $action = ($feedType === 'global') ? 'DisplayFeed&type=global' : 'DisplayFeed';
-        $render = RendererFactory::getRenderer($feed, $pagination, $action);
-        return $page . $render->render(TypeRender::COMPACT);
+        $action = ($feedType === 'global') ? 'displayFeed&type=global' : 'displayFeed';
+        return $page . RendererFactory::getRenderer($feed, $pagination, $action)->render(TypeRender::COMPACT);
     }
 
     #[Override]
