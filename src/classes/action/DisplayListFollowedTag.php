@@ -16,8 +16,8 @@ class DisplayListFollowedTag extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $backUrl = $id > 0 ? "?action=displayProfile&id={$id}" : "?action=displayFeed";
 
+        $backUrl = $id > 0 ? "?action=displayProfile&id={$id}" : "?action=displayFeed";
         $listOfTag = $r->getAllFollowedTag($id);
 
         $header = HtmlHelper::detailHeader('Tags suivis', $backUrl);

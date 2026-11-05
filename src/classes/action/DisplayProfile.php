@@ -81,8 +81,8 @@ class DisplayProfile extends Action {
         }
 
         $tabs = [
-            'medias' => 'Médias',
             'touites' => 'Touites',
+            'medias' => 'Médias',
         ];
 
         $ongletsHtml = '';
