@@ -20,21 +20,17 @@ class DisplayProfile extends Action {
         $id = (int) ($_GET['id'] ?? 0);
         $user_id = $this->user['id'];
 
-        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
-        $pagination = new Pagination($page);
+        $pageNumber = (int) ($_GET['page'] ?? 1);
+        $pagination = new Pagination($pageNumber);
 
-        $feed = "";
-        $feedType = "";
-        $activeTouites = '';
-        $activeMedias = '';
-        if (isset($_GET['type']) && $_GET['type'] == 'medias') {
-            $feed = $r->findFeedWithMediasByUserId($id, $pagination);
-            $activeMedias = 'class="active"';
-            $feedType = 'medias';
-        } else {
-            $feed = $r->findFeedByUserId($id, $pagination);
-            $activeTouites = 'class="active"';
+        $type = $_GET['type'] ?? 'touites';
+        if (!in_array($type, ['touites', 'medias'], true)) {
+            $type = 'touites';
         }
+        $feed = match ($type) {
+            'medias' => $r->findFeedWithMediasByUserId($id, $pagination),
+            default => $r->findFeedByUserId($id, $pagination),
+        };
 
         $details = $r->getUserById($id);
         if (!$details) {
@@ -84,8 +80,26 @@ class DisplayProfile extends Action {
             }
         }
 
+        $tabs = [
+            'medias' => 'Médias',
+            'touites' => 'Touites',
+        ];
+
+        $ongletsHtml = '';
+
+        foreach ($tabs as $value => $label) {
+            $active = $type === $value ? 'active' : '';
+            $url = '?' . http_build_query([
+                'action' => 'displayProfile',
+                'type' => $value,
+                'id' => $id,
+            ]);
+            $ongletsHtml .= <<<HTML
+                <a class="{$active}" href="{$url}">{$label}</a>
+            HTML;
+        }
         $backLink = HtmlHelper::backLink('?action=displayFeed');
-        $page = <<< HTML
+        $page = <<<HTML
             <header class="feed-header detail-header">
                 {$backLink}
                 <div>
@@ -121,14 +135,15 @@ class DisplayProfile extends Action {
                     </div>
                 </div>
                 <nav class="profile-tabs" aria-label="Navigation du profil">
-                    <a {$activeTouites} href="?action=displayProfile&id={$id}">Touites</a>
-                    <a {$activeMedias} href="?action=displayProfile&id={$id}&type=medias">Médias</a>
+                    {$ongletsHtml}
                 </nav>
             </section>
         HTML;
 
-        $action = ($feedType === 'medias') ? 'displayProfile&type=medias&id=' : 'displayProfile&id=';
-        $action .= $id;
+        $action = 'displayProfile&' . http_build_query([
+            'type' => $type,
+            'id' => $id,
+        ]);
         return $page . RendererFactory::getRenderer($feed, $pagination, $action)->render(TypeRender::COMPACT);
     }
 }

@@ -47,7 +47,6 @@ class DisplayFeedAction extends Action {
                 'type' => $value,
                 'search' => $search,
             ]);
-            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
             $ongletsHtml .= <<<HTML
                 <a class="{$active}" href="{$url}">{$label}</a>
             HTML;

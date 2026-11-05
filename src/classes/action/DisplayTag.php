@@ -19,8 +19,8 @@ class DisplayTag extends Action {
 
         $id = (int) ($_GET['id'] ?? 0);
 
-        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
-        $pagination = new Pagination($page);
+        $pageNumber = (int) ($_GET['page'] ?? 1);
+        $pagination = new Pagination($pageNumber);
 
         $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);
