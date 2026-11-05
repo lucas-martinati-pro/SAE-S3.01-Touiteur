@@ -60,10 +60,12 @@ h1, h2, h3 { letter-spacing: -.02em; }
 .sidebar {
     position: sticky;
     top: 0;
+    align-self: start;
     display: flex;
     flex-direction: column;
     width: 260px;
     height: 100vh;
+    height: 100dvh;
     padding: .75rem 1rem;
     border-right: 1px solid var(--border);
 }
@@ -112,7 +114,8 @@ h1, h2, h3 { letter-spacing: -.02em; }
         transition: none;
     }
 }
-.sidebar-links { flex: 1; }
+.sidebar-links { flex: 1; min-height: 0; overflow-y: auto; }
+.sidebar > .navbar-brand, .theme-switch, .sidebar-user { flex-shrink: 0; }
 .navbar-nav { padding: 0; margin: 0; list-style: none; }
 .sidebar .nav-link {
     display: block;
@@ -712,7 +715,7 @@ textarea.form-control { resize: vertical; }
     .sidebar-links { flex: none; }
     .sidebar .navbar-nav { display: flex; flex-wrap: wrap; gap: .25rem; }
     .sidebar .nav-link { margin: 0; padding: .55rem .8rem; font-size: .95rem; }
-    .theme-switch { display: none; }
+    .theme-switch { padding: .5rem 0; }
     .sidebar-user { margin-top: .5rem; padding: .5rem; }
     .page-content { min-height: auto; border: 0; }
     .feed-heading, .detail-header { padding: .85rem 1rem; }
