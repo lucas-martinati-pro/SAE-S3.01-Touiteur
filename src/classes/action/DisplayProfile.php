@@ -94,6 +94,7 @@ class DisplayProfile extends Action {
                 'type' => $value,
                 'id' => $id,
             ]);
+            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
             $ongletsHtml .= <<<HTML
                 <a class="{$active}" href="{$url}">{$label}</a>
             HTML;

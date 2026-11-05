@@ -27,7 +27,7 @@ class DisplayFeedAction extends Action {
         $pagination = new Pagination($pageNumber);
 
         $type = $_GET['type'] ?? 'followed';
-        $search = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
+        $search = trim($_GET['search'] ?? '');
         $feed = match ($type) {
             'global' => ($search === '') ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination),
             default => ($search === '') ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination),
@@ -47,6 +47,7 @@ class DisplayFeedAction extends Action {
                 'type' => $value,
                 'search' => $search,
             ]);
+            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
             $ongletsHtml .= <<<HTML
                 <a class="{$active}" href="{$url}">{$label}</a>
             HTML;
@@ -54,10 +55,11 @@ class DisplayFeedAction extends Action {
 
         $searchSummary = '';
         if ($search !== '') {
-            $clearUrl = '?action=displayFeed&type=' . $type;
+            $searchLabel = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
+            $clearUrl = htmlspecialchars('?action=displayFeed&type=' . $type, ENT_QUOTES, 'UTF-8');
             $searchSummary = <<<HTML
                 <div class="px-3 py-2 border-bottom">
-                    <p class="mb-1">Résultats pour : <strong>{$search}</strong></p>
+                    <p class="mb-1">Résultats pour : <strong>{$searchLabel}</strong></p>
                     <a href="{$clearUrl}">Effacer la recherche</a>
                 </div>
             HTML;
