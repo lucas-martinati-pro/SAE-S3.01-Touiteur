@@ -36,8 +36,26 @@ class TouiteRenderer implements Renderer {
         $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
         $note = $this->touite->getNote();
         $media = '';
-        // TODO
-        $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
+        $tags = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
+        $content_split = [];
+        $mots = explode(' ', $content);
+
+        foreach ($mots as $mot) {
+            if ($tags && str_starts_with($mot, '#')) {
+                $tagLibelle = substr($mot, 1);
+                foreach ($tags as $tag) {
+                    $id = $tag->getId();
+                    $libelle = $tag->getLibelle();
+                    if ($tagLibelle == $libelle) {
+                        $mot = "<a href=\"?action=displayTag&id={$id}\">#{$libelle}</a>";
+                        break;
+                    }
+                }
+            }
+            $content_split[] = $mot;
+        }
+
+        $content = implode(' ', $content_split);
 
         $mediaPath = $this->touite->getmedia_path();
         if ($mediaPath !== null && $mediaPath !== '') {
