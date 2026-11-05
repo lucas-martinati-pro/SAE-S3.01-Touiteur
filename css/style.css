@@ -373,8 +373,7 @@ h1, h2, h3 { letter-spacing: -.02em; }
     font-size: .88rem;
 }
 .touite-header form { margin-left: auto; }
-.touite-header form, .touite-content a, .touite-actions-long { pointer-events: auto; }
-.touite-actions-compact { pointer-events: none; }
+.touite-header form, .touite-content a, .touite-actions form { pointer-events: auto; }
 .touite-author { overflow: hidden; color: var(--text); font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
 .touite-profile-link:hover .touite-author { color: var(--brand); text-decoration: underline; }
 .touite-header span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -402,14 +401,28 @@ h1, h2, h3 { letter-spacing: -.02em; }
 }
 .touite-actions form { margin: 0; }
 .touite-actions button {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
     padding: .35rem .5rem;
     border: 0;
+    border-radius: 50%;
     background: transparent;
     color: var(--muted);
     transition: background .2s, color .2s;
 }
-.touite-actions button:hover { color: var(--danger); }
-.touite-actions button.is-liked {
+.touite-actions .touite-like:hover { color: var(--success); }
+.touite-actions .touite-dislike:hover { color: var(--danger); }
+.touite-note { min-width: 2ch; text-align: center; font-weight: 700; }
+.touite-vote-indicator {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    color: var(--muted);
+}
+.touite-actions button.is-liked, .touite-vote-indicator.is-liked {
     color: var(--success);
     background-color: rgba(22, 131, 75, .15);
     border-radius: 999px;
@@ -419,7 +432,7 @@ h1, h2, h3 { letter-spacing: -.02em; }
     color: var(--success);
     background-color: rgba(22, 131, 75, .25);
 }
-.touite-actions button.is-disliked {
+.touite-actions button.is-disliked, .touite-vote-indicator.is-disliked {
     color: var(--danger);
     background-color: rgba(224, 36, 94, .15);
     border-radius: 999px;

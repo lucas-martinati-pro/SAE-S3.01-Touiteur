@@ -68,11 +68,7 @@ class HtmlHelper {
         $noteClass = $note < 0
             ? 'touite-note-negative'
             : ($note > 0 ? 'touite-note-positive' : 'touite-note-neutral');
-        $noteHtml = "<span class=\"touite-note {$noteClass}\" aria-label=\"Note du touite\"><i class=\"bi bi-heart\"></i> {$note}</span>";
-
-        if ($selector === TypeRender::COMPACT) {
-            return $noteHtml;
-        }
+        $noteHtml = "<span class=\"touite-note {$noteClass}\" aria-label=\"Note du touite\">{$note}</span>";
 
         $r = RepositoryFactory::getReader();
         $isLiked = false;
@@ -93,16 +89,32 @@ class HtmlHelper {
         $dislikeClass = $isDisliked ? 'is-disliked' : '';
         $dislikeIcon = $isDisliked ? 'bi-hand-thumbs-down-fill' : 'bi-hand-thumbs-down';
 
+        if ($selector === TypeRender::COMPACT) {
+            $voteClass = $isLiked ? $likeClass : $dislikeClass;
+            $voteIcon = $isLiked ? $likeIcon : ($isDisliked ? $dislikeIcon : 'bi-heart');
+            $voteLabel = $isLiked ? "Votre vote : j'aime" : ($isDisliked ? "Votre vote : je n'aime pas" : 'Aucun vote');
+
+            return <<<HTML
+                <span class="touite-vote-indicator {$voteClass}" role="img" aria-label="{$voteLabel}"><i class="bi {$voteIcon}" aria-hidden="true"></i></span>
+                {$noteHtml}
+            HTML;
+        }
+
+        $likeType = $isLiked ? 'annuler' : 'like';
+        $dislikeType = $isDisliked ? 'annuler' : 'dislike';
+        $likePressed = $isLiked ? 'true' : 'false';
+        $dislikePressed = $isDisliked ? 'true' : 'false';
+        $returnQuery = htmlspecialchars(http_build_query($_GET ?: ['action' => 'displayFeed']), ENT_QUOTES, 'UTF-8');
+
         return <<<HTML
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type={$likeType}">
+                <input type="hidden" name="return_query" value="{$returnQuery}">
+                <button type="submit" class="touite-like {$likeClass}" aria-label="J'aime" aria-pressed="{$likePressed}"><i class="bi {$likeIcon}" aria-hidden="true"></i></button>
+            </form>
             {$noteHtml}
-            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=like">
-                <button type="submit" class="{$likeClass}" aria-label="J'aime"><i class="bi {$likeIcon}"></i> J'aime</button>
-            </form>
-            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=dislike">
-                <button type="submit" class="{$dislikeClass}" aria-label="Je n'aime pas"><i class="bi {$dislikeIcon}"></i> Je n'aime pas</button>
-            </form>
-            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=annuler">
-                <button type="submit" aria-label="Annuler ma note"><i class="bi bi-x-circle"></i> Annuler</button>
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type={$dislikeType}">
+                <input type="hidden" name="return_query" value="{$returnQuery}">
+                <button type="submit" class="touite-dislike {$dislikeClass}" aria-label="Je n'aime pas" aria-pressed="{$dislikePressed}"><i class="bi {$dislikeIcon}" aria-hidden="true"></i></button>
             </form>
         HTML;
     }
