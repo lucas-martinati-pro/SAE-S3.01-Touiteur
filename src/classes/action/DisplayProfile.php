@@ -116,10 +116,10 @@ class DisplayProfile extends Action {
                     <h2>{$completeName}</h2>
                     <p class="profile-handle">@{$completeNameId}</p>
                     <div class="d-flex flex-wrap gap-2 my-2 align-items-center">
-                        <a href="?action=listFollowed&id={$id}" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <a href="?action=displayUsers&id={$id}&type=followed" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-person-check me-1"></i> <strong>{$nbFollowed}</strong> abonnements
                         </a>
-                        <a href="?action=listFollowers&id={$id}" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <a href="?action=displayUsers&id={$id}&type=followers" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-people me-1"></i> <strong>{$nbFollowers}</strong> abonnés
                         </a>
                         <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">
