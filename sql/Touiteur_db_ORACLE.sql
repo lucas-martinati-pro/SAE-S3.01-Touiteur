@@ -13,8 +13,8 @@ CREATE TABLE touite (
     id NUMBER(38) GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content varchar2(235) NOT NULL,
     note NUMBER(5),
-    image_description varchar2(235),
-    image_path varchar2(256),
+    media_description varchar2(235),
+    media_path varchar2(256),
     posted_at DATE NOT NULL,
     users_id NUMBER(11) NOT NULL
 );
@@ -147,5 +147,30 @@ BEGIN
     IF (nb_touite > 49) THEN
         RAISE_APPLICATION_ERROR(-20002, 'Un utilisateur ne peut pas publier plus de 50 touites par jour');
     END IF;
+END;
+/
+
+-- Triggers persos :
+-- Triggers permettant de mettre à jour automatiquement les notes d'un touites lors de l'ajout d'une note
+CREATE OR REPLACE TRIGGER update_note
+AFTER INSERT OR UPDATE ON note2touite
+FOR EACH ROW
+DECLARE
+    touite_note NUMBER;
+BEGIN
+    UPDATE touite
+    SET note = NVL(note, 0) + :NEW.state
+    WHERE touite_id = :NEW.touite_id;
+END;
+
+CREATE OR REPLACE TRIGGER update_note
+AFTER DELETE ON note2touite
+FOR EACH ROW
+DECLARE
+    touite_note NUMBER;
+BEGIN
+    UPDATE touite
+    SET note = NVL(note, 0) - :OLD.state
+    WHERE touite_id = :OLD.touite_id;
 END;
 /

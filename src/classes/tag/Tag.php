@@ -5,9 +5,9 @@ namespace iutnc\touiteur\tag;
 class Tag {
     private ?int $id;
     private String $libelle;
-    private ?string $description;
+    private String $description;
 
-    public function __construct(String $libelle, ?int $id = null, ?string $description = null) {
+    public function __construct(String $libelle, String $description = "", ?int $id = null) {
         $this->id = $id;
         $this->libelle = $libelle;
         $this->description = $description;

@@ -2,6 +2,7 @@
 
 namespace iutnc\touiteur\repository;
 
+use iutnc\touiteur\enum\TypeNote;
 use iutnc\touiteur\touite\Touite;
 
 /**
@@ -28,6 +29,45 @@ class TouiteurWriterRepository extends TouiteurRepository {
         SQL);
 
         $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
+    }
+
+    public function followTag(int $user_id, int $tag_id) : void {
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO users2tag (users_id, tag_id) VALUES (:user_id, :tag_id);
+        SQL);
+
+        $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
+    }
+
+    public function unfollowTag(int $user_id, int $tag_id) : void {
+        $stmt = $this->pdo->prepare(<<<SQL
+            DELETE FROM users2tag
+            WHERE users_id = :user_id
+            AND tag_id = :tag_id;
+        SQL);
+
+        $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
+    }
+
+    public function noteTouite(int $user_id, int $touite_id, TypeNote $state) {
+        if ($state === TypeNote::annuler) {
+            $stmt = $this->pdo->prepare(<<<SQL
+                DELETE FROM note2touite
+                WHERE users_id = :user_id
+                AND touite_id = :touite_id
+            SQL);
+
+            $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id]);
+            return;
+        }
+
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO note2touite (users_id, touite_id, state)
+            VALUES (:user_id, :touite_id, :state)
+            ON DUPLICATE KEY UPDATE state = VALUES(state)
+        SQL);
+
+        $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id, 'state' => $state->getNote()]);
     }
 
     /**============================================
@@ -59,24 +99,24 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $stmt->execute(['email' => $email, 'password' => $password, 'nom' => $nom, 'prenom' => $prenom]);
     }
 
-    public function addTouite(string $content, string $posted_at, ?string $image_path, ?string $image_description, $user_id): Touite {
+    public function addTouite(string $content, string $posted_at, ?string $media_path, ?string $media_description, $user_id): Touite {
         $content = filter_var($content, FILTER_SANITIZE_SPECIAL_CHARS);
         $posted_at = filter_var($posted_at, FILTER_SANITIZE_SPECIAL_CHARS);
-        $image_path = $image_path === null
+        $media_path = $media_path === null
             ? null
-            : filter_var($image_path, FILTER_SANITIZE_SPECIAL_CHARS);
-        $image_description = $image_description === null
+            : filter_var($media_path, FILTER_SANITIZE_SPECIAL_CHARS);
+        $media_description = $media_description === null
             ? null
-            : filter_var($image_description, FILTER_SANITIZE_SPECIAL_CHARS);
+            : filter_var($media_description, FILTER_SANITIZE_SPECIAL_CHARS);
         $user_id = filter_var($user_id, FILTER_SANITIZE_NUMBER_INT);
 
         $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO touite (content, note, image_path,image_description,  posted_at, users_id) VALUES (:content, :note, :img_path, :img_desc, :date, :user_id)
+            INSERT INTO touite (content, note, media_path,media_description,  posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :date, :user_id)
         SQL);
 
-        $stmt->execute(['content' => $content, 'note' => 0, 'img_path' => $image_path,'img_desc' => $image_description, 'date' => $posted_at, 'user_id' => $user_id]);
+        $stmt->execute(['content' => $content, 'note' => 0, 'media_path' => $media_path,'media_desc' => $media_description, 'date' => $posted_at, 'user_id' => $user_id]);
 
-        $touite = new Touite($content, $posted_at, $image_path, $image_description, $user_id);
+        $touite = new Touite($content, $posted_at, 0, $media_path, $media_description, $user_id);
         $touite->setId($this->pdo->lastInsertId());
 
         return $touite;

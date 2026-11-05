@@ -25,8 +25,21 @@ class DisplayProfile extends Action {
         $feed = $r->findFeedByUserId($id, $pagination);
 
         $details = $r->getUserById($id);
-        $completeName = $details['nom'] . " " . $details['prenom'];
-        $premiereLettre = $completeName[0];
+        if (!$details) {
+            return HtmlHelper::formError(
+                errors: "Le profil demandé est introuvable.",
+                backUrl: "?action=displayFeed",
+                backLabel: "Retour à l'accueil",
+                title: "Profil introuvable"
+            );
+        }
+
+        $rawName = $details['nom'] . " " . $details['prenom'];
+        $rawNameId = $details['nom'] . "_" . $details['prenom'];
+        $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
+        $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
+        $profileAvatar = HtmlHelper::profileAvatar($details, 'profile-avatar');
+        $profileColor = HtmlHelper::profileColor($id);
 
         $subBtn = "";
 
@@ -53,16 +66,21 @@ class DisplayProfile extends Action {
 
         $page = HtmlHelper::detailHeader('Profil') . <<< HTML
             <section class="profile-header">
-                <div class="profile-cover"></div>
+                <div class="profile-cover {$profileColor}"></div>
                 <div class="profile-main">
-                    <div class="profile-avatar">{$premiereLettre}</div>
+                    {$profileAvatar}
                     {$subBtn}
                     <h2>{$completeName}</h2>
-                    <p class="profile-handle">@{$completeName}</p>
+                    <p class="profile-handle">@{$completeNameId}</p>
                     <p class="profile-bio">Découvrez les touites publiés par cet utilisateur.</p>
                     <div class="profile-meta">
                         <span><i class="bi bi-calendar3"></i> Membre de Touiteur</span>
                     </div>
+                    <a href="?action=listFollowTag&id={$id}" class="mt-3">
+                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="bi bi-tags me-1"></i> Tags suivis
+                        </button>
+                    </a>
                 </div>
                 <nav class="profile-tabs" aria-label="Navigation du profil">
                     <a class="active" href="?action=displayProfile&id={$id}">Touites</a>
@@ -70,20 +88,6 @@ class DisplayProfile extends Action {
             </section>
         HTML;
 
-        $previous = $pagination->previous();
-        $next = $pagination->next();
-        $pageNumber = $pagination->getPage();
-        $pagination = HtmlHelper::pagination(
-            'Pagination du profil',
-            "?action=displayProfile&id={$id}&page={$previous}",
-            "?action=displayProfile&id={$id}&page={$next}",
-            $pageNumber
-        );
-
-        if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Cet utilisateur n’a encore publié aucun touite.') . $pagination;
-        }
-
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
+        return $page . RendererFactory::getRenderer($feed, $pagination, "displayProfile&id=" . $id)->render(TypeRender::COMPACT);
     }
 }

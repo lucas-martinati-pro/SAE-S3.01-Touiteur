@@ -21,7 +21,7 @@ class TouiteRenderer implements Renderer {
     }
 
     private function completeUserDetails() {
-        $r = RepositoryFactory::getReader(); 
+        $r = RepositoryFactory::getReader();
         $details = $r->getUserByTouiteId($this->touite->getId());
 
         $this->nom = $details['nom'];
@@ -34,65 +34,77 @@ class TouiteRenderer implements Renderer {
         $touite_id = $this->touite->getId();
         $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
         $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
-        $image = '';
+        $note = $this->touite->getNote();
+        $media = '';
         // TODO
         $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
-        $rawName = $this->nom . " " . $this->prenom;
-        $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
-        $premiereLettre = htmlspecialchars(mb_substr($rawName, 0, 1), ENT_QUOTES, 'UTF-8');
 
-        $imagePath = $this->touite->getImage_path();
-        if ($imagePath !== null && $imagePath !== '') {
-            $path = htmlspecialchars($imagePath, ENT_QUOTES, 'UTF-8');
+        $mediaPath = $this->touite->getmedia_path();
+        if ($mediaPath !== null && $mediaPath !== '') {
+            $path = htmlspecialchars($mediaPath, ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars(
-                $this->touite->getImage_description() ?? 'Image du touite',
+                $this->touite->getmedia_description() ?? 'Média du touite',
                 ENT_QUOTES,
                 'UTF-8'
             );
-            $image = "<img class=\"touite-image\" src=\"{$path}\" alt=\"{$description}\">";
+
+            $extension = strtolower(pathinfo($mediaPath, PATHINFO_EXTENSION));
+
+            if ($extension === 'mp4') {
+                $media = <<<HTML
+                    <video class="touite-media touite-video" controls width="100%" preload="metadata">
+                        <source src="{$path}" type="video/mp4">
+                        Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+                HTML;
+            } else {
+                $media = "<img class=\"touite-media\" src=\"{$path}\" alt=\"{$description}\">";
+            }
         }
 
+        $rawName = $this->nom . " " . $this->prenom;
+        $rawNameId = $this->nom . "_" . $this->prenom;
+        $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
+        $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
         $subBtn = "";
         $currentUser = AuthnProvider::getSignedInUser();
         $currentUserId = $currentUser['id'];
+        $profileUser = [
+            'id' => $this->user_id,
+            'nom' => $this->nom,
+            'prenom' => $this->prenom,
+        ];
+        $profileAvatar = HtmlHelper::profileAvatar($profileUser);
 
         if ($this->user_id !== $currentUserId && $selector === TypeRender::LONG) {
-            $r = RepositoryFactory::getReader();
-            if ($r->isSub($this->user_id, $currentUserId)) {
-                $subBtn = <<<HTML
-                    <form method="POST" action="?action=subscribe">
-                        <input type="hidden" name="type" value="unsub">
-                        <input type="hidden" name="id" value="{$this->user_id}">
-                        <button type="submit" class="btn btn-sm btn-outline-primary">Abonné</button>
-                    </form>
-                HTML;
-            } else {
-                $subBtn = <<<HTML
-                    <form method="POST" action="?action=subscribe">
-                        <input type="hidden" name="type" value="sub">
-                        <input type="hidden" name="id" value="{$this->user_id}">
-                        <button type="submit" class="btn btn-sm btn-primary">S'abonner</button>
-                    </form>
-                HTML;
-            }
+            $subBtn = HtmlHelper::subscriptionButton(
+                $this->user_id,
+                RepositoryFactory::getReader()->isSub($this->user_id, $currentUserId)
+            );
         }
+
+        $actionsClass = $selector === TypeRender::LONG ? 'touite-actions-long' : 'touite-actions-compact';
+        $noteActions = HtmlHelper::touiteActions($touite_id, $note, $selector);
 
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
         $card = <<<HTML
                 <article class="{$class}">
                     {$this->touiteLink($touite_id, $completeName, $selector)}
                     <div class="touite-row">
-                        <div class="touite-avatar">{$premiereLettre}</div>
+                        <a class="touite-profile-link" href="?action=displayProfile&id={$this->user_id}"
+                           aria-label="Voir le profil de {$completeName}">
+                            {$profileAvatar}
+                        </a>
                         <div class="touite-body">
                             <div class="touite-header">
                                 <a class="touite-author" href="?action=displayProfile&id={$this->user_id}"><strong>{$completeName}</strong></a>
-                                <span>@{$completeName} · <time datetime="{$date}">{$date}</time></span>
+                                <span>@{$completeNameId} · <time datetime="{$date}">{$date}</time></span>
                                 {$subBtn}
                             </div>
                             <p class="touite-content">{$content}</p>
-                            {$image}
-                            <div class="touite-actions" aria-label="Actions du touite">
-                                <button type="button" aria-label="J'aime"><i class="bi bi-heart"></i></button>
+                            {$media}
+                            <div class="touite-actions {$actionsClass}" aria-label="Actions du touite">
+                                {$noteActions}
                             </div>
                         </div>
                     </div>

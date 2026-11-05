@@ -13,8 +13,14 @@ use Override;
  * Action par défaut affichant la page d'accueil de l'application Touiteur.
  */
 class DisplayFeedAction extends Action {
+    protected bool $requireAuth = false;
+
     #[Override]
     public function get(): string {
+        if ($this->user === null) {
+            return $this->noLogin();
+        }
+
         $r = RepositoryFactory::getReader();
 
         $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
@@ -24,14 +30,16 @@ class DisplayFeedAction extends Action {
         $feed = "";
         $activeGlobal = '';
         $activeFollow = '';
+        $search = (isset($_GET['search'])) ? $_GET['search'] : '';
         if ($feedType === 'global') {
-            $feed = $r->findFeed($pagination);
+            $feed = (!$search) ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination);
             $activeGlobal = 'class="active"';
         } else {
-            $feed = $r->findFollowedFeed($this->user['id'], $pagination);
+            $feed = (!$search) ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination);
             $activeFollow = 'class="active"';
         }
 
+        $profileAvatar = HtmlHelper::profileAvatar($this->user);
         $page = <<< HTML
             <header class="feed-header">
                 <div class="feed-heading">
@@ -43,29 +51,54 @@ class DisplayFeedAction extends Action {
                 </nav>
             </header>
             <div class="compose-box">
-                <div class="touite-avatar">T</div>
-                <div>
+                {$profileAvatar}
+                <div class="compose-content">
                     <p>Quoi de neuf ?</p>
                     <a class="btn btn-primary" href="?action=addTouite">Touiter</a>
                 </div>
             </div>
         HTML;
 
-        $feedQuery = $feedType === 'global' ? '&type=global' : '';
-        $previous = $pagination->previous();
-        $next = $pagination->next();
-        $pageNumber = $pagination->getPage();
-        $pagination = HtmlHelper::pagination(
-            'Pagination du feed',
-            "?action=displayFeed{$feedQuery}&page={$previous}",
-            "?action=displayFeed{$feedQuery}&page={$next}",
-            $pageNumber
-        );
+        $action = ($feedType === 'global') ? 'DisplayFeed&type=global' : 'DisplayFeed';
+        $render = RendererFactory::getRenderer($feed, $pagination, $action);
+        return $page . $render->render(TypeRender::COMPACT);
+    }
 
-        if ($feed === null) {
-            return $page . HtmlHelper::alert('info', 'Aucun touite à afficher pour le moment.') . $pagination;
-        }
+    #[Override]
+    public function post(): string {
+        header("Location: ?action=displayFeed&type=global&id=&search=" . $_POST['search']);
+        exit;
+    }
 
-        return $page . RendererFactory::getRenderer($feed)->render(TypeRender::COMPACT) . $pagination;
+    private function noLogin(): String {
+        return <<<HTML
+            <section class="landing-page">
+                <div class="landing-icon" aria-hidden="true">
+                    <i class="bi bi-chat-heart-fill"></i>
+                </div>
+                <h1>Bienvenue sur Touiteur</h1>
+                <p class="landing-lead">
+                    Le réseau social où chaque touite compte.
+                </p>
+                <p class="landing-description">
+                    Partagez vos idées, découvrez les publications qui vous intéressent,
+                    suivez vos tags préférés et échangez avec la communauté.
+                </p>
+                <div class="landing-actions">
+                    <a class="btn btn-primary" href="?action=register">
+                        <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                        Créer un compte
+                    </a>
+                    <a class="btn btn-outline-primary" href="?action=signin">
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                        Se connecter
+                    </a>
+                </div>
+                <p class="landing-tagline">
+                    <i class="bi bi-stars" aria-hidden="true"></i>
+                    Le meilleur réseau social du monde, évidemment.
+                </p>
+            </section>
+        HTML;
     }
 }

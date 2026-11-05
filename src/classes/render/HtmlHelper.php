@@ -2,10 +2,88 @@
 
 namespace iutnc\touiteur\render;
 
+use iutnc\touiteur\enum\TypeRender;
+
 /**
  * Classe d'assistance pour la génération des composants HTML de Touiteur.
  */
 class HtmlHelper {
+    public static function alreadyLogin(string $email): string {
+        $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
+        $feedButton = HtmlHelper::linkButton('Mon feed', '?action=displayFeed', 'bi-collection-play-fill');
+        $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
+        $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
+        return <<<HTML
+            {$title}
+            <p>Vous êtes déjà connecté avec l'adresse <strong>{$email}</strong>.</p>
+            <p>
+                {$feedButton}
+                {$signoutButton}
+                {$homeButton}
+            </p>
+        HTML;
+    }
+
+
+    public static function profileColor(int $userId): string {
+        $colors = [
+            'profile-color-blue',
+            'profile-color-purple',
+            'profile-color-green',
+            'profile-color-orange',
+            'profile-color-pink',
+            'profile-color-teal',
+        ];
+
+        return $colors[$userId % count($colors)];
+    }
+
+    public static function profileAvatar(array $user, string $class = 'touite-avatar'): string {
+        $userId = (int) $user['id'];
+        $displayName = trim(($user['nom'] ?? '') . ' ' . ($user['prenom'] ?? ''));
+        $initial = htmlspecialchars(mb_substr($displayName, 0, 1), ENT_QUOTES, 'UTF-8');
+        $color = self::profileColor($userId);
+
+        return "<div class=\"{$class} {$color}\">{$initial}</div>";
+    }
+
+    public static function subscriptionButton(int $userId, bool $isSubscribed): string {
+        $type = $isSubscribed ? 'unsub' : 'sub';
+        $label = $isSubscribed ? 'Abonné' : "S'abonner";
+        $variant = $isSubscribed ? 'outline-primary' : 'primary';
+
+        return <<<HTML
+            <form method="POST" action="?action=subscribe">
+                <input type="hidden" name="type" value="{$type}">
+                <input type="hidden" name="id" value="{$userId}">
+                <button type="submit" class="btn btn-sm btn-{$variant}">{$label}</button>
+            </form>
+        HTML;
+    }
+
+    public static function touiteActions(int $touiteId, int $note, TypeRender $selector): string {
+        $noteClass = $note < 0
+            ? 'touite-note-negative'
+            : ($note > 0 ? 'touite-note-positive' : 'touite-note-neutral');
+        $noteHtml = "<span class=\"touite-note {$noteClass}\" aria-label=\"Note du touite\"><i class=\"bi bi-heart\"></i> {$note}</span>";
+
+        if ($selector === TypeRender::COMPACT) {
+            return $noteHtml;
+        }
+
+        return <<<HTML
+            {$noteHtml}
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=like">
+                <button type="submit" aria-label="J'aime"><i class="bi bi-hand-thumbs-up"></i> J'aime</button>
+            </form>
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=dislike">
+                <button type="submit" aria-label="Je n'aime pas"><i class="bi bi-hand-thumbs-down"></i> Je n'aime pas</button>
+            </form>
+            <form method="POST" action="?action=LikeAction&id={$touiteId}&type=annuler">
+                <button type="submit" aria-label="Annuler ma note"><i class="bi bi-x-circle"></i> Annuler</button>
+            </form>
+        HTML;
+    }
 
     public static function button(string $label, string $icon = '', string $variant = 'primary', string $type = 'submit'): string {
         $iconHtml = $icon !== '' ? "<i class=\"bi {$icon}\" aria-hidden=\"true\"></i>" : '';

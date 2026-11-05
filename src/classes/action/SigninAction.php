@@ -18,25 +18,12 @@ class SigninAction extends Action {
         try {
             $user = AuthnProvider::getSignedInUser();
             $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
-
-            // Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/
-            $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
-            $feedButton = HtmlHelper::linkButton('Mon feed', '?action=displayFeed', 'bi-collection-play-fill');
-            $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
-            $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
-            return <<<HTML
-                {$title}
-                <p>Vous êtes déjà connecté avec l'adresse <strong>{$email}</strong>.</p>
-                <p>
-                    {$feedButton}
-                    {$signoutButton}
-                    {$homeButton}
-                </p>
-            HTML;
+            return HtmlHelper::alreadyLogin($email);
         } catch (AuthnException) {
             $require = '<span class="text-danger">*</span>';
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/
             $title = HtmlHelper::title("Connexion", "bi-box-arrow-in-right");
+            $loginButton = HtmlHelper::button('Connexion', 'bi-box-arrow-in-right');
             return <<<HTML
                 {$title}
                 <form method="post" action="?action=signin">
@@ -50,33 +37,65 @@ class SigninAction extends Action {
                         <input type="password" name="password" class="form-control" id="password" aria-describedby="passwordHelp" required>
                         <div id="passwordHelp" class="form-text">Saisissez le mot de passe associé à votre compte.</div>
                     </div>
-                    <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/ -->
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Connexion
-                    </button>
+                    {$loginButton}
                 </form>
+                <section class="demo-accounts" aria-labelledby="demo-accounts-title">
+                    <h2 id="demo-accounts-title">Comptes de démonstration</h2>
+                    <p>Utilisez l'un de ces comptes pour vous connecter.</p>
+                    <div class="demo-account-list">
+                        <div class="demo-account">
+                            <strong>User 1</strong>
+                            <span>user1@mail.com</span>
+                            <code>Mot de passe : user1</code>
+                        </div>
+                        <div class="demo-account">
+                            <strong>User 2</strong>
+                            <span>user2@mail.com</span>
+                            <code>Mot de passe : user2</code>
+                        </div>
+                        <div class="demo-account">
+                            <strong>Admin</strong>
+                            <span>admin@mail.com</span>
+                            <code>Mot de passe : admin</code>
+                        </div>
+                    </div>
+                </section>
             HTML;
         }
     }
 
     #[Override]
     public function post(): string {
-        if (!isset($_POST['email'], $_POST['password'])) {
-            return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin&form=1", title: "Échec de la connexion");
-        }
-
-        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-
         try {
-            AuthnProvider::signin($email, $_POST['password']);
-        } catch (AuthnException $error) {
-            return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin&form=1", title: "Échec de la connexion");
-        }
+            $user = AuthnProvider::getSignedInUser();
+            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+            return HtmlHelper::alreadyLogin($email);
+        } catch (AuthnException) {
+            if (!isset($_POST['email'], $_POST['password'])) {
+                return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin&form=1", title: "Échec de la connexion");
+            }
 
-        return HtmlHelper::successPage(
-            title: "Connexion réussie",
-            message: "Bienvenue, <strong>" . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . "</strong> ! Vous êtes maintenant connecté à Touiteur.",
-            backLabel: "Accéder à mon feed"
-        );
+            $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+
+            try {
+                AuthnProvider::signin($email, $_POST['password']);
+            } catch (AuthnException $error) {
+                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin&form=1", title: "Échec de la connexion");
+            }
+
+            $user = AuthnProvider::getSignedInUser();
+
+            $displayName = htmlspecialchars(
+                    $user['prenom'] . ' ' . $user['nom'],
+                    ENT_QUOTES,
+                    'UTF-8'
+                );
+
+            return HtmlHelper::successPage(
+                title: "Connexion réussie",
+                message: "Bienvenue, <strong>" . $displayName . "</strong> ! Vous êtes maintenant connecté à Touiteur.",
+                backLabel: "Accéder à mon feed"
+            );
+        }
     }
 }

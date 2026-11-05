@@ -5,15 +5,19 @@ namespace iutnc\touiteur\dispatch;
 use iutnc\touiteur\action\AddTouiteAction;
 use iutnc\touiteur\action\AddTouiteTagAction;
 use iutnc\touiteur\action\DisplayFeedAction;
+use iutnc\touiteur\action\DisplayListFollowedTag;
 use iutnc\touiteur\action\DisplayProfile;
 use iutnc\touiteur\action\DisplayTag;
 use iutnc\touiteur\action\DisplayTouite;
+use iutnc\touiteur\action\LikeAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
 use iutnc\touiteur\action\SubscribeAction;
+use iutnc\touiteur\action\SubscribeTagAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
+use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\repository\RepositoryFactory;
 
 /**
@@ -42,14 +46,17 @@ class Dispatcher {
     public function run(): void {
         $html = match ($this->action) {
             "addTouiteTag" => (new AddTouiteTagAction())(),
-            "addTouite" => (new AddTouiteAction())(),
             "displayTouite" => (new DisplayTouite())(),
             "displayProfile" => (new DisplayProfile())(),
+            "addTouite" => (new AddTouiteAction())(),
+            "LikeAction" => (new LikeAction())(),
             "displayTag" => (new DisplayTag)(),
             "register" => (new RegisterAction())(),
             "signin" => (new SigninAction())(),
             "signout" => (new SignoutAction())(),
             "subscribe" => (new SubscribeAction())(),
+            "subtag" => (new SubscribeTagAction())(),
+            "listFollowTag" => (new DisplayListFollowedTag())(),
             default => (new DisplayFeedAction())(),
         };
 
@@ -65,16 +72,8 @@ class Dispatcher {
     private function renderPage(string $html): void {
         $navbar = $this->renderNavbar();
         $theme = (($_COOKIE['theme'] ?? 'dark') === 'light') ? 'light' : 'dark';
-        $r = RepositoryFactory::getReader();
-        $tags = $r->findAllTags(10);
 
-        $tagsHtml = "";
-
-        foreach ($tags as $tag) {
-            $tagsHtml .= <<<HTML
-                <a href="?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
-            HTML;
-        }
+        $tagsHtml = $this->renderSideBar();
 
         echo <<<HTML
             <!DOCTYPE html>
@@ -87,10 +86,6 @@ class Dispatcher {
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
                     <!-- css pour les icônes Boostrap -->
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-                    <!-- css Google font -->
-                    <link rel="preconnect" href="https://fonts.googleapis.com">
-                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
                     <link href="css/style.css" rel="stylesheet">
                     <!-- Icône personnalisée pour le site -->
                     <link rel="icon" type="image/x-icon" href="image/favicon.png">
@@ -99,22 +94,15 @@ class Dispatcher {
                     <div class="app-layout" id="swup">
                         <aside class="sidebar">
                             <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php">
-                                <img src="image/favicon.png" alt="Logo" width="28" height="28" class="me-2">
-                                Touiteur
+                                <img src="image/favicon.png" alt="" width="28" height="28" class="me-2">
+                                <span class="logo-word">Touiteur</span>
                             </a>
                             {$navbar}
                         </aside>
                         <main class="page-content">
                             $html
                         </main>
-                        <aside class="right-sidebar">
-                            <section class="trends">
-                                <h2>Tags populaires</h2>
-                                <div class="tag-list">
-                                    $tagsHtml
-                                </div>
-                            </section>
-                        </aside>
+                        $tagsHtml
                     </div>
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
                     <script src="js/script.js"></script>
@@ -123,17 +111,77 @@ class Dispatcher {
         HTML;
     }
 
+    private function renderSideBar(): string {
+        try {
+            AuthnProvider::getSignedInUser();
+
+            $tagsHtml = '';
+            $r = RepositoryFactory::getReader();
+            $tags = $r->findAllTags(10);
+            foreach ($tags as $tag) {
+                $tagsHtml .= <<<HTML
+                    <a href="?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
+                HTML;
+            }
+
+            $search = <<<HTML
+                <form method="post" action="?action=displayFeed" class="search-form mb-3" role="search">
+                    <label for="search" class="visually-hidden">Rechercher un touite</label>
+                    <input
+                        type="search"
+                        name="search"
+                        id="search"
+                        class="form-control search-input"
+                        placeholder="Rechercher un touite"
+                        aria-label="Rechercher un touite"
+                        required
+                    >
+                    <button type="submit" class="search-button" aria-label="Rechercher">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                    </button>
+                </form>
+            HTML;
+
+            return <<<HTML
+                <aside class="right-sidebar">
+                    {$search}
+                    <section class="trends">
+                        <h2>Tags populaires</h2>
+                        <div class="tag-list">
+                                $tagsHtml
+                        </div>
+                    </section>
+                </aside>
+            HTML;
+        } catch (AuthnException) {
+            return "";
+        }
+    }
+
     /**
      * Génère le code HTML de la barre de navigation Bootstrap.
      *
      * @return string Balises HTML de la barre de navigation.
      */
     private function renderNavbar(): string {
-        $toggleThemeButton = <<<HTML
-            <button id="toggle-theme" class="btn btn-outline-secondary btn-sm d-flex align-items-center" title="Changer de thème">
-                <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/circle-half/ -->
-                <i class="bi bi-circle-half"></i>
+        $sidebarLinks = <<<HTML
+            <div class="sidebar-links">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">
+                            <i class="bi bi-house-door-fill me-1"></i>Accueil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        HTML;
+        $themeSwitch = <<<HTML
+            <div class="theme-switch">
+                <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Changer de thème">
+                <i class="bi bi-circle-half theme-toggle-icon" aria-hidden="true"></i>
+                <span class="theme-toggle-label">Changer de thème</span>
             </button>
+            </div>
         HTML;
 
         try {
@@ -141,70 +189,33 @@ class Dispatcher {
 
             $userId = (int) $user['id'];
             $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+            $profileAvatar = HtmlHelper::profileAvatar($user, 'sidebar-avatar');
 
-            return <<<HTML
-                <div class="sidebar-links">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=displayFeed&type=global">
-                            Pour vous
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=displayFeed">
-                            Abonnements
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=displayProfile&id={$userId}">
-                            Profil
-                        </a>
-                    </li>
-                </ul>
-                <div class="theme-switch">
-                    {$toggleThemeButton}
-                    <span>Changer le thème</span>
-                </div>
-                </div>
+            $accountArea = <<<HTML
                 <div class="sidebar-user">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-circle/ -->
-                    <i class="bi bi-person-circle"></i>
+                    <a class="sidebar-avatar-link" href="?action=displayProfile&id={$userId}"
+                       aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/ -->
                         <i class="bi bi-box-arrow-right"></i>
                     </a>
                 </div>
             HTML;
         } catch (AuthnException) {
-            return <<<HTML
-                <div class="sidebar-links">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/house-door-fill/ -->
-                            <i class="bi bi-house-door-fill me-1"></i>Accueil
-                        </a>
-                    </li>
-                </ul>
-                </div>
-                <div class="theme-switch">
-                    {$toggleThemeButton}
-                    <span>Changer le thème</span>
-                </div>
+            $accountArea = <<<HTML
                 <div class="sidebar-user guest-user">
-                    <a class="btn btn-sm btn-dark rounded-3" href="?action=signin">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/ -->
-                        <i class="bi bi-box-arrow-in-right me-1"></i>
-                        Connexion
+                    <a class="btn btn-outline-primary" href="?action=signin">
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                        Se connecter
                     </a>
-                    <a class="btn btn-sm btn-primary rounded-3" href="?action=register">
-                        <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/ -->
-                        <i class="bi bi-person-plus-fill me-1"></i>
-                        Inscription
+                    <a class="btn btn-primary" href="?action=register">
+                        <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                        Créer un compte
                     </a>
                 </div>
             HTML;
         }
+
+        return $sidebarLinks . $themeSwitch . $accountArea;
     }
 }

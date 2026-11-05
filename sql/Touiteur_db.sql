@@ -12,9 +12,9 @@ create table touite (
     id INT AUTO_INCREMENT PRIMARY KEY,
     content VARCHAR(235) NOT NULL,
     note INT,
-    image_description VARCHAR(235),
-    image_path VARCHAR(256),
-    posted_at DATE NOT NULL,
+    media_description VARCHAR(235),
+    media_path VARCHAR(256),
+    posted_at DATETIME NOT NULL,
     users_id INT NOT NULL
 );
 
@@ -152,6 +152,36 @@ BEGIN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Un utilisateur ne peut pas publier plus de 50 touites par jour';
     END IF;
+END//
+
+-- Mettre à jour automatiquement la note d'un touite lors de l'ajout d'une note :
+CREATE TRIGGER update_note_insert
+AFTER INSERT ON note2touite
+FOR EACH ROW
+BEGIN
+    UPDATE touite
+    SET note = COALESCE(note, 0) + NEW.state
+    WHERE id = NEW.touite_id;
+END//
+
+-- Prendre en compte le remplacement d'une note existante :
+CREATE TRIGGER update_note_update
+AFTER UPDATE ON note2touite
+FOR EACH ROW
+BEGIN
+    UPDATE touite
+    SET note = COALESCE(note, 0) + NEW.state - OLD.state
+    WHERE id = NEW.touite_id;
+END//
+
+-- Prendre en compte l'annulation d'une note :
+CREATE TRIGGER update_note_delete
+AFTER DELETE ON note2touite
+FOR EACH ROW
+BEGIN
+    UPDATE touite
+    SET note = COALESCE(note, 0) - OLD.state
+    WHERE id = OLD.touite_id;
 END//
 
 DELIMITER ;
