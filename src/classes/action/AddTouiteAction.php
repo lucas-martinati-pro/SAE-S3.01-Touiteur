@@ -73,8 +73,7 @@ class AddTouiteAction extends Action {
 
     #[Override]
     public function post(): string {
-        //values input
-        $contenu = filter_var($_POST["contenu"], FILTER_SANITIZE_SPECIAL_CHARS);
+        $contenu = trim($_POST["contenu"] ?? '');
         $longueur = mb_strlen($contenu);
         if ($longueur === 0 || $longueur > 235) {
             $message = $longueur === 0
@@ -88,7 +87,7 @@ class AddTouiteAction extends Action {
                 title: 'Impossible de publier le touite'
             );
         }
-        $desc_media = filter_var($_POST["descrip_media"], FILTER_SANITIZE_SPECIAL_CHARS);
+        $desc_media = trim($_POST["descrip_media"] ?? '');
 
         if (
             isset($_FILES['media']) &&
