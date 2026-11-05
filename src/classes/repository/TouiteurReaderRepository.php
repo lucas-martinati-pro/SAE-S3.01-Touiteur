@@ -249,9 +249,9 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $res = $this->fetchAll(<<<SQL
             SELECT tag.*
             FROM tag
-            INNER JOIN tag2touite ON tag2touite.tag_id = tag.id
+            INNER JOIN users2tag ON users2tag.tag_id = tag.id
             GROUP BY tag_id
-            ORDER BY COUNT(touite_id)
+            ORDER BY COUNT(users_id) DESC, tag.id ASC
             LIMIT :limit;
         SQL, ['limit' => $limit]);
 
