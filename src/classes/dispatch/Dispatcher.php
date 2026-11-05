@@ -3,6 +3,7 @@
 namespace iutnc\touiteur\dispatch;
 
 use iutnc\touiteur\action\AddTouiteAction;
+use iutnc\touiteur\action\AddTouiteTagAction;
 use iutnc\touiteur\action\DisplayFeedAction;
 use iutnc\touiteur\action\DisplayProfile;
 use iutnc\touiteur\action\DisplayTag;
@@ -40,6 +41,7 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
+            "addTouiteTag" => (new AddTouiteTagAction())(),
             "addTouite" => (new AddTouiteAction())(),
             "displayTouite" => (new DisplayTouite())(),
             "displayProfile" => (new DisplayProfile())(),

@@ -4,13 +4,16 @@ namespace iutnc\touiteur\action;
 use iutnc\touiteur\repository\RepositoryFactory;
 use \iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\render\HtmlHelper;
+use iutnc\touiteur\tag\Tag;
 use Override;
 
-class AddTouiteAction extends Action {
+class AddTouiteAction extends Action
+{
     protected bool $requireAuth = true;
 
     #[Override]
-    public function get(): string {
+    public function get(): string
+    {
         $title = HtmlHelper::title("Publier un touite", "bi-pencil-square");
         $publishButton = HtmlHelper::button('Publier', 'bi-send-fill');
         $cancelButton = HtmlHelper::linkButton('Annuler', '?action=displayFeed', '', 'outline-secondary');
@@ -65,7 +68,8 @@ class AddTouiteAction extends Action {
     }
 
     #[Override]
-    public function post(): string {
+    public function post(): string
+    {
         //values input
         $contenu = filter_var($_POST["contenu"], FILTER_SANITIZE_SPECIAL_CHARS);
         $desc_img = filter_var($_POST["descrip_img"], FILTER_SANITIZE_SPECIAL_CHARS);
@@ -81,11 +85,33 @@ class AddTouiteAction extends Action {
         $w = RepositoryFactory::getWriter();
         $touite = $w->addTouite($contenu, $date, $imageName, $desc_img, $this->user["id"]);
 
-        header("Location: ?action=displayTouite&id=" . $touite->getId());
-        exit;
+        //on evalue s'il y un tag pour savoir où rediriger
+
+        //capture de tag
+        $analyse = $contenu;
+
+        // on regarde si un # est présent
+        if (str_contains($analyse, '#')) { 
+            $mots = explode(' ', $analyse); // on divise la châine
+
+            foreach ($mots as $mot) {
+                if (str_starts_with($mot, '#')) {
+                    $_SESSION["tag"][$mot]=  new Tag($mot);
+                }
+
+            }
+            header("Location: ?action=addTouiteTag");
+            exit;
+        } else {
+            header("Location: ?action=displayTouite&id=" . $touite->getId());
+            exit;
+        }
+
+
     }
 
-    private function saveImage(array $imgFile): ?String {
+    private function saveImage(array $imgFile): ?string
+    {
         if (isset($imgFile['img']) && $imgFile['img']['error'] === UPLOAD_ERR_OK) {
             $extension = strtolower(pathinfo($imgFile['img']['name'], PATHINFO_EXTENSION));
 
