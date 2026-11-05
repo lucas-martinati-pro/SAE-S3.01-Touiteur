@@ -25,6 +25,10 @@ class Feed implements Iterator {
         return $this->touites;
     }
 
+    public function isEmpty(): bool {
+        return empty($this->touites);
+    }
+
     /**========================================================================
      *                         METHODES ITERATOR
      *========================================================================**/
