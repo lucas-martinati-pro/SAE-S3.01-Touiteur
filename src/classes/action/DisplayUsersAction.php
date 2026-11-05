@@ -33,7 +33,7 @@ class DisplayUsersAction extends Action {
         if ($users === null || empty($users)) {
             return $header . match ($type) {
                 'followers' => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n’a aucun abonné.') . '</div>',
-                default => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n’a aucun abonné.') . '</div>',
+                default => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur ne suit personne.') . '</div>',
             };
         };
 
@@ -58,8 +58,9 @@ class DisplayUsersAction extends Action {
             HTML;
         }
 
+        $listLabel = $type === 'followers' ? 'Liste des abonnés' : 'Liste des abonnements';
         return $header . <<<HTML
-            <section class="followed-tags" aria-label="Liste des abonnés">
+            <section class="followed-tags" aria-label="{$listLabel}">
                 {$items}
             </section>
         HTML;
