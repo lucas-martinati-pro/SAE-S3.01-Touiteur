@@ -125,10 +125,12 @@ class AddTouiteAction extends Action
 
         // on regarde si un # est présent
         if (str_contains($analyse, '#')) { 
-            $mots = explode(' ', $analyse); // on divise la châine
+            $mots = explode(' ', $analyse); // on divise la chaîne
+            substr($mots[0],1);
 
             foreach ($mots as $mot) {
                 if (str_starts_with($mot, '#')) {
+                    $mot = substr($mot,1);
                     $_SESSION["tag"][$mot]=  new Tag($mot);
                 }
 
