@@ -71,7 +71,7 @@ class Dispatcher {
         $navbar = $this->renderNavbar();
         $theme = (($_COOKIE['theme'] ?? 'dark') === 'light') ? 'light' : 'dark';
 
-        $tagsHtml = $this->renderTagsSideBar();
+        $tagsHtml = $this->renderSideBar();
 
         echo <<<HTML
             <!DOCTYPE html>
@@ -109,7 +109,7 @@ class Dispatcher {
         HTML;
     }
 
-    private function renderTagsSideBar(): string {
+    private function renderSideBar(): string {
         try {
             AuthnProvider::getSignedInUser();
 
@@ -122,8 +122,27 @@ class Dispatcher {
                 HTML;
             }
 
+            $search = <<<HTML
+                <form method="post" action="?action=displayFeed" class="search-form mb-3" role="search">
+                    <label for="search" class="visually-hidden">Rechercher un touite</label>
+                    <input
+                        type="search"
+                        name="search"
+                        id="search"
+                        class="form-control search-input"
+                        placeholder="Rechercher un touite"
+                        aria-label="Rechercher un touite"
+                        required
+                    >
+                    <button type="submit" class="search-button" aria-label="Rechercher">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                    </button>
+                </form>
+            HTML;
+
             return <<<HTML
                 <aside class="right-sidebar">
+                    {$search}
                     <section class="trends">
                         <h2>Tags populaires</h2>
                         <div class="tag-list">
