@@ -100,7 +100,6 @@ class TouiteurWriterRepository extends TouiteurRepository {
     }
 
     public function addTouite(string $content, string $posted_at, ?string $media_path, ?string $media_description, $user_id): Touite {
-        $content = filter_var($content, FILTER_SANITIZE_SPECIAL_CHARS);
         $posted_at = filter_var($posted_at, FILTER_SANITIZE_SPECIAL_CHARS);
         $media_path = $media_path === null
             ? null
