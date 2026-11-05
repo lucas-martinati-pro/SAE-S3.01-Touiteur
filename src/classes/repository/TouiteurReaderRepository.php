@@ -204,7 +204,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     public function getUserById(int $user_id) : ?array {
         return $this->fetchOne(<<<SQL
-            SELECT id, nom, prenom
+            SELECT id, nom, prenom, counter_touite
             FROM users
             WHERE id = :id
         SQL, ['id' => $user_id]);
