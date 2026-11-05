@@ -70,6 +70,6 @@ class DisplayTag extends Action {
             </section>
         HTML;
 
-        return $page . RendererFactory::getRenderer($feed, $pagination, 'displayTags')->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed, $pagination, 'displayTag&id=' . $id)->render(TypeRender::COMPACT);
     }
 }
