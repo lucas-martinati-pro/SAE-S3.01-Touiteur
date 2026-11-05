@@ -70,16 +70,8 @@ class Dispatcher {
     private function renderPage(string $html): void {
         $navbar = $this->renderNavbar();
         $theme = (($_COOKIE['theme'] ?? 'dark') === 'light') ? 'light' : 'dark';
-        $r = RepositoryFactory::getReader();
-        $tags = $r->findAllTags(10);
 
-        $tagsHtml = "";
-
-        foreach ($tags as $tag) {
-            $tagsHtml .= <<<HTML
-                <a href="?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
-            HTML;
-        }
+        $tagsHtml = $this->renderTagsSideBar();
 
         echo <<<HTML
             <!DOCTYPE html>
@@ -108,20 +100,41 @@ class Dispatcher {
                         <main class="page-content">
                             $html
                         </main>
-                        <aside class="right-sidebar">
-                            <section class="trends">
-                                <h2>Tags populaires</h2>
-                                <div class="tag-list">
-                                    $tagsHtml
-                                </div>
-                            </section>
-                        </aside>
+                        $tagsHtml
                     </div>
                     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
                     <script src="js/script.js"></script>
                 </body>
             </html>
         HTML;
+    }
+
+    private function renderTagsSideBar(): string {
+        try {
+            AuthnProvider::getSignedInUser();
+
+            $tagsHtml = '';
+            $r = RepositoryFactory::getReader();
+            $tags = $r->findAllTags(10);
+            foreach ($tags as $tag) {
+                $tagsHtml .= <<<HTML
+                    <a href="?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
+                HTML;
+            }
+
+            return <<<HTML
+                <aside class="right-sidebar">
+                    <section class="trends">
+                        <h2>Tags populaires</h2>
+                        <div class="tag-list">
+                                $tagsHtml
+                        </div>
+                    </section>
+                </aside>
+            HTML;
+        } catch (AuthnException) {
+            return "";
+        }
     }
 
     /**
