@@ -258,6 +258,15 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
+    public function tagExist(string $libelle) : bool {
+        return $res = $this->exists(<<<SQL
+                SELECT libelle 
+                FROM tag
+                WHERE libelle = :nom_tag
+        SQL, ['nom_tag' => $libelle]);
+
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/
