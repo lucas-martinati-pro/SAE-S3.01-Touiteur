@@ -23,7 +23,18 @@ class DisplayProfile extends Action {
         $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
         $pagination = new Pagination($page);
 
-        $feed = $r->findFeedByUserId($id, $pagination);
+        $feed = "";
+        $feedType = "";
+        $activeTouites = '';
+        $activeMedias = '';
+        if (isset($_GET['type']) && $_GET['type'] == 'medias') {
+            $feed = $r->findFeedWithMediasByUserId($id, $pagination);
+            $activeMedias = 'class="active"';
+            $feedType = 'medias';
+        } else {
+            $feed = $r->findFeedByUserId($id, $pagination);
+            $activeTouites = 'class="active"';
+        }
 
         $details = $r->getUserById($id);
         if (!$details) {
@@ -53,7 +64,6 @@ class DisplayProfile extends Action {
 
         if ($id !== $user_id) {
             if ($r->isSub($id, $user_id)) {
-
                     $subBtn = <<<HTML
                     <form method="POST" action="?action=subscribe">
                         <input type="hidden" name="type" value="unsub">
@@ -100,11 +110,14 @@ class DisplayProfile extends Action {
                     </div>
                 </div>
                 <nav class="profile-tabs" aria-label="Navigation du profil">
-                    <a class="active" href="?action=displayProfile&id={$id}">Touites</a>
+                    <a {$activeTouites} href="?action=displayProfile&id={$id}">Touites</a>
+                    <a {$activeMedias} href="?action=displayProfile&id={$id}&type=medias">Médias</a>
                 </nav>
             </section>
         HTML;
 
-        return $page . RendererFactory::getRenderer($feed, $pagination, "displayProfile&id=" . $id)->render(TypeRender::COMPACT);
+        $action = ($feedType === 'medias') ? 'displayProfile&type=medias&id=' : 'displayProfile&id=';
+        $action .= $id;
+        return $page . RendererFactory::getRenderer($feed, $pagination, $action)->render(TypeRender::COMPACT);
     }
 }
