@@ -85,20 +85,8 @@ class DisplayProfile extends Action {
             'medias' => 'Médias',
         ];
 
-        $ongletsHtml = '';
+        $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'displayProfile', ['id' => $id]);
 
-        foreach ($tabs as $value => $label) {
-            $active = $type === $value ? 'active' : '';
-            $url = '?' . http_build_query([
-                'action' => 'displayProfile',
-                'type' => $value,
-                'id' => $id,
-            ]);
-            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
-            $ongletsHtml .= <<<HTML
-                <a class="{$active}" href="{$url}">{$label}</a>
-            HTML;
-        }
         $backLink = HtmlHelper::backLink('?action=displayFeed');
         $page = <<<HTML
             <header class="feed-header detail-header">

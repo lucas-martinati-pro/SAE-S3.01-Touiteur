@@ -27,31 +27,19 @@ class DisplayFeedAction extends Action {
         $pagination = new Pagination($pageNumber);
 
         $type = $_GET['type'] ?? 'followed';
-        $search = trim($_GET['search'] ?? '');
-        $feed = match ($type) {
-            'global' => ($search === '') ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination),
-            default => ($search === '') ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination),
-        };
 
         $tabs = [
             'global' => 'Pour vous',
             'followed' => 'Abonnements',
         ];
 
-        $ongletsHtml = '';
+        $ongletsHtml = $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'displayFeed');
 
-        foreach ($tabs as $value => $label) {
-            $active = $type === $value ? 'active' : '';
-            $url = '?' . http_build_query([
-                'action' => 'displayFeed',
-                'type' => $value,
-                'search' => $search,
-            ]);
-            $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
-            $ongletsHtml .= <<<HTML
-                <a class="{$active}" href="{$url}">{$label}</a>
-            HTML;
-        }
+        $search = trim($_GET['search'] ?? '');
+        $feed = match ($type) {
+            'global' => ($search === '') ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination),
+            default => ($search === '') ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination),
+        };
 
         $searchSummary = '';
         if ($search !== '') {
