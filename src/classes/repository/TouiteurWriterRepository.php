@@ -4,6 +4,7 @@ namespace iutnc\touiteur\repository;
 
 use iutnc\touiteur\enum\TypeNote;
 use iutnc\touiteur\touite\Touite;
+use iutnc\touiteur\tag\Tag;
 
 /**
  * Repository centralisant les opérations d'accès à la base de données.
@@ -120,5 +121,14 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $touite->setId($this->pdo->lastInsertId());
 
         return $touite;
+    }
+
+    public function addTag(Tag $tag): void {
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO tag (libelle, description) VALUES (:nom, :desc)
+        SQL);
+
+        $stmt->execute(['nom' => $tag->getLibelle(), 'desc' => $tag->getDescription()]);
+
     }
 }
