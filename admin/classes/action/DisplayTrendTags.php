@@ -5,17 +5,18 @@ namespace iutnc\touiteur\admin\action;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\action\Action;
+use iutnc\touiteur\repository\RepositoryFactory;
 use Override;
 
 /**
- * Action gérant l'inscription de nouveaux utilisateurs sur Touiteur.
+ * Affiche les tags les plus suivis dans le back-office.
  */
 class DisplayTrendTags extends Action {
     protected bool $requireAuth = true;
 
     #[Override]
     public function get(): string {
-        return "";
+        return '';
     }
 
     #[Override]

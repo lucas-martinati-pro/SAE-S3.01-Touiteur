@@ -8,14 +8,14 @@ use iutnc\touiteur\action\Action;
 use Override;
 
 /**
- * Action gérant l'inscription de nouveaux utilisateurs sur Touiteur.
+ * Page des utilisateurs populaires du back-office.
  */
 class DisplayTrendUsers extends Action {
     protected bool $requireAuth = true;
 
     #[Override]
     public function get(): string {
-        return "";
+        return '';
     }
 
     #[Override]

@@ -1,10 +1,10 @@
 <?php
 
-namespace iutnc\touiteur\dispatch;
+namespace iutnc\touiteur\admin\dispatch;
 
 use iutnc\touiteur\admin\action\DisplayTrendUsers;
 use iutnc\touiteur\admin\action\DisplayTrendTags;
-use iutnc\touiteur\admin\action\AcceuilAction;
+use iutnc\touiteur\admin\action\AccueilAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
@@ -16,7 +16,7 @@ use iutnc\touiteur\repository\RepositoryFactory;
 /**
  * Contrôleur de l'affichage.
  */
-class Dispatcher {
+class AdminDispatcher {
     /**
      * Identifiant textuel de l'action à exécuter (ex: 'signin', etc.).
      */
@@ -43,7 +43,7 @@ class Dispatcher {
             "register" => (new RegisterAction)(),
             "signin" => (new SigninAction)(),
             "signout" => (new SignoutAction)(),
-            default => (new AcceuilAction)(),
+            default => (new AccueilAction)(),
         };
 
         $this->renderPage($html);
@@ -65,7 +65,7 @@ class Dispatcher {
             <!DOCTYPE html>
             <html lang="fr" data-bs-theme="{$theme}" id="html">
                 <head>
-                    <title>Touiteur</title>
+                    <title>Touiteur - Admin</title>
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1">
                     <!-- css pour Bootstrap -->
@@ -81,7 +81,7 @@ class Dispatcher {
                         <aside class="sidebar">
                             <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php">
                                 <img src="image/favicon.png" alt="" width="28" height="28" class="me-2">
-                                <span class="logo-word">Touiteur</span>
+                                <span class="logo-word">Touiteur - Admin</span>
                             </a>
                             {$navbar}
                         </aside>
@@ -106,13 +106,13 @@ class Dispatcher {
             $tags = $r->findAllTags(10);
             foreach ($tags as $tag) {
                 $tagsHtml .= <<<HTML
-                    <a href="?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
+                    <a href="/index.php?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
                 HTML;
             }
 
             $searchValue = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
             $search = <<<HTML
-                <form method="post" action="?action=displayFeed" class="search-form mb-3" role="search">
+                <form method="post" action="/index.php?action=displayFeed" class="search-form mb-3" role="search">
                     <label for="search" class="visually-hidden">Rechercher un touite</label>
                     <input
                         type="search"
@@ -157,7 +157,22 @@ class Dispatcher {
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">
-                            <i class="bi bi-house-door-fill me-1"></i>Accueil
+                            <i class="bi bi-speedometer2 me-1"></i>Administration
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?action=displayTrendTags">
+                            <i class="bi bi-hash me-1"></i>Tags populaires
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="?action=displayTrendUsers">
+                            <i class="bi bi-people me-1"></i>Utilisateurs populaires
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.php">
+                            <i class="bi bi-house-door-fill me-1"></i>Site public
                         </a>
                     </li>
                 </ul>
@@ -181,7 +196,7 @@ class Dispatcher {
 
             $accountArea = <<<HTML
                 <div class="sidebar-user">
-                    <a class="sidebar-avatar-link" href="?action=displayProfile&id={$userId}"
+                    <a class="sidebar-avatar-link" href="/index.php?action=displayProfile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
