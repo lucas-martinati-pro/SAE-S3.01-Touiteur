@@ -36,6 +36,8 @@ class DisplayTrendUsers extends Action {
             $userId = (int) $row['id'];
             $nbFollow = (int) $row['nbFol'];
             $nbTouite = (int) $row['counter_touite'];
+            $abonneLabel = $nbFollow > 1 ? 'abonnés' : 'abonné';
+            $touiteLabel = $nbTouite > 1 ? 'touites' : 'touite';
             $nom = htmlspecialchars($row['nom'], ENT_QUOTES, 'UTF-8');
             $prenom = htmlspecialchars($row['prenom'], ENT_QUOTES, 'UTF-8');
             $completeName = "{$nom} {$prenom}";
@@ -48,7 +50,10 @@ class DisplayTrendUsers extends Action {
                     <div class="followed-tag-label">
                         <div class="fw-bold">{$completeName}</div>
                         <div class="text-secondary small fw-normal">@{$completeNameId}</div>
-                        <div>nb follow {$nbFollow} et nb touites {$nbTouite}</div>
+                        <div class="d-flex align-items-center flex-wrap gap-3 mt-1 text-secondary small fw-normal">
+                            <span><i class="bi bi-people me-1"></i><strong>{$nbFollow}</strong> {$abonneLabel}</span>
+                            <span><i class="bi bi-chat-left-text me-1"></i><strong>{$nbTouite}</strong> {$touiteLabel}</span>
+                        </div>
                     </div>
                     <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
                 </a>
