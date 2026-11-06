@@ -26,8 +26,8 @@ class DisplayTrendUsers extends Action {
         $users = $r->getTrendUser();
 
         if ($users === null || empty($users)) {
-            return $header . 
-            '<div class="followed-tags-empty">' . 
+            return $header .
+            '<div class="followed-tags-empty">' .
             HtmlHelper::alert('info', 'Il n\'y a aucun utilisateurs') . '</div>';
         };
 
@@ -45,7 +45,7 @@ class DisplayTrendUsers extends Action {
             $avatar = HtmlHelper::profileAvatar($row);
 
             $items .= <<<HTML
-                <a href="?action=displayProfile&id={$userId}" class="followed-tag">
+                <a href="../index.php?action=displayProfile&id={$userId}" class="followed-tag">
                     {$avatar}
                     <div class="followed-tag-label">
                         <div class="fw-bold">{$completeName}</div>
