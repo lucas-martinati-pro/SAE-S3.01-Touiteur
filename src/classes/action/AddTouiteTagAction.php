@@ -74,13 +74,16 @@ class AddTouiteTagAction extends Action
 
             $tag->setDescription($desc);
 
-            if (!($r->tagExist($tag->getLibelle))) {
+            if (!($r->tagExist($tag->getLibelle()))) {
                 $w->addTag($tag);
             }
 
             
         }
         unset($_SESSION['tag']);
+
+        header("Location: ?action=displayTouite&id=" . $touite->getId());
+            exit;
             
        return "";
     }
