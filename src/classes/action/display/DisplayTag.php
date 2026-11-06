@@ -29,7 +29,7 @@ class DisplayTag extends Action {
             return HtmlHelper::errorPage(
                 title: "Tag introuvable",
                 message: "Le tag demandé est introuvable.",
-                backUrl: "?action=displayFeed",
+                backUrl: "?action=feed",
                 backLabel: "Retour à l'accueil"
             );
         }
@@ -42,7 +42,7 @@ class DisplayTag extends Action {
 
         if ($r->isTagSub($this->user['id'], $id)) {
             $subTagBtn = <<<HTML
-                <form method="POST" action="?action=subtag" class="ms-auto">
+                <form method="POST" action="?action=subscribeTag" class="ms-auto">
                     <input type="hidden" name="type" value="unsub">
                     <input type="hidden" name="id" value="{$id}">
                     <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Abonné</button>
@@ -50,7 +50,7 @@ class DisplayTag extends Action {
             HTML;
         } else {
             $subTagBtn = <<<HTML
-                <form method="POST" action="?action=subtag" class="ms-auto">
+                <form method="POST" action="?action=subscribeTag" class="ms-auto">
                     <input type="hidden" name="type" value="sub">
                     <input type="hidden" name="id" value="{$id}">
                     <button type="submit" class="btn btn-sm btn-primary rounded-pill">S'abonner</button>
@@ -60,7 +60,7 @@ class DisplayTag extends Action {
 
         $page = <<< HTML
             <header class="feed-header detail-header d-flex align-items-center">
-                <a class="back-link" href="?action=displayFeed" aria-label="Retour au feed">
+                <a class="back-link" href="?action=feed" aria-label="Retour au feed">
                     <i class="bi bi-arrow-left"></i>
                 </a>
                 <h1 class="mb-0">#{$escapedTagLabel}</h1>
@@ -71,6 +71,6 @@ class DisplayTag extends Action {
             </section>
         HTML;
 
-        return $page . RendererFactory::getRenderer($feed, $pagination, 'displayTag&id=' . $id)->render(TypeRender::COMPACT);
+        return $page . RendererFactory::getRenderer($feed, $pagination, 'tag&id=' . $id)->render(TypeRender::COMPACT);
     }
 }

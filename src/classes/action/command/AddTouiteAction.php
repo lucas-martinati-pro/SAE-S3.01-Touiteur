@@ -15,7 +15,7 @@ class AddTouiteAction extends Action {
     public function get(): string {
         $title = HtmlHelper::title("Publier un touite", "bi-pencil-square");
         $publishButton = HtmlHelper::button('Publier', 'bi-send-fill');
-        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=displayFeed', '', 'outline-secondary');
+        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=feed', '', 'outline-secondary');
 
         return <<<HTML
             {$title}
@@ -139,7 +139,7 @@ class AddTouiteAction extends Action {
 
         $w = RepositoryFactory::getWriter();
         $touite = $w->addTouite($touite, $this->user["id"]);
-        header("Location: ?action=displayTouite&id=" . $touite->getId());
+        header("Location: ?action=touite&id=" . $touite->getId());
         exit;
     }
 

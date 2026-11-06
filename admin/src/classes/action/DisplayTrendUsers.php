@@ -18,10 +18,7 @@ class DisplayTrendUsers extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-
-        $backUrl = "?action=displayProfile";
-
-        $header = HtmlHelper::detailHeader('Influenceur', $backUrl);
+        $header = HtmlHelper::detailHeader('Influenceur', "?");
 
         $users = $r->getTrendUser();
 
@@ -45,7 +42,7 @@ class DisplayTrendUsers extends Action {
             $avatar = HtmlHelper::profileAvatar($row);
 
             $items .= <<<HTML
-                <a href="../index.php?action=displayProfile&id={$userId}" class="followed-tag">
+                <a href="../index.php?action=profile&id={$userId}" class="followed-tag">
                     {$avatar}
                     <div class="followed-tag-label">
                         <div class="fw-bold">{$completeName}</div>

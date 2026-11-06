@@ -33,7 +33,7 @@ class TouiteRenderer implements Renderer {
                     $id = $tag->getId();
                     $libelle = $tag->getLibelle();
                     if ($tagLibelle == $libelle) {
-                        $mot = str_replace("#{$libelle}", "<a href=\"?action=displayTag&id={$id}\">#{$libelle}</a>", $mot);
+                        $mot = str_replace("#{$libelle}", "<a href=\"?action=tag&id={$id}\">#{$libelle}</a>", $mot);
                         break;
                     }
                 }
@@ -94,7 +94,7 @@ class TouiteRenderer implements Renderer {
                     <div class="touite-row">
                         <div class="touite-body">
                             <div class="touite-header">
-                                <a class="touite-profile-link" href="?action=displayProfile&id={$user_id}"
+                                <a class="touite-profile-link" href="?action=profile&id={$user_id}"
                                    aria-label="Voir le profil de {$completeName}">
                                     {$profileAvatar}
                                     <span class="touite-profile-identity">
@@ -124,7 +124,7 @@ class TouiteRenderer implements Renderer {
         }
 
         return <<<HTML
-            <a class="touite-main-link" href="?action=displayTouite&id={$touiteId}"
+            <a class="touite-main-link" href="?action=touite&id={$touiteId}"
                aria-label="Voir le touite de {$author}">
             </a>
         HTML;

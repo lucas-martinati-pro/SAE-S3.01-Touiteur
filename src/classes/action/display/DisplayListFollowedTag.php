@@ -18,7 +18,7 @@ class DisplayListFollowedTag extends Action {
 
         $id = (int) ($_GET['id'] ?? 0);
 
-        $backUrl = $id > 0 ? "?action=displayProfile&id={$id}" : "?action=displayFeed";
+        $backUrl = $id > 0 ? "?action=profile&id={$id}" : "?action=feed";
         $listOfTag = $r->getAllFollowedTag($id);
 
         $header = HtmlHelper::detailHeader('Tags suivis', $backUrl);
@@ -38,7 +38,7 @@ class DisplayListFollowedTag extends Action {
                 : '';
 
             $items .= <<<HTML
-                <a href="?action=displayTag&id={$tagId}" class="followed-tag">
+                <a href="?action=tag&id={$tagId}" class="followed-tag">
                     <span class="followed-tag-icon" aria-hidden="true">
                         <i class="bi bi-hash"></i>
                     </span>

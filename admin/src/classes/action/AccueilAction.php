@@ -15,8 +15,8 @@ class AccueilAction extends Action {
 
     #[Override]
     public function get(): string {
-        $tagsButton = HtmlHelper::linkButton('Tags populaires', '?action=displayTrendTags', 'bi-hash');
-        $usersButton = HtmlHelper::linkButton('Utilisateurs populaires', '?action=displayTrendUsers', 'bi-people');
+        $tagsButton = HtmlHelper::linkButton('Tags populaires', '?action=trendTags', 'bi-hash');
+        $usersButton = HtmlHelper::linkButton('Utilisateurs populaires', '?action=trendUsers', 'bi-people');
 
         return HtmlHelper::title('Administration', 'bi-speedometer2')
             . '<p>Bienvenue dans le back-office de Touiteur.</p>'

@@ -34,7 +34,7 @@ class DisplayFeedAction extends Action {
             'followed' => 'Abonnements',
         ];
 
-        $ongletsHtml = $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'displayFeed');
+        $ongletsHtml = $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'feed');
 
         $search = trim($_GET['search'] ?? '');
         $feed = match ($type) {
@@ -45,7 +45,7 @@ class DisplayFeedAction extends Action {
         $searchSummary = '';
         if ($search !== '') {
             $searchLabel = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
-            $clearUrl = htmlspecialchars('?action=displayFeed&type=' . $type, ENT_QUOTES, 'UTF-8');
+            $clearUrl = htmlspecialchars('?action=feed&type=' . $type, ENT_QUOTES, 'UTF-8');
             $searchSummary = <<<HTML
                 <div class="px-3 py-2 border-bottom">
                     <p class="mb-1">Résultats pour : <strong>{$searchLabel}</strong></p>
@@ -75,7 +75,7 @@ class DisplayFeedAction extends Action {
         HTML;
 
         // Le http_build_query permet d'automatiquement créer la query
-        $action = 'displayFeed&' . http_build_query([
+        $action = 'feed&' . http_build_query([
             'type' => $type,
             'search' => $search,
         ]);
@@ -85,7 +85,7 @@ class DisplayFeedAction extends Action {
     #[Override]
     public function post(): string {
         $query = http_build_query([
-            'action' => 'displayFeed',
+            'action' => 'feed',
             'type' => 'global',
             'search' => trim($_POST['search'] ?? ''),
         ]);
