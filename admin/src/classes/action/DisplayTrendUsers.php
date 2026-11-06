@@ -5,6 +5,7 @@ namespace iutnc\touiteur\admin\action;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\action\Action;
+use iutnc\touiteur\repository\RepositoryFactory;
 use Override;
 
 /**
@@ -15,7 +16,50 @@ class DisplayTrendUsers extends Action {
 
     #[Override]
     public function get(): string {
-        return '';
+        $r = RepositoryFactory::getReader();
+
+
+        $backUrl = "?action=displayProfile";
+
+        $header = HtmlHelper::detailHeader('Influenceur', $backUrl);
+
+        $users = $r->getTrendUser();
+
+        if ($users === null || empty($users)) {
+            return $header . 
+            '<div class="followed-tags-empty">' . 
+            HtmlHelper::alert('info', 'Il n\'y a aucun utilisateurs') . '</div>';
+        };
+
+        $items = '';
+        foreach ($users as $row) {
+            $userId = (int) $row['id'];
+            $nbFollow = (int) $row['nbFol'];
+            $nbTouite = (int) $row['counter_touite'];
+            $nom = htmlspecialchars($row['nom'], ENT_QUOTES, 'UTF-8');
+            $prenom = htmlspecialchars($row['prenom'], ENT_QUOTES, 'UTF-8');
+            $completeName = "{$nom} {$prenom}";
+            $completeNameId = "{$nom}_{$prenom}";
+            $avatar = HtmlHelper::profileAvatar($row);
+
+            $items .= <<<HTML
+                <a href="?action=displayProfile&id={$userId}" class="followed-tag">
+                    {$avatar}
+                    <div class="followed-tag-label">
+                        <div class="fw-bold">{$completeName}</div>
+                        <div class="text-secondary small fw-normal">@{$completeNameId}</div>
+                        <div>nb follow {$nbFollow} et nb touites {$nbTouite}</div>
+                    </div>
+                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
+                </a>
+            HTML;
+        }
+
+        return $header . <<<HTML
+            <section class="followed-tags" aria-label="Influenceurs">
+                {$items}
+            </section>
+        HTML;
     }
 
     #[Override]

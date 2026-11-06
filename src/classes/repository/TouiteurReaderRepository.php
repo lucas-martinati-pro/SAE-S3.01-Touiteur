@@ -334,6 +334,20 @@ class TouiteurReaderRepository extends TouiteurRepository {
         SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
     }
 
+    public function getTrendUser() : ?array {
+        $res = $this->fetchAll(<<<SQL
+            SELECT users.id, nom, prenom, COUNT(follow.follower_id) AS nbFol, counter_touite
+            FROM users
+            INNER JOIN follow on users.id = follow.followed_id  
+            GROUP BY users.id
+            ORDER BY nbFol DESC
+        SQL);
+
+        if (!$res) return null;
+
+        return $res;
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/
