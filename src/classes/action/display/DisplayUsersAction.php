@@ -27,8 +27,8 @@ class DisplayUsersAction extends Action {
         };
 
         $users = match ($type) {
-            'followers' => $r->getFollowers($id),
-            default => $r->getFollowed($id),
+            'followers' => $r->findFollowersByUserId($id),
+            default => $r->findFollowedByUserId($id),
         };
 
         if ($users === null || empty($users)) {

@@ -67,7 +67,7 @@ class TouiteRenderer implements Renderer {
         }
 
         $r = RepositoryFactory::getReader();
-        $user = $r->getUserByTouiteId($this->touite->getId());
+        $user = $r->findUserByTouiteId($this->touite->getId());
         $user_id = $user['id'];
         $rawName = $user['nom'] . " " . $user['prenom'];
         $rawNameId = $user['nom'] . "_" . $user['prenom'];

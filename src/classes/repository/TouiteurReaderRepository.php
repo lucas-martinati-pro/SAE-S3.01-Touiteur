@@ -51,7 +51,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     /**
      * @return Tag[] Touts les tags de la base de données
      */
-    public function rowsToTag(array $res): array {
+    public function rowsToTags(array $res): array {
         $tags = [];
 
         foreach ($res as $tag) {
@@ -72,7 +72,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowsToFeed($res);
     }
 
-    public function findFollowedFeed(int $id, Pagination $pagination = new Pagination): Feed {
+    public function findFollowedFeedByUserId(int $user_id, Pagination $pagination = new Pagination): Feed {
         $res = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
@@ -89,7 +89,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             )
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
-        SQL, $pagination, ['follower_id' => $id, 'tag_user_id' => $id]);
+        SQL, $pagination, ['follower_id' => $user_id, 'tag_user_id' => $user_id]);
 
         return $this->rowsToFeed($res);
     }
@@ -202,10 +202,10 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         if (!$res) return null;
 
-        return $this->rowsToTag($res);
+        return $this->rowsToTags($res);
     }
 
-    public function getUserByTouiteId(int $touite_id) : ?array {
+    public function findUserByTouiteId(int $touite_id) : ?array {
         return $this->fetchOne(<<<SQL
             SELECT users_id as id, nom, prenom
             FROM touite
@@ -214,7 +214,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         SQL, ['id' => $touite_id]);
     }
 
-    public function getUserById(int $user_id) : ?array {
+    public function findUserById(int $user_id) : ?array {
         return $this->fetchOne(<<<SQL
             SELECT id, nom, prenom, counter_touite
             FROM users
@@ -257,10 +257,10 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         if (!$res) return null;
 
-        return $this->rowsToTag($res);
+        return $this->rowsToTags($res);
     }
 
-    public function getAllFollowedTag(int $user_id) : ?array {
+    public function findAllFollowedTagByUserId(int $user_id) : ?array {
         $res = $this->fetchAll(<<<SQL
             SELECT libelle, tag.id, description
             FROM tag
@@ -285,7 +285,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $this->rowToTag($res);
     }
 
-    public function getFollowers(int $user_id) : ?array {
+    public function findFollowersByUserId(int $user_id) : ?array {
         $res = $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom
             FROM users
@@ -298,7 +298,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
-    public function getFollowed(int $user_id) : ?array {
+    public function findFollowedByUserId(int $user_id) : ?array {
         $res = $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom
             FROM users
@@ -311,7 +311,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
-    public function getMoyenneNoteTouite(int $user_id) : float {
+    public function findAverageNoteTouitesByUserId(int $user_id) : float {
         $res = $this->fetchAll(<<<SQL
             SELECT ROUND(AVG(note),2) AS moyenne
             FROM note2touite
@@ -346,11 +346,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
         SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
     }
 
-    public function getTrendUser() : ?array {
+    public function findTrendUser() : ?array {
         $res = $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom, COUNT(follow.follower_id) AS nbFol, counter_touite
             FROM users
-            INNER JOIN follow on users.id = follow.followed_id  
+            INNER JOIN follow on users.id = follow.followed_id
             GROUP BY users.id
             ORDER BY nbFol DESC
         SQL);

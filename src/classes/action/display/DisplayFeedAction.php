@@ -39,7 +39,7 @@ class DisplayFeedAction extends Action {
         $search = trim($_GET['search'] ?? '');
         $feed = match ($type) {
             'global' => ($search === '') ? $r->findFeed($pagination) : $r->findFeedSearched($search, $pagination),
-            default => ($search === '') ? $r->findFollowedFeed($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination),
+            default => ($search === '') ? $r->findFollowedFeedByUserId($this->user['id'], $pagination) : $r->findFollowedFeedSearched($this->user['id'], $search, $pagination),
         };
 
         $searchSummary = '';

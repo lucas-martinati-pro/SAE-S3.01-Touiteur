@@ -25,9 +25,9 @@ class SubscribeAction extends Action {
         $r = RepositoryFactory::getWriter();
 
         if ($type === "sub"){
-            $r->follow($this->user['id'], $id);
+            $r->followUser($this->user['id'], $id);
         } else if ($type === "unsub"){
-            $r->unfollow($this->user['id'], $id);
+            $r->unfollowUser($this->user['id'], $id);
         }
 
         // Redirection direct vers l'affichage d'un profil

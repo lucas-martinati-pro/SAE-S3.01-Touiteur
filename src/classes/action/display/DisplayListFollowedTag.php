@@ -19,7 +19,7 @@ class DisplayListFollowedTag extends Action {
         $id = (int) ($_GET['id'] ?? 0);
 
         $backUrl = $id > 0 ? "?action=profile&id={$id}" : "?action=feed";
-        $listOfTag = $r->getAllFollowedTag($id);
+        $listOfTag = $r->findAllFollowedTagByUserId($id);
 
         $header = HtmlHelper::detailHeader('Tags suivis', $backUrl);
 

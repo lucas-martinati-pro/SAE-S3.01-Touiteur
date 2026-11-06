@@ -33,7 +33,7 @@ class DisplayProfile extends Action {
             default => $r->findFeedByUserId($id, $pagination),
         };
 
-        $details = $r->getUserById($id);
+        $details = $r->findUserById($id);
         if (!$details) {
             return HtmlHelper::formError(
                 errors: "Le profil demandé est introuvable.",
@@ -51,9 +51,9 @@ class DisplayProfile extends Action {
         $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
         $profileAvatar = HtmlHelper::profileAvatar($details, 'profile-avatar');
         $profileColor = HtmlHelper::profileColor($id);
-        $nbFollowers = count($r->getFollowers($id) ?? []);
-        $nbFollowed = count($r->getFollowed($id) ?? []);
-        $noteMoyenne = $r->getMoyenneNoteTouite($id);
+        $nbFollowers = count($r->findFollowersByUserId($id) ?? []);
+        $nbFollowed = count($r->findFollowedByUserId($id) ?? []);
+        $noteMoyenne = $r->findAverageNoteTouitesByUserId($id);
         $noteClass = $noteMoyenne < 0
             ? 'touite-note-negative'
             : ($noteMoyenne > 0 ? 'touite-note-positive' : 'touite-note-neutral');

@@ -20,7 +20,7 @@ class DisplayTrendUsers extends Action {
 
         $header = HtmlHelper::detailHeader('Influenceur', "?");
 
-        $users = $r->getTrendUser();
+        $users = $r->findTrendUser();
 
         if ($users === null || empty($users)) {
             return $header .
