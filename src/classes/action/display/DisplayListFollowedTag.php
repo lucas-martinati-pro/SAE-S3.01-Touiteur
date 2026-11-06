@@ -18,20 +18,20 @@ class DisplayListFollowedTag extends Action {
 
         $id = (int) ($_GET['id'] ?? 0);
 
-        $backUrl = $id > 0 ? "?action=profile&id={$id}" : "?action=feed";
-        $listOfTag = $r->getAllFollowedTag($id);
+        $backUrl = $id > 0 ? "?action=profile&id={$id}" : '?action=feed';
+        $followedTags = $r->findAllFollowedTagByUserId($id);
 
         $header = HtmlHelper::detailHeader('Tags suivis', $backUrl);
 
-        if ($listOfTag === null) {
+        if ($followedTags === null) {
             return $header . '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur ne suit aucun tag.') . '</div>';
         }
 
         $items = '';
-        foreach ($listOfTag as $row) {
-            $tagId = (int) $row['id'];
-            $libelle = htmlspecialchars($row['libelle'], ENT_QUOTES, 'UTF-8');
-            $rawDescr = $row['description'] ?? '';
+        foreach ($followedTags as $tag) {
+            $tagId = (int) $tag->getId();
+            $tagLabel = htmlspecialchars($tag->getLibelle(), ENT_QUOTES, 'UTF-8');
+            $rawDescr = $tag['description'] ?? '';
             $descr = htmlspecialchars($rawDescr, ENT_QUOTES, 'UTF-8');
             $descrHtml = $descr !== ''
                 ? "<div class=\"text-secondary small fw-normal\">{$descr}</div>"
@@ -43,7 +43,7 @@ class DisplayListFollowedTag extends Action {
                         <i class="bi bi-hash"></i>
                     </span>
                     <div class="followed-tag-label">
-                        <div class="fw-bold">#{$libelle}</div>
+                        <div class="fw-bold">#{$tagLabel}</div>
                         {$descrHtml}
                     </div>
                     <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>

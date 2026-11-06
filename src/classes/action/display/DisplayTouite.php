@@ -15,8 +15,8 @@ use Override;
 class DisplayTouite extends Action {
     #[Override]
     public function get(): string {
-        $reader = RepositoryFactory::getReader();
-        $touite = $reader->findTouiteById((int) ($_GET['id'] ?? 0));
+        $r = RepositoryFactory::getReader();
+        $touite = $r->findTouiteById((int) ($_GET['id'] ?? 0));
 
         $page = HtmlHelper::detailHeader('Touite');
 

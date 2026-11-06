@@ -5,18 +5,18 @@ namespace iutnc\touiteur\touite;
 class Touite {
     private ?int $id;
     private string $content;
-    private string $posted_at;
+    private string $postedAt;
     private int $note;
-    private ?string $media_path;
-    private ?string $media_description;
+    private ?string $mediaPath;
+    private ?string $mediaDescription;
 
-    public function __construct(string $content, string $posted_at, int $note, ?string $media_path, ?string $media_description, ?int $id = null) {
+    public function __construct(string $content, string $postedAt, int $note, ?string $mediaPath, ?string $mediaDescription, ?int $id = null) {
         $this->id = $id;
         $this->content = $content;
-        $this->posted_at = $posted_at;
+        $this->postedAt = $postedAt;
         $this->note = $note;
-        $this->media_path = $media_path;
-        $this->media_description = $media_description;
+        $this->mediaPath = $mediaPath;
+        $this->mediaDescription = $mediaDescription;
     }
 
     public function getId(): ?int {
@@ -31,19 +31,19 @@ class Touite {
         return $this->content;
     }
 
-    public function getPosted_at(): string {
-        return $this->posted_at;
+    public function getPostedAt(): string {
+        return $this->postedAt;
     }
 
     public function getNote(): int {
         return $this->note;
     }
 
-    public function getmedia_path(): ?string {
-        return $this->media_path;
+    public function getMediaPath(): ?string {
+        return $this->mediaPath;
     }
 
-    public function getmedia_description(): ?string {
-        return $this->media_description;
+    public function getMediaDescription(): ?string {
+        return $this->mediaDescription;
     }
 }

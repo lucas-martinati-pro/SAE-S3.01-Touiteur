@@ -19,7 +19,7 @@ class DisplayProfile extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $user_id = $this->user['id'];
+        $userId = $this->user['id'];
 
         $pageNumber = (int) ($_GET['page'] ?? 1);
         $pagination = new Pagination($pageNumber);
@@ -33,36 +33,36 @@ class DisplayProfile extends Action {
             default => $r->findFeedByUserId($id, $pagination),
         };
 
-        $details = $r->getUserById($id);
+        $details = $r->findUserById($id);
         if (!$details) {
             return HtmlHelper::formError(
-                errors: "Le profil demandé est introuvable.",
-                backUrl: "?action=feed",
+                errors: 'Le profil demandé est introuvable.',
+                backUrl: '?action=feed',
                 backLabel: "Retour à l'accueil",
-                title: "Profil introuvable"
+                title: 'Profil introuvable'
             );
         }
 
         $nbTouite = (int) ($details['counter_touite'] ?? 0);
         $touiteLabel = $nbTouite > 1 ? "{$nbTouite} touites" : "{$nbTouite} touite";
-        $rawName = $details['nom'] . " " . $details['prenom'];
-        $rawNameId = $details['nom'] . "_" . $details['prenom'];
+        $rawName = $details['nom'] . ' ' . $details['prenom'];
+        $rawNameId = $details['nom'] . '_' . $details['prenom'];
         $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
         $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
         $profileAvatar = HtmlHelper::profileAvatar($details, 'profile-avatar');
         $profileColor = HtmlHelper::profileColor($id);
-        $nbFollowers = count($r->getFollowers($id) ?? []);
-        $nbFollowed = count($r->getFollowed($id) ?? []);
-        $noteMoyenne = $r->getMoyenneNoteTouite($id);
-        $noteClass = $noteMoyenne < 0
+        $followerCount = count($r->findFollowersByUserId($id) ?? []);
+        $followingCount = count($r->findFollowedByUserId($id) ?? []);
+        $averageNote = $r->findAverageNoteTouitesByUserId($id);
+        $noteClass = $averageNote < 0
             ? 'touite-note-negative'
-            : ($noteMoyenne > 0 ? 'touite-note-positive' : 'touite-note-neutral');
-        $noteFormatted = ($noteMoyenne > 0 ? '+' : '') . $noteMoyenne;
+            : ($averageNote > 0 ? 'touite-note-positive' : 'touite-note-neutral');
+        $noteFormatted = ($averageNote > 0 ? '+' : '') . $averageNote;
 
-        $subBtn = "";
+        $subBtn = '';
 
-        if ($id !== $user_id) {
-            if ($r->isSub($id, $user_id)) {
+        if ($id !== $userId) {
+            if ($r->isFollowingUser($id, $userId)) {
                     $subBtn = <<<HTML
                     <form method="POST" action="?action=subscribe">
                         <input type="hidden" name="type" value="unsub">
@@ -86,7 +86,7 @@ class DisplayProfile extends Action {
             'medias' => 'Médias',
         ];
 
-        $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'profile', ['id' => $id]);
+        $tabsHtml = HtmlHelper::tabs($tabs, $type, 'profile', ['id' => $id]);
 
         $backLink = HtmlHelper::backLink('?action=feed');
         $page = <<<HTML
@@ -106,10 +106,10 @@ class DisplayProfile extends Action {
                     <p class="profile-handle">@{$completeNameId}</p>
                     <div class="d-flex flex-wrap gap-2 my-2 align-items-center">
                         <a href="?action=users&id={$id}&type=followed" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="bi bi-person-check me-1"></i> <strong>{$nbFollowed}</strong> abonnements
+                            <i class="bi bi-person-check me-1"></i> <strong>{$followingCount}</strong> abonnements
                         </a>
                         <a href="?action=users&id={$id}&type=followers" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="bi bi-people me-1"></i> <strong>{$nbFollowers}</strong> abonnés
+                            <i class="bi bi-people me-1"></i> <strong>{$followerCount}</strong> abonnés
                         </a>
                         <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">
                             <i class="bi bi-tags me-1"></i> Tags suivis
@@ -125,7 +125,7 @@ class DisplayProfile extends Action {
                     </div>
                 </div>
                 <nav class="profile-tabs" aria-label="Navigation du profil">
-                    {$ongletsHtml}
+                    {$tabsHtml}
                 </nav>
             </section>
         HTML;

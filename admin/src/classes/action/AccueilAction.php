@@ -27,9 +27,9 @@ class AccueilAction extends Action {
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
             return HtmlHelper::errorPage(
-                title: "Accès refusé",
+                title: 'Accès refusé',
                 message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
-                backUrl: "index.php",
+                backUrl: 'index.php',
                 backLabel: "Retour à l'accueil"
             );
         }

@@ -14,7 +14,7 @@ class SignoutAction extends Action {
         // Si l'utilisateur n'est même pas connecté
         if (!isset($_SESSION['user'])) {
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/
-            $title = HtmlHelper::title("Déconnexion", "bi-box-arrow-right", "text-secondary");
+            $title = HtmlHelper::title('Déconnexion', 'bi-box-arrow-right', 'text-secondary');
             return $title
                 . "<p>Vous n'êtes pas connecté.</p><p>"
                 . HtmlHelper::linkButton("Retour à l'accueil", 'index.php', 'bi-house-door-fill', 'secondary')
@@ -22,7 +22,7 @@ class SignoutAction extends Action {
         }
 
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-right/
-        $title = HtmlHelper::title("Déconnexion", "bi-box-arrow-right", "text-danger");
+        $title = HtmlHelper::title('Déconnexion', 'bi-box-arrow-right', 'text-danger');
         $confirmButton = HtmlHelper::button('Confirmer la déconnexion', 'bi-box-arrow-right', 'danger');
         $cancelButton = HtmlHelper::linkButton('Annuler', 'index.php', 'bi-x-lg', 'secondary');
 
@@ -43,7 +43,7 @@ class SignoutAction extends Action {
         $reconnectButton = HtmlHelper::linkButton('Se reconnecter', '?action=signin', 'bi-box-arrow-in-right');
         $homeButton = HtmlHelper::linkButton("Retour à l'accueil", 'index.php', 'bi-house-door-fill', 'secondary');
 
-        return HtmlHelper::title("Déconnexion réussie", "bi-check-circle-fill", "text-success") . <<<HTML
+        return HtmlHelper::title('Déconnexion réussie', 'bi-check-circle-fill', 'text-success') . <<<HTML
             <p>Vous avez été déconnecté avec succès.</p>
             <p>
                 {$reconnectButton}

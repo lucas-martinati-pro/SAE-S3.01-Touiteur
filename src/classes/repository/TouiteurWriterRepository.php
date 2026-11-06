@@ -11,46 +11,54 @@ use iutnc\touiteur\tag\Tag;
  */
 class TouiteurWriterRepository extends TouiteurRepository {
     /**============================================
-     *               GESTION DES TOUITES
+     * GESTION DES USERS
      *=============================================**/
 
-    public function follow(int $follower_id, int $followed_id) : void {
+    public function followUser(int $followerId, int $followedId): void {
         $stmt = $this->pdo->prepare(<<<SQL
             INSERT INTO follow (follower_id, followed_id) VALUES (:follower_id, :followed_id);
         SQL);
 
-        $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
+        $stmt->execute(['follower_id' => $followerId, 'followed_id' => $followedId]);
     }
 
-    public function unfollow(int $follower_id, int $followed_id) : void {
+    public function unfollowUser(int $followerId, int $followedId): void {
         $stmt = $this->pdo->prepare(<<<SQL
             DELETE FROM follow
             WHERE follower_id = :follower_id
             AND followed_id = :followed_id;
         SQL);
 
-        $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
+        $stmt->execute(['follower_id' => $followerId, 'followed_id' => $followedId]);
     }
 
-    public function followTag(int $user_id, int $tag_id) : void {
+    /**============================================
+     * GESTION DES TAGS
+     *=============================================**/
+
+    public function followTag(int $userId, int $tagId): void {
         $stmt = $this->pdo->prepare(<<<SQL
             INSERT INTO users2tag (users_id, tag_id) VALUES (:user_id, :tag_id);
         SQL);
 
-        $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
+        $stmt->execute(['user_id' => $userId, 'tag_id' => $tagId]);
     }
 
-    public function unfollowTag(int $user_id, int $tag_id) : void {
+    public function unfollowTag(int $userId, int $tagId): void {
         $stmt = $this->pdo->prepare(<<<SQL
             DELETE FROM users2tag
             WHERE users_id = :user_id
             AND tag_id = :tag_id;
         SQL);
 
-        $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
+        $stmt->execute(['user_id' => $userId, 'tag_id' => $tagId]);
     }
 
-    public function noteTouite(int $user_id, int $touite_id, TypeNote $state) {
+    /**============================================
+     * GESTION DES TOUITES
+     *=============================================**/
+
+    public function noteTouite(int $userId, int $touiteId, TypeNote $state) {
         if ($state === TypeNote::annuler) {
             $stmt = $this->pdo->prepare(<<<SQL
                 DELETE FROM note2touite
@@ -58,7 +66,7 @@ class TouiteurWriterRepository extends TouiteurRepository {
                 AND touite_id = :touite_id
             SQL);
 
-            $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id]);
+            $stmt->execute(['user_id' => $userId, 'touite_id' => $touiteId]);
             return;
         }
 
@@ -68,7 +76,37 @@ class TouiteurWriterRepository extends TouiteurRepository {
             ON DUPLICATE KEY UPDATE state = VALUES(state)
         SQL);
 
-        $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id, 'state' => $state->getNote()]);
+        $stmt->execute(['user_id' => $userId, 'touite_id' => $touiteId, 'state' => $state->getNote()]);
+    }
+
+    public function addTouite(Touite $touite, int $userId): Touite {
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :posted_at, :user_id)
+        SQL);
+
+        $stmt->execute(['content' => $touite->getContent(), 'note' => 0, 'media_path' => $touite->getMediaPath(), 'media_desc' => $touite->getMediaDescription(), 'posted_at' => $touite->getPostedAt(), 'user_id' => $userId]);
+
+        $touite->setId($this->pdo->lastInsertId());
+
+        return $touite;
+    }
+
+    public function addTouiteTag(Tag $tag, int $touiteId): void {
+        $tagId = $tag->getId();
+        if ($tagId === null) {
+            $stmt = $this->pdo->prepare(<<<SQL
+                INSERT INTO tag (libelle, description) VALUES (:nom, :desc);
+            SQL);
+
+            $stmt->execute(['nom' => $tag->getLibelle(), 'desc' => $tag->getDescription()]);
+            $tagId = (int) $this->pdo->lastInsertId();
+        }
+
+        $stmt = $this->pdo->prepare(<<<SQL
+            INSERT INTO tag2touite (touite_id, tag_id) VALUES (:touite_id, :tag_id);
+        SQL);
+
+        $stmt->execute(['touite_id' => $touiteId, 'tag_id' => $tagId]);
     }
 
     /**============================================
@@ -89,8 +127,6 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         $nom = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);
         $prenom = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
-
-
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         $stmt = $this->pdo->prepare(<<<SQL
@@ -98,35 +134,5 @@ class TouiteurWriterRepository extends TouiteurRepository {
         SQL);
 
         $stmt->execute(['email' => $email, 'password' => $password, 'nom' => $nom, 'prenom' => $prenom]);
-    }
-
-    public function addTouite(Touite $touite, int $user_id): Touite {
-        $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :posted_at, :user_id)
-        SQL);
-
-        $stmt->execute(['content' => $touite->getContent(), 'note' => 0, 'media_path' => $touite->getmedia_path(), 'media_desc' => $touite->getmedia_description(), 'posted_at' => $touite->getPosted_at(), 'user_id' => $user_id]);
-
-        $touite->setId($this->pdo->lastInsertId());
-
-        return $touite;
-    }
-
-    public function addTag(int $touiteId, Tag $tag): void {
-        $tagId = $tag->getId();
-        if ($tagId === null) {
-            $stmt = $this->pdo->prepare(<<<SQL
-                INSERT INTO tag (libelle, description) VALUES (:nom, :desc);
-            SQL);
-
-            $stmt->execute(['nom' => $tag->getLibelle(), 'desc' => $tag->getDescription()]);
-            $tagId = (int) $this->pdo->lastInsertId();
-        }
-
-        $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO tag2touite (touite_id, tag_id) VALUES (:touite_id, :tag_id);
-        SQL);
-
-        $stmt->execute(['touite_id' => $touiteId, 'tag_id' => $tagId]);
     }
 }

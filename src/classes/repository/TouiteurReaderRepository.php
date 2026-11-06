@@ -12,37 +12,37 @@ use iutnc\touiteur\tag\Tag;
  */
 class TouiteurReaderRepository extends TouiteurRepository {
     /**============================================
-     *               GESTION DES TOUITES
+     * CREATIONS DES TOUITES/TAGS
      *=============================================**/
 
-    private function rowToTouite(array $res): Touite {
+    private function rowToTouite(array $result): Touite {
         $touite = new Touite(
-                $res['content'],
-                $res['posted_at'],
-                $res['note'],
-                $res['media_path'] ?? null,
-                $res['media_description'] ?? null,
-                $res['id']
+                $result['content'],
+                $result['posted_at'],
+                $result['note'],
+                $result['media_path'] ?? null,
+                $result['media_description'] ?? null,
+                $result['id']
             );
 
         return $touite;
     }
 
-    private function rowsToFeed(array $res): Feed {
+    private function rowsToFeed(array $result): Feed {
         $touites = [];
 
-        foreach ($res as $touite) {
+        foreach ($result as $touite) {
             $touites[] = $this->rowToTouite($touite);
         }
 
         return new Feed($touites);
     }
 
-    public function rowToTag(array $res): Tag {
+    public function rowToTag(array $result): Tag {
         $tag = new Tag(
-                $res['libelle'],
-                $res['description'],
-                $res['id']
+                $result['libelle'],
+                $result['description'],
+                $result['id']
             );
 
         return $tag;
@@ -51,29 +51,33 @@ class TouiteurReaderRepository extends TouiteurRepository {
     /**
      * @return Tag[] Touts les tags de la base de données
      */
-    public function rowsToTag(array $res): array {
+    public function rowsToTags(array $result): array {
         $tags = [];
 
-        foreach ($res as $tag) {
+        foreach ($result as $tag) {
             $tags[] = $this->rowToTag($tag);
         }
 
         return $tags;
     }
 
-    public function findFeed(Pagination $pagination = new Pagination): ?Feed {
-        $res = $this->fetchPage(<<<SQL
+    /**============================================
+     * CREATIONS DES FEEDS
+     *=============================================**/
+
+    public function findFeed(Pagination $pagination = new Pagination()): ?Feed {
+        $result = $this->fetchPage(<<<SQL
             SELECT *
             FROM touite
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
         SQL, $pagination);
 
-        return $this->rowsToFeed($res);
+        return $this->rowsToFeed($result);
     }
 
-    public function findFollowedFeed(int $id, Pagination $pagination = new Pagination): Feed {
-        $res = $this->fetchPage(<<<SQL
+    public function findFollowedFeedByUserId(int $userId, Pagination $pagination = new Pagination()): Feed {
+        $result = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
             WHERE touite.users_id IN (
@@ -89,13 +93,13 @@ class TouiteurReaderRepository extends TouiteurRepository {
             )
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
-        SQL, $pagination, ['follower_id' => $id, 'tag_user_id' => $id]);
+        SQL, $pagination, ['follower_id' => $userId, 'tag_user_id' => $userId]);
 
-        return $this->rowsToFeed($res);
+        return $this->rowsToFeed($result);
     }
 
-    public function findFeedSearched(string $search, Pagination $pagination = new Pagination): Feed {
-        $res = $this->fetchPage(<<<SQL
+    public function findFeedSearched(string $search, Pagination $pagination = new Pagination()): Feed {
+        $result = $this->fetchPage(<<<SQL
             SELECT *
             FROM touite
             WHERE content LIKE :search
@@ -103,11 +107,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['search' => '%' . $search . '%']);
 
-        return $this->rowsToFeed($res);
+        return $this->rowsToFeed($result);
     }
 
-    public function findFollowedFeedSearched(int $id, string $search, Pagination $pagination = new Pagination): Feed {
-        $res = $this->fetchPage(<<<SQL
+    public function findFollowedFeedSearched(int $id, string $search, Pagination $pagination = new Pagination()): Feed {
+        $result = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
             WHERE (touite.users_id IN (
@@ -126,22 +130,22 @@ class TouiteurReaderRepository extends TouiteurRepository {
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['follower_id' => $id, 'tag_user_id' => $id, 'search' => '%' . $search . '%']);
 
-        return $this->rowsToFeed($res);
+        return $this->rowsToFeed($result);
     }
 
-    public function findFeedByUserId(int $id, Pagination $pagination = new Pagination): Feed {
-        $res = $this->fetchPage(<<<SQL
+    public function findFeedByUserId(int $id, Pagination $pagination = new Pagination()): Feed {
+        $result = $this->fetchPage(<<<SQL
             SELECT *
             FROM touite
             WHERE users_id = :id
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['id' => $id]);
 
-        return $this->rowsToFeed($res);
+        return $this->rowsToFeed($result);
     }
 
-    public function findFeedWithMediasByUserId(int $id, Pagination $pagination = new Pagination): Feed {
-        $res = $this->fetchPage(<<<SQL
+    public function findFeedWithMediasByUserId(int $id, Pagination $pagination = new Pagination()): Feed {
+        $result = $this->fetchPage(<<<SQL
             SELECT *
             FROM touite
             WHERE users_id = :id
@@ -149,11 +153,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['id' => $id]);
 
-        return $this->rowsToFeed($res);
+        return $this->rowsToFeed($result);
     }
 
-    public function findFeedByTagId(int $id, Pagination $pagination = new Pagination): Feed {
-        $res = $this->fetchPage(<<<SQL
+    public function findFeedByTagId(int $id, Pagination $pagination = new Pagination()): Feed {
+        $result = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
             INNER JOIN tag2touite on touite.id = tag2touite.touite_id
@@ -162,83 +166,28 @@ class TouiteurReaderRepository extends TouiteurRepository {
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['id' => $id]);
 
-        return $this->rowsToFeed($res);
+        return $this->rowsToFeed($result);
     }
 
-    public function findTouiteById(int $id) : ?Touite {
-        $res = $this->fetchOne(<<<SQL
+    /**============================================
+     * CREATIONS DES TOUITES
+     *=============================================**/
+
+    public function findTouiteById(int $id): ?Touite {
+        $result = $this->fetchOne(<<<SQL
             SELECT *
             FROM touite
             WHERE id = :id;
         SQL, ['id' => $id]);
 
-        if (!$res) return null;
+        if (!$result) return null;
 
-        return $this->rowToTouite($res);
+        return $this->rowToTouite($result);
     }
 
-    public function findTagById(int $id): ?Tag {
-        $res = $this->fetchOne(<<<SQL
-            SELECT *
-            FROM tag
-            WHERE id = :id;
-        SQL, ['id' => $id]);
-
-        if (!$res) return null;
-
-        return $this->rowToTag($res);
-    }
-
-    /**
-     * @return Tag[] Touts les tags
-     */
-    public function findTagsByTouiteId(int $id): ?array {
-        $res = $this->fetchAll(<<<SQL
-            SELECT tag.*
-            FROM tag
-            INNER JOIN tag2touite on tag.id = tag2touite.tag_id
-            WHERE touite_id = :id;
-        SQL, ['id' => $id]);
-
-        if (!$res) return null;
-
-        return $this->rowsToTag($res);
-    }
-
-    public function getUserByTouiteId(int $touite_id) : ?array {
-        return $this->fetchOne(<<<SQL
-            SELECT users_id as id, nom, prenom
-            FROM touite
-            INNER JOIN users on users.id = touite.users_id
-            WHERE touite.id = :id
-        SQL, ['id' => $touite_id]);
-    }
-
-    public function getUserById(int $user_id) : ?array {
-        return $this->fetchOne(<<<SQL
-            SELECT id, nom, prenom, counter_touite
-            FROM users
-            WHERE id = :id
-        SQL, ['id' => $user_id]);
-    }
-
-    public function isSub(int $followed_id, int $follower_id) : bool {
-        return $this->exists(<<<SQL
-            SELECT 1
-            FROM follow
-            WHERE follower_id = :follower_id
-            AND followed_id = :followed_id
-        SQL, ['follower_id' => $follower_id, 'followed_id' => $followed_id]);
-    }
-
-    public function isTagSub(int $user_id, int $tag_id) : bool {
-        return $this->exists(<<<SQL
-            SELECT 1
-            FROM users2tag
-            WHERE users_id = :user_id
-            AND tag_id = :tag_id
-        SQL, ['user_id' => $user_id, 'tag_id' => $tag_id]);
-    }
+    /**============================================
+     * CREATIONS DES TAGS
+     *=============================================**/
 
     /**
      * @return Tag[] Touts les tags
@@ -246,7 +195,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     public function findAllTags(int $limit = 1844674407370955161): ?array {
         if ($limit < 0) $limit = 0;
 
-        $res = $this->fetchAll(<<<SQL
+        $result = $this->fetchAll(<<<SQL
             SELECT tag.*
             FROM tag
             INNER JOIN users2tag ON users2tag.tag_id = tag.id
@@ -255,109 +204,187 @@ class TouiteurReaderRepository extends TouiteurRepository {
             LIMIT :limit;
         SQL, ['limit' => $limit]);
 
-        if (!$res) return null;
+        if (!$result) return null;
 
-        return $this->rowsToTag($res);
+        return $this->rowsToTags($result);
     }
 
-    public function getAllFollowedTag(int $user_id) : ?array {
-        $res = $this->fetchAll(<<<SQL
-            SELECT libelle, tag.id, description
-            FROM tag
-            INNER JOIN users2tag on users2tag.tag_id = tag.id
-            WHERE users2tag.users_id = :user_id
-        SQL, ['user_id' => $user_id]);
-
-        if (!$res) return null;
-
-        return $res;
-    }
-
-    public function findTagByLibelle(string $libelle) : ?Tag {
-        $res = $this->fetchOne(<<<SQL
+    public function findTagByLibelle(string $libelle): ?Tag {
+        $result = $this->fetchOne(<<<SQL
                 SELECT *
                 FROM tag
                 WHERE libelle = :libelle
         SQL, ['libelle' => $libelle]);
 
-        if (!$res) return null;
+        if (!$result) return null;
 
-        return $this->rowToTag($res);
+        return $this->rowToTag($result);
     }
 
-    public function getFollowers(int $user_id) : ?array {
-        $res = $this->fetchAll(<<<SQL
+    /**
+     * @return Tag[]
+     */
+    public function findAllFollowedTagByUserId(int $userId): ?array {
+        $result = $this->fetchAll(<<<SQL
+            SELECT libelle, tag.id, description
+            FROM tag
+            INNER JOIN users2tag on users2tag.tag_id = tag.id
+            WHERE users2tag.users_id = :user_id
+        SQL, ['user_id' => $userId]);
+
+        if (!$result) return null;
+
+        return $result;
+    }
+
+    public function findTagById(int $id): ?Tag {
+        $result = $this->fetchOne(<<<SQL
+            SELECT *
+            FROM tag
+            WHERE id = :id;
+        SQL, ['id' => $id]);
+
+        if (!$result) return null;
+
+        return $this->rowToTag($result);
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function findTagsByTouiteId(int $id): ?array {
+        $result = $this->fetchAll(<<<SQL
+            SELECT tag.*
+            FROM tag
+            INNER JOIN tag2touite on tag.id = tag2touite.tag_id
+            WHERE touite_id = :id;
+        SQL, ['id' => $id]);
+
+        if (!$result) return null;
+
+        return $this->rowsToTags($result);
+    }
+
+    /**============================================
+     * CREATIONS DES USERS
+     *=============================================**/
+
+    public function findUserByTouiteId(int $touiteId): ?array {
+        return $this->fetchOne(<<<SQL
+            SELECT users_id as id, nom, prenom
+            FROM touite
+            INNER JOIN users on users.id = touite.users_id
+            WHERE touite.id = :id
+        SQL, ['id' => $touiteId]);
+    }
+
+    public function findUserById(int $userId): ?array {
+        return $this->fetchOne(<<<SQL
+            SELECT id, nom, prenom, counter_touite
+            FROM users
+            WHERE id = :id
+        SQL, ['id' => $userId]);
+    }
+
+    public function findFollowersByUserId(int $userId): ?array {
+        $result = $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom
             FROM users
             INNER JOIN follow on follow.follower_id = users.id
             WHERE followed_id = :user_id
-        SQL, ['user_id' => $user_id]);
+        SQL, ['user_id' => $userId]);
 
-        if (!$res) return null;
+        if (!$result) return null;
 
-        return $res;
+        return $result;
     }
 
-    public function getFollowed(int $user_id) : ?array {
-        $res = $this->fetchAll(<<<SQL
+    public function findFollowedByUserId(int $userId): ?array {
+        $result = $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom
             FROM users
             INNER JOIN follow on follow.followed_id = users.id
             WHERE follower_id = :user_id
-        SQL, ['user_id' => $user_id]);
+        SQL, ['user_id' => $userId]);
 
-        if (!$res) return null;
+        if (!$result) return null;
 
-        return $res;
+        return $result;
     }
 
-    public function getMoyenneNoteTouite(int $user_id) : float {
-        $res = $this->fetchAll(<<<SQL
+    public function findAverageNoteTouitesByUserId(int $userId): float {
+        $result = $this->fetchAll(<<<SQL
             SELECT ROUND(AVG(note),2) AS moyenne
             FROM note2touite
             INNER JOIN touite on touite.id = note2touite.touite_id
             WHERE touite.users_id = :user_id
-        SQL, ['user_id' => $user_id]);
+        SQL, ['user_id' => $userId]);
 
-        if (!$res) {
+        if (!$result) {
             return 0.0;
         }
 
-        return (float) $res[0]['moyenne'];
+        return (float) $result[0]['moyenne'];
     }
 
-    public function isLikedBy(int $user_id, int $touite_id) : bool {
+    /**============================================
+     * CREATIONS DES CONDITIONS
+     *=============================================**/
+
+    public function isFollowingUser(int $followedId, int $followerId): bool {
+        return $this->exists(<<<SQL
+            SELECT 1
+            FROM follow
+            WHERE follower_id = :follower_id
+            AND followed_id = :followed_id
+        SQL, ['follower_id' => $followerId, 'followed_id' => $followedId]);
+    }
+
+    public function isFollowingTag(int $userId, int $tagId): bool {
+        return $this->exists(<<<SQL
+            SELECT 1
+            FROM users2tag
+            WHERE users_id = :user_id
+            AND tag_id = :tag_id
+        SQL, ['user_id' => $userId, 'tag_id' => $tagId]);
+    }
+
+    public function isLikedBy(int $userId, int $touiteId): bool {
         return $this->exists(<<<SQL
             SELECT 1
             FROM note2touite
             WHERE users_id = :user_id
             AND touite_id = :touite_id
             AND state = 1
-        SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
+        SQL, ['user_id' => $userId, 'touite_id' => $touiteId]);
     }
 
-    public function isDislikedBy(int $user_id, int $touite_id) : bool {
+    public function isDislikedBy(int $userId, int $touiteId): bool {
         return $this->exists(<<<SQL
             SELECT 1
             FROM note2touite
             WHERE users_id = :user_id
             AND touite_id = :touite_id
             AND state = -1
-        SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
+        SQL, ['user_id' => $userId, 'touite_id' => $touiteId]);
     }
 
-    public function getTrendUser() : ?array {
-        $res = $this->fetchAll(<<<SQL
+    /**============================================
+     * GESTION DES PANELS ADMIN
+     *=============================================**/
+
+    public function findTrendingUsers(): ?array {
+        $result = $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom, COUNT(follow.follower_id) AS nbFol, counter_touite
             FROM users
-            INNER JOIN follow on users.id = follow.followed_id  
+            INNER JOIN follow on users.id = follow.followed_id
             GROUP BY users.id
             ORDER BY nbFol DESC
         SQL);
 
-        if (!$res) return null;
+        if (!$result) return null;
 
-        return $res;
+        return $result;
     }
 
     /**============================================

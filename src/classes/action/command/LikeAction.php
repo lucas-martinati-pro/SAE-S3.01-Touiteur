@@ -19,7 +19,7 @@ class LikeAction extends Action {
         $type = (isset($_GET['type'])) ? TypeNote::fromLabel($_GET['type']) : TypeNote::annuler;
 
         $w->noteTouite($this->user['id'], $id, $type);
-        header("Location: ?action=touite&id=" . $id);
+        header('Location: ?action=touite&id=' . $id);
         exit;
     }
 }

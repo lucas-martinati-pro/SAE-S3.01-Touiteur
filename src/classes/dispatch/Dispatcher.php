@@ -46,21 +46,21 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "feed" => (new DisplayFeedAction)(),
-            "listFollowTag" => (new DisplayListFollowedTag)(),
-            "profile" => (new DisplayProfile)(),
-            "tag" => (new DisplayTag)(),
-            "touite" => (new DisplayTouite)(),
-            "users" => (new DisplayUsersAction)(),
-            "addTouite" => (new AddTouiteAction)(),
-            "addTouiteTag" => (new AddTouiteTagAction)(),
-            "like" => (new LikeAction)(),
-            "subscribe" => (new SubscribeAction)(),
-            "subscribeTag" => (new SubscribeTagAction)(),
-            "register" => (new RegisterAction)(),
-            "signin" => (new SigninAction)(),
-            "signout" => (new SignoutAction)(),
-            default => (new DisplayFeedAction)(),
+            'feed' => (new DisplayFeedAction())(),
+            'listFollowTag' => (new DisplayListFollowedTag())(),
+            'profile' => (new DisplayProfile())(),
+            'tag' => (new DisplayTag())(),
+            'touite' => (new DisplayTouite())(),
+            'users' => (new DisplayUsersAction())(),
+            'addTouite' => (new AddTouiteAction())(),
+            'addTouiteTag' => (new AddTouiteTagAction())(),
+            'like' => (new LikeAction())(),
+            'subscribe' => (new SubscribeAction())(),
+            'subscribeTag' => (new SubscribeTagAction())(),
+            'register' => (new RegisterAction())(),
+            'signin' => (new SigninAction())(),
+            'signout' => (new SignoutAction())(),
+            default => (new DisplayFeedAction())(),
         };
 
         $this->renderPage($html);
@@ -159,7 +159,7 @@ class Dispatcher {
                 </aside>
             HTML;
         } catch (AuthnException) {
-            return "";
+            return '';
         }
     }
 

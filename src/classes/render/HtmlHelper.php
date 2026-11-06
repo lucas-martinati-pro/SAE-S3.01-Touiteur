@@ -39,7 +39,7 @@ class HtmlHelper {
     }
 
     public static function alreadyLogin(string $email): string {
-        $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
+        $title = HtmlHelper::title('Déjà connecté', 'bi-person-plus-fill');
         $feedButton = HtmlHelper::linkButton('Mon feed', '?action=feed', 'bi-collection-play-fill');
         $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
         $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
@@ -54,8 +54,7 @@ class HtmlHelper {
         HTML;
     }
 
-
-    public static function profileColor(int $userId): string {
+public static function profileColor(int $userId): string {
         $colors = [
             'profile-color-blue',
             'profile-color-purple',
@@ -223,9 +222,9 @@ class HtmlHelper {
         $icon = match ($type) {
             'success' => 'bi-check-circle-fill',
             'warning' => 'bi-exclamation-triangle-fill',
-            'danger'  => 'bi-exclamation-octagon-fill',
-            'info'    => 'bi-info-circle-fill',
-            default   => 'bi-bell-fill',
+            'danger' => 'bi-exclamation-octagon-fill',
+            'info' => 'bi-info-circle-fill',
+            default => 'bi-bell-fill',
         };
 
         if (is_array($content)) {
@@ -258,14 +257,14 @@ class HtmlHelper {
      * @param string $type Type d'alerte Bootstrap ('danger', 'warning', etc. Défaut: 'danger').
      * @return string Balises HTML de la page d'erreur.
      */
-    public static function errorPage(string $title = "Erreur", string|array $message = "Une erreur inattendue est survenue.", string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil", string $type = 'danger'): string {
+    public static function errorPage(string $title = 'Erreur', string|array $message = 'Une erreur inattendue est survenue.', string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil", string $type = 'danger'): string {
         $alertHtml = self::alert($type, $message);
 
         $titleColor = match ($type) {
             'success' => 'text-success',
             'warning' => 'text-warning',
-            'danger'  => 'text-danger',
-            default   => 'text-primary',
+            'danger' => 'text-danger',
+            default => 'text-primary',
         };
 
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
@@ -294,10 +293,10 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à l'accueil').
      * @return string Balises HTML de l'écran d'accès refusé.
      */
-    public static function authRequired(string $message = "Vous devez être connecté pour accéder à cette page.", string $loginUrl = "?action=signin", string $loginLabel = "Se connecter", string $backUrl = "index.php", string $backLabel = "Retour à l'accueil"): string {
+    public static function authRequired(string $message = 'Vous devez être connecté pour accéder à cette page.', string $loginUrl = '?action=signin', string $loginLabel = 'Se connecter', string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil"): string {
         $alert = self::alert('warning', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
-        $titleHtml = self::title("Accès refusé", "bi-shield-lock-fill", "text-danger");
+        $titleHtml = self::title('Accès refusé', 'bi-shield-lock-fill', 'text-danger');
 
         return <<<HTML
             {$titleHtml}
@@ -325,10 +324,10 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à mon feed').
      * @return string Balises HTML de l'écran d'interdiction.
      */
-    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = "?action=feed", string $backLabel = "Retour à mon feed"): string {
+    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
-        $titleHtml = self::title("Accès refusé", "bi-shield-lock-fill", "text-danger");
+        $titleHtml = self::title('Accès refusé', 'bi-shield-lock-fill', 'text-danger');
 
         return <<<HTML
             {$titleHtml}
@@ -352,10 +351,10 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à mon compte').
      * @return string Balises HTML de la page 404.
      */
-    public static function notFound(string $item = "Ressource", string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = "?action=feed", string $backLabel = "Retour à mon feed"): string {
+    public static function notFound(string $item = 'Ressource', string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
-        $titleHtml = self::title("{$item} introuvable", "bi-exclamation-triangle-fill", "text-danger");
+        $titleHtml = self::title("{$item} introuvable", 'bi-exclamation-triangle-fill', 'text-danger');
 
         return <<<HTML
             {$titleHtml}
@@ -379,10 +378,10 @@ class HtmlHelper {
      * @param string $title Titre de l'écran d'erreur (défaut: 'Erreur dans le formulaire').
      * @return string Balises HTML de l'écran d'erreur de formulaire.
      */
-    public static function formError(string|array $errors = "Une erreur est survenue lors de la validation du formulaire.", string $backUrl = "index.php", string $backLabel = "Retour au formulaire", string $title = "Erreur dans le formulaire"): string {
+    public static function formError(string|array $errors = 'Une erreur est survenue lors de la validation du formulaire.', string $backUrl = 'index.php', string $backLabel = 'Retour au formulaire', string $title = 'Erreur dans le formulaire'): string {
         $alert = self::alert('danger', $errors);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
-        $titleHtml = self::title($title, "bi-exclamation-triangle-fill", "text-danger");
+        $titleHtml = self::title($title, 'bi-exclamation-triangle-fill', 'text-danger');
 
         return <<<HTML
             {$titleHtml}
@@ -406,10 +405,10 @@ class HtmlHelper {
      * @param string $backLabel Libellé du bouton d'action suivante (défaut: 'Retour à mon feed').
      * @return string Balises HTML de la page de confirmation de succès.
      */
-    public static function successPage(string $title = "Opération réussie", string $message = "L'opération s'est déroulée avec succès.", string $backUrl = "?action=feed", string $backLabel = "Retour à mon feed"): string {
+    public static function successPage(string $title = 'Opération réussie', string $message = "L'opération s'est déroulée avec succès.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
         $alert = self::alert('success', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/check-circle-fill/
-        $titleHtml = self::title($title, "bi-check-circle-fill", "text-success");
+        $titleHtml = self::title($title, 'bi-check-circle-fill', 'text-success');
 
         return <<<HTML
             {$titleHtml}

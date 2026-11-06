@@ -22,7 +22,7 @@ class SigninAction extends Action {
         } catch (AuthnException) {
             $require = '<span class="text-danger">*</span>';
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/
-            $title = HtmlHelper::title("Connexion", "bi-box-arrow-in-right");
+            $title = HtmlHelper::title('Connexion', 'bi-box-arrow-in-right');
             $loginButton = HtmlHelper::button('Connexion', 'bi-box-arrow-in-right');
             return <<<HTML
                 {$title}
@@ -72,7 +72,7 @@ class SigninAction extends Action {
             return HtmlHelper::alreadyLogin($email);
         } catch (AuthnException) {
             if (!isset($_POST['email'], $_POST['password'])) {
-                return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=signin&form=1", title: "Échec de la connexion");
+                return HtmlHelper::formError(errors: 'Tous les champs sont obligatoires.', backUrl: '?action=signin&form=1', title: 'Échec de la connexion');
             }
 
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -80,7 +80,7 @@ class SigninAction extends Action {
             try {
                 AuthnProvider::signin($email, $_POST['password']);
             } catch (AuthnException $error) {
-                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=signin&form=1", title: "Échec de la connexion");
+                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: '?action=signin&form=1', title: 'Échec de la connexion');
             }
 
             $user = AuthnProvider::getSignedInUser();
@@ -92,9 +92,9 @@ class SigninAction extends Action {
                 );
 
             return HtmlHelper::successPage(
-                title: "Connexion réussie",
-                message: "Bienvenue, <strong>" . $displayName . "</strong> ! Vous êtes maintenant connecté à Touiteur.",
-                backLabel: "Accéder à mon feed"
+                title: 'Connexion réussie',
+                message: 'Bienvenue, <strong>' . $displayName . '</strong> ! Vous êtes maintenant connecté à Touiteur.',
+                backLabel: 'Accéder à mon feed'
             );
         }
     }
