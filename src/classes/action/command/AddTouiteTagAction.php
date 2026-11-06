@@ -44,7 +44,7 @@ class AddTouiteTagAction extends Action {
             foreach ($_SESSION['tags'] as $nomtag => $tag) {
                 $txt = $_POST[$nomtag];
                 if (strlen($txt) > 235 || strlen($txt) === 0) {
-                    
+
                     $message = strlen($txt) === 0
                         ? 'Le contenu du touite ne peut pas être vide.'
                         : 'Le contenu du touite doit comporter entre 1 et 235 caractères.';
@@ -74,7 +74,8 @@ class AddTouiteTagAction extends Action {
             unset($_SESSION['tags']);
             unset($_SESSION['touite']);
         }
-        header("Location: ?");
+
+        header("Location: ?action=touite&id=" . $_SESSION['touite']->getId());
         exit;
     }
 }
