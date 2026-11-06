@@ -1,7 +1,4 @@
 -- Jeu de données de test : DuckWare et la promotion de BUT informatique.
--- 20 comptes et 300 touites ; mêmes identifiants, médias et données pour MySQL et Oracle.
--- Importer après le script de création des tables, dans une base de test vide.
--- DuckWare domine les tags ; les comptes 4 et 20 dominent les abonnements et les likes.
 
 -- Comptes existants (mots de passe conservés).
 INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user1@mail.com', '$2y$12$lmiNXX3ZuugxraHsKDQqUOSg9kdfD/Migr2aZwu4DeVF97hoLfOWi', 'Martinati', 'Lucas', 0, 1);
@@ -363,6 +360,9 @@ INSERT INTO touite (users_id, content, note, media_description, media_path, post
 INSERT INTO touite (users_id, content, note, posted_at) VALUES (18, 'Petit bilan : Les permissions Linux sont enfin réglées. Permission denied a accepté de me laisser travailler. #DuckWare #code #linux #python #projet', 0, TO_DATE('2026-10-25 09:34:26', 'YYYY-MM-DD HH24:MI:SS'));
 INSERT INTO touite (users_id, content, note, posted_at) VALUES (19, 'Pause entre deux cours : Un chapitre avant de dormir. Pour une fois, la fin ne contient pas de stack trace. #lecture #BUTInfo', 0, TO_DATE('2026-10-26 16:47:43', 'YYYY-MM-DD HH24:MI:SS'));
 INSERT INTO touite (users_id, content, note, media_description, media_path, posted_at) VALUES (20, 'Bilan : zéro panne, des tests verts et des sauvegardes à jour. Touiteur se porte bien. #DuckWare #code #sql #admin #web', 0, 'Illustration actualite du touite.', 'image/touite_media/hello.gif', TO_DATE('2026-10-27 08:00:00', 'YYYY-MM-DD HH24:MI:SS'));
+INSERT INTO touite (users_id, content, note, posted_at) VALUES (1, 'Test XSS 1 : <script>alert("XSS test 1")</script>', 0, TO_DATE('2026-11-04 09:00:00', 'YYYY-MM-DD HH24:MI:SS'));
+INSERT INTO touite (users_id, content, note, posted_at) VALUES (2, 'Test XSS 2 : texte avant <script>alert("XSS test 2")</script> texte après', 0, TO_DATE('2026-11-05 14:30:00', 'YYYY-MM-DD HH24:MI:SS'));
+INSERT INTO touite (users_id, content, note, posted_at) VALUES (3, 'Test XSS 3 : <img src=x onerror="alert(''XSS test 3'')">', 0, TO_DATE('2026-11-06 08:00:00', 'YYYY-MM-DD HH24:MI:SS'));
 
 -- Chaque hashtag du contenu possède son association, sans doublon.
 INSERT INTO tag2touite (touite_id, tag_id) VALUES (1, 31);
