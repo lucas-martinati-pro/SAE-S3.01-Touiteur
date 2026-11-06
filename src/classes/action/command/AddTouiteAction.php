@@ -4,6 +4,7 @@ namespace iutnc\touiteur\action\command;
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\tag\Tag;
+use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\action\Action;
 use Override;
 
@@ -11,8 +12,7 @@ class AddTouiteAction extends Action {
     protected bool $requireAuth = true;
 
     #[Override]
-    public function get(): string
-    {
+    public function get(): string {
         $title = HtmlHelper::title("Publier un touite", "bi-pencil-square");
         $publishButton = HtmlHelper::button('Publier', 'bi-send-fill');
         $cancelButton = HtmlHelper::linkButton('Annuler', '?action=displayFeed', '', 'outline-secondary');
@@ -90,7 +90,7 @@ class AddTouiteAction extends Action {
                 title: 'Impossible de publier le touite'
             );
         }
-        $desc_media = trim($_POST["descrip_media"] ?? '');
+        $mediaDesc = trim($_POST["descrip_media"] ?? '');
 
         if (
             isset($_FILES['media']) &&
@@ -108,53 +108,39 @@ class AddTouiteAction extends Action {
         //capture de la date
         date_default_timezone_set('Europe/Paris');
         // Format AAAA-MM-JJ HH:MM:SS
-        $date = date('Y-m-d H:i:s');
+        $postedAt = date('Y-m-d H:i:s');
 
         $mediaName = $this->saveMedia($_FILES);
 
-        // ajout à la bd
-        $w = RepositoryFactory::getWriter();
-        $touite = $w->addTouite($contenu, $date, $mediaName, $desc_media, $this->user["id"]);
+        $touite = new Touite($contenu, $postedAt, 0, $mediaName, $mediaDesc);
 
         //on evalue s'il y un tag pour savoir où rediriger
-
-        //capture de tag
-        $analyse = $contenu;
-
         // on regarde si un # est présent
-        if (str_contains($analyse, '#')) { 
-            $w = RepositoryFactory::getWriter();
+        if (str_contains($contenu, '#')) {
             $r = RepositoryFactory::getReader();
-            $mots = explode(' ', $analyse); // on divise la chaîne
-            
+            $mots = explode(' ', $contenu); // on divise la chaîne
 
             foreach ($mots as $mot) {
                 if (str_starts_with($mot, '#')) {
-                    
                     $mot = substr($mot,1);
 
                     if (!($r->tagExist($mot))) {
-                        $_SESSION["tag"][$mot]=  new Tag($mot);
+                        $_SESSION["tags"][$mot]=  new Tag($mot);
                     }
-                    
                 }
-
             }
-            if (isset ($_SESSION["tag"])) {
+
+            if (isset ($_SESSION["tags"])) {
+                $_SESSION['touite'] = $touite;
                 header("Location: ?action=addTouiteTag");
                 exit;
-            } else {
-                header("Location: ?action=displayTouite&id=" . $touite->getId());
-                exit;
             }
-
-            exit;
-        } else {
-            header("Location: ?action=displayTouite&id=" . $touite->getId());
-            exit;
         }
 
-
+        $w = RepositoryFactory::getWriter();
+        $touite = $w->addTouite($touite, $this->user["id"]);
+        header("Location: ?action=displayTouite&id=" . $touite->getId());
+        exit;
     }
 
     private function saveMedia(array $mediaFile): ?String {

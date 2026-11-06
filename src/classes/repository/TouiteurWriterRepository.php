@@ -100,14 +100,13 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $stmt->execute(['email' => $email, 'password' => $password, 'nom' => $nom, 'prenom' => $prenom]);
     }
 
-    public function addTouite(string $content, string $posted_at, ?string $media_path, ?string $media_description, int $user_id): Touite {
+    public function addTouite(Touite $touite, int $user_id): Touite {
         $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :date, :user_id)
+            INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :posted_at, :user_id)
         SQL);
 
-        $stmt->execute(['content' => $content, 'note' => 0, 'media_path' => $media_path,'media_desc' => $media_description, 'date' => $posted_at, 'user_id' => $user_id]);
+        $stmt->execute(['content' => $touite->getContent(), 'note' => 0, 'media_path' => $touite->getmedia_path(), 'media_desc' => $touite->getmedia_description(), 'posted_at' => $touite->getPosted_at(), 'user_id' => $user_id]);
 
-        $touite = new Touite($content, $posted_at, 0, $media_path, $media_description, $user_id);
         $touite->setId($this->pdo->lastInsertId());
 
         return $touite;
