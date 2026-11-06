@@ -273,12 +273,16 @@ class TouiteurReaderRepository extends TouiteurRepository {
         return $res;
     }
 
-    public function tagExist(string $libelle) : bool {
-        return $res = $this->exists(<<<SQL
-                SELECT libelle 
+    public function findTagByLibelle(string $libelle) : ?Tag {
+        $res = $this->fetchOne(<<<SQL
+                SELECT *
                 FROM tag
-                WHERE libelle = :nom_tag
-        SQL, ['nom_tag' => $libelle]);
+                WHERE libelle = :libelle
+        SQL, ['libelle' => $libelle]);
+
+        if (!$res) return null;
+
+        return $this->rowToTag($res);
     }
 
     public function getFollowers(int $user_id) : ?array {

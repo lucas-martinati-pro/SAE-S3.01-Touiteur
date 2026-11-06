@@ -12,27 +12,62 @@ class AddTouiteTagAction extends Action {
 
     #[Override]
     public function get(): string {
-        $page = <<<HTML
-            <form method="post" action="?action=addTouiteTag">
+        $tags = $_SESSION['tags'] ?? [];
+        if (!is_array($tags) || $tags === [] || !isset($_SESSION['touite'])) {
+            return HtmlHelper::errorPage(
+                title: 'Aucun tag à décrire',
+                message: 'Publie d’abord un touite contenant un nouveau tag.',
+                backUrl: '?action=addTouite',
+                backLabel: 'Créer un touite'
+            );
+        }
+
+        $page = HtmlHelper::title('Vérifier les tags', 'bi-hash') . <<<HTML
+            <p class="text-secondary">Les tags existants gardent leur description. Ajoute une description pour chaque nouveau tag.</p>
+            <form method="post" action="?action=addTouiteTag" class="vstack gap-3">
         HTML;
 
-        foreach ($_SESSION['tags'] as $nomtag => $tag) { //nomtag = minecraft tag = Tag(null, minecraft, null)
-            $libelle = $tag->getLibelle();
+        $index = 0;
+        foreach ($tags as $nomtag => $tag) {
+            $libelle = htmlspecialchars($tag->getLibelle(), ENT_QUOTES, 'UTF-8');
+            $fieldName = htmlspecialchars((string) $nomtag, ENT_QUOTES, 'UTF-8');
+            $description = htmlspecialchars($tag->getDescription() ?? '', ENT_QUOTES, 'UTF-8');
+
+            if ($tag->getId() !== null) {
+                $page .= <<<HTML
+                    <div class="p-3 border rounded">
+                        <div class="fw-semibold">#{$libelle}</div>
+                        <p class="mb-0 text-secondary">{$description}</p>
+                    </div>
+                HTML;
+                continue;
+            }
 
             $page .= <<<HTML
-            <label for="tag-gestion">$libelle</label>
-            <textarea
-                    name="$nomtag"
-                    maxlength="235"
-                    rows="4"
-                    placeholder="description tag"
-                    required
-                ></textarea>
+                <div>
+                    <label for="{$fieldName}" class="form-label fw-semibold">#{$libelle}</label>
+                    <textarea
+                        class="form-control"
+                        id="{$fieldName}"
+                        name="{$fieldName}"
+                        maxlength="235"
+                        rows="3"
+                        placeholder="Décris ce tag en quelques mots"
+                        required
+                    >{$description}</textarea>
+                    <div class="form-text">235 caractères maximum.</div>
+                </div>
             HTML;
         }
 
+        $submitButton = HtmlHelper::button('Publier le touite', 'bi-send-fill');
+        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=addTouite', '', 'outline-secondary');
         $page .= <<<HTML
-           <button type="submit"> valider </button> </form>
+                <div class="d-flex gap-2">
+                    {$submitButton}
+                    {$cancelButton}
+                </div>
+            </form>
         HTML;
 
         return $page;
@@ -40,41 +75,51 @@ class AddTouiteTagAction extends Action {
 
     #[Override]
     public function post(): string {
-        if (isset($_SESSION['tags']) && isset($_SESSION['touite'])) {
-            foreach ($_SESSION['tags'] as $nomtag => $tag) {
-                $txt = $_POST[$nomtag];
-                if (strlen($txt) > 235 || strlen($txt) === 0) {
-                    
-                    $message = strlen($txt) === 0
-                        ? 'Le contenu du touite ne peut pas être vide.'
-                        : 'Le contenu du touite doit comporter entre 1 et 235 caractères.';
+        $tags = $_SESSION['tags'] ?? null;
+        $touite = $_SESSION['touite'] ?? null;
 
-                    unset($_SESSION['tag']);
-                    unset($_SESSION['touite']);
+        if (!is_array($tags) || $tags === [] || $touite === null) {
+            return HtmlHelper::errorPage(
+                title: 'Formulaire invalide',
+                message: 'Les tags ou le touite à publier sont introuvables. Recommence la publication.',
+                backUrl: '?action=addTouite',
+                backLabel: 'Créer un touite'
+            );
+        }
+
+        foreach ($tags as $nomtag => $tag) {
+            if ($tag->getId() === null) {
+                $postedDescription = $_POST[$nomtag] ?? null;
+                $description = is_string($postedDescription) ? trim($postedDescription) : '';
+                $length = mb_strlen($description);
+
+                if ($length === 0 || $length > 235) {
+                    $message = $length === 0
+                        ? 'La description du tag ne peut pas être vide.'
+                        : 'La description du tag doit comporter au maximum 235 caractères.';
 
                     return HtmlHelper::formError(
                         errors: $message,
-                        backUrl: '?action=addTouite',
-                        backLabel: 'Modifier le touite',
+                        backUrl: '?action=addTouiteTag',
+                        backLabel: 'Reprendre les descriptions',
                         title: 'Impossible de publier le touite'
                     );
-
                 }
 
-                $tag->setDescription(filter_var($txt, FILTER_SANITIZE_SPECIAL_CHARS));
+                $tags[$nomtag]->setDescription($description);
             }
-
-            $w = RepositoryFactory::getWriter();
-            $touite = $w->addTouite($_SESSION['touite'], $this->user['id']);
-
-            foreach ($_SESSION['tags'] as $nomtag => $tag) {
-                $w->addTag($touite->getId(), $tag);
-            }
-
-            unset($_SESSION['tags']);
-            unset($_SESSION['touite']);
         }
-        header("Location: ?");
+
+        $w = RepositoryFactory::getWriter();
+        $touite = $w->addTouite($touite, $this->user['id']);
+
+        foreach ($tags as $tag) {
+            $w->addTag($touite->getId(), $tag);
+        }
+
+        unset($_SESSION['tags'], $_SESSION['touite']);
+
+        header('Location: ?action=touite&id=' . $touite->getId());
         exit;
     }
 }
