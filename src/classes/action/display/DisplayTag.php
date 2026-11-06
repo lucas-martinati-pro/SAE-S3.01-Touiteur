@@ -27,9 +27,9 @@ class DisplayTag extends Action {
         $tag = $r->findTagById($id);
         if ($tag === null) {
             return HtmlHelper::errorPage(
-                title: "Tag introuvable",
-                message: "Le tag demandé est introuvable.",
-                backUrl: "?action=feed",
+                title: 'Tag introuvable',
+                message: 'Le tag demandé est introuvable.',
+                backUrl: '?action=feed',
                 backLabel: "Retour à l'accueil"
             );
         }
@@ -38,9 +38,9 @@ class DisplayTag extends Action {
         $escapedTagLabel = htmlspecialchars($tagLabel, ENT_QUOTES, 'UTF-8');
         $escapedTagDescription = htmlspecialchars($tagDescription, ENT_QUOTES, 'UTF-8');
 
-        $subTagBtn = "";
+        $subTagBtn = '';
 
-        if ($r->isTagSub($this->user['id'], $id)) {
+        if ($r->isFollowingTag($this->user['id'], $id)) {
             $subTagBtn = <<<HTML
                 <form method="POST" action="?action=subscribeTag" class="ms-auto">
                     <input type="hidden" name="type" value="unsub">

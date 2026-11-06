@@ -13,7 +13,7 @@ class AddTouiteAction extends Action {
 
     #[Override]
     public function get(): string {
-        $title = HtmlHelper::title("Publier un touite", "bi-pencil-square");
+        $title = HtmlHelper::title('Publier un touite', 'bi-pencil-square');
         $publishButton = HtmlHelper::button('Publier', 'bi-send-fill');
         $cancelButton = HtmlHelper::linkButton('Annuler', '?action=feed', '', 'outline-secondary');
 
@@ -77,10 +77,10 @@ class AddTouiteAction extends Action {
     #[Override]
     public function post(): string {
         unset($_SESSION['tags'], $_SESSION['touite']);
-        $contenu = trim($_POST["contenu"] ?? '');
-        $longueur = mb_strlen($contenu);
-        if ($longueur === 0 || $longueur > 235) {
-            $message = $longueur === 0
+        $content = trim($_POST['contenu'] ?? '');
+        $length = mb_strlen($content);
+        if ($length === 0 || $length > 235) {
+            $message = $length === 0
                 ? 'Le contenu du touite ne peut pas être vide.'
                 : 'Le contenu du touite doit comporter entre 1 et 235 caractères.';
 
@@ -91,7 +91,7 @@ class AddTouiteAction extends Action {
                 title: 'Impossible de publier le touite'
             );
         }
-        $mediaDesc = trim($_POST["descrip_media"] ?? '');
+        $mediaDescription = trim($_POST['descrip_media'] ?? '');
 
         if (
             isset($_FILES['media']) &&
@@ -113,36 +113,36 @@ class AddTouiteAction extends Action {
 
         $mediaName = $this->saveMedia($_FILES);
 
-        $touite = new Touite($contenu, $postedAt, 0, $mediaName, $mediaDesc);
+        $touite = new Touite($content, $postedAt, 0, $mediaName, $mediaDescription);
 
         //on evalue s'il y un tag pour savoir où rediriger
         // on regarde si un # est présent
-        if (str_contains($contenu, '#')) {
+        if (str_contains($content, '#')) {
             $r = RepositoryFactory::getReader();
-            $mots = explode(' ', $contenu); // on divise la chaîne
+            $words = explode(' ', $content); // on divise la chaîne
 
-            foreach ($mots as $mot) {
-                if (str_starts_with($mot, '#')) {
-                    $tagLibelle = rtrim(substr($mot, 1), '.,');
+            foreach ($words as $word) {
+                if (str_starts_with($word, '#')) {
+                    $tagLibelle = rtrim(substr($word, 1), '.,');
 
-                    $_SESSION['tags'][$mot] = $r->findTagByLibelle($tagLibelle) ?? new Tag($tagLibelle);
+                    $_SESSION['tags'][$word] = $r->findTagByLibelle($tagLibelle) ?? new Tag($tagLibelle);
                 }
             }
 
-            if (isset ($_SESSION["tags"])) {
+            if (isset($_SESSION['tags'])) {
                 $_SESSION['touite'] = $touite;
-                header("Location: ?action=addTouiteTag");
+                header('Location: ?action=addTouiteTag');
                 exit;
             }
         }
 
         $w = RepositoryFactory::getWriter();
-        $touite = $w->addTouite($touite, $this->user["id"]);
-        header("Location: ?action=touite&id=" . $touite->getId());
+        $touite = $w->addTouite($touite, $this->user['id']);
+        header('Location: ?action=touite&id=' . $touite->getId());
         exit;
     }
 
-    private function saveMedia(array $mediaFile): ?String {
+    private function saveMedia(array $mediaFile): ?string {
         if (isset($mediaFile['media']) && $mediaFile['media']['error'] === UPLOAD_ERR_OK) {
             $extension = strtolower(pathinfo($mediaFile['media']['name'], PATHINFO_EXTENSION));
 

@@ -28,15 +28,15 @@ class AddTouiteTagAction extends Action {
         HTML;
 
         $index = 0;
-        foreach ($tags as $nomtag => $tag) {
-            $libelle = htmlspecialchars($tag->getLibelle(), ENT_QUOTES, 'UTF-8');
-            $fieldName = htmlspecialchars((string) $nomtag, ENT_QUOTES, 'UTF-8');
+        foreach ($tags as $tagName => $tag) {
+            $tagLabel = htmlspecialchars($tag->getLibelle(), ENT_QUOTES, 'UTF-8');
+            $fieldName = htmlspecialchars((string) $tagName, ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars($tag->getDescription() ?? '', ENT_QUOTES, 'UTF-8');
 
             if ($tag->getId() !== null) {
                 $page .= <<<HTML
                     <div class="p-3 border rounded">
-                        <div class="fw-semibold">#{$libelle}</div>
+                        <div class="fw-semibold">#{$tagLabel}</div>
                         <p class="mb-0 text-secondary">{$description}</p>
                     </div>
                 HTML;
@@ -45,7 +45,7 @@ class AddTouiteTagAction extends Action {
 
             $page .= <<<HTML
                 <div>
-                    <label for="{$fieldName}" class="form-label fw-semibold">#{$libelle}</label>
+                    <label for="{$fieldName}" class="form-label fw-semibold">#{$tagLabel}</label>
                     <textarea
                         class="form-control"
                         id="{$fieldName}"
@@ -87,9 +87,9 @@ class AddTouiteTagAction extends Action {
             );
         }
 
-        foreach ($tags as $nomtag => $tag) {
+        foreach ($tags as $tagName => $tag) {
             if ($tag->getId() === null) {
-                $postedDescription = $_POST[$nomtag] ?? null;
+                $postedDescription = $_POST[$tagName] ?? null;
                 $description = is_string($postedDescription) ? trim($postedDescription) : '';
                 $length = mb_strlen($description);
 
@@ -106,7 +106,7 @@ class AddTouiteTagAction extends Action {
                     );
                 }
 
-                $tags[$nomtag]->setDescription($description);
+                $tags[$tagName]->setDescription($description);
             }
         }
 

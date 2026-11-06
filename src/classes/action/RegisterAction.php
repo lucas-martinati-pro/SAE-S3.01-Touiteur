@@ -23,7 +23,7 @@ class RegisterAction extends Action {
             $require = '<span class="text-danger">*</span>';
             $registerButton = HtmlHelper::button('Inscription', 'bi-person-plus-fill');
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/person-plus-fill/
-            $title = HtmlHelper::title("Inscription", "bi-person-plus-fill");
+            $title = HtmlHelper::title('Inscription', 'bi-person-plus-fill');
             return <<<HTML
             {$title}
             <form method="post" action="?action=register">
@@ -76,11 +76,11 @@ class RegisterAction extends Action {
             return HtmlHelper::alreadyLogin($email);
         } catch (AuthnException) {
             if (!isset($_POST['email'], $_POST['nom'], $_POST['prenom'], $_POST['password'], $_POST['password-double'])) {
-                return HtmlHelper::formError(errors: "Tous les champs sont obligatoires.", backUrl: "?action=register&form=1", title: "Échec de l'inscription");
+                return HtmlHelper::formError(errors: 'Tous les champs sont obligatoires.', backUrl: '?action=register&form=1', title: "Échec de l'inscription");
             }
 
             if ($_POST['password'] !== $_POST['password-double']) {
-                return HtmlHelper::formError(errors: "Les deux mots de passe doivent être identiques.", backUrl: "?action=register&form=1", title: "Échec de l'inscription");
+                return HtmlHelper::formError(errors: 'Les deux mots de passe doivent être identiques.', backUrl: '?action=register&form=1', title: "Échec de l'inscription");
             }
 
             $_POST['email'] = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -90,14 +90,14 @@ class RegisterAction extends Action {
             try {
                 AuthnProvider::register($_POST['email'], $_POST['password'], $_POST['nom'], $_POST['prenom']);
             } catch (AuthnException $error) {
-                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=register&form=1", title: "Échec de l'inscription");
+                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: '?action=register&form=1', title: "Échec de l'inscription");
             }
 
             if (isset($_POST['connect-auto'])) {
                 try {
                     AuthnProvider::signin($_POST['email'], $_POST['password']);
                 } catch (AuthnException $error) {
-                    return HtmlHelper::formError(errors: $error->getMessage(), backUrl: "?action=register&form=1", title: "Échec de la connexion");
+                    return HtmlHelper::formError(errors: $error->getMessage(), backUrl: '?action=register&form=1', title: 'Échec de la connexion');
                 }
 
                 $displayName = htmlspecialchars(
@@ -107,17 +107,17 @@ class RegisterAction extends Action {
                 );
 
                 return HtmlHelper::successPage(
-                    title: "Connexion réussie",
+                    title: 'Connexion réussie',
                     message: "Bienvenue, <strong>{$displayName}</strong> ! Vous êtes maintenant connecté à Touiteur.",
-                    backLabel: "Accéder à mon feed"
+                    backLabel: 'Accéder à mon feed'
                 );
             }
 
             return HtmlHelper::successPage(
-                title: "Inscription réussie",
-                message: "Votre compte a bien été créé.",
-                backUrl: "?action=signin",
-                backLabel: "Se connecter"
+                title: 'Inscription réussie',
+                message: 'Votre compte a bien été créé.',
+                backUrl: '?action=signin',
+                backLabel: 'Se connecter'
             );
         }
     }

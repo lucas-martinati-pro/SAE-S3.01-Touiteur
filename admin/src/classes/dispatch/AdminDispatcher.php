@@ -38,12 +38,12 @@ class AdminDispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "trendUsers" => (new DisplayTrendUsers)(),
-            "trendTags" => (new DisplayTrendTags)(),
-            "register" => (new RegisterAction)(),
-            "signin" => (new SigninAction)(),
-            "signout" => (new SignoutAction)(),
-            default => (new AccueilAction)(),
+            'trendUsers' => (new DisplayTrendUsers())(),
+            'trendTags' => (new DisplayTrendTags())(),
+            'register' => (new RegisterAction())(),
+            'signin' => (new SigninAction())(),
+            'signout' => (new SignoutAction())(),
+            default => (new AccueilAction())(),
         };
 
         $this->renderPage($html);
@@ -142,7 +142,7 @@ class AdminDispatcher {
                 </aside>
             HTML;
         } catch (AuthnException) {
-            return "";
+            return '';
         }
     }
 

@@ -34,7 +34,7 @@ class DisplayFeedAction extends Action {
             'followed' => 'Abonnements',
         ];
 
-        $ongletsHtml = $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'feed');
+        $tabsHtml = HtmlHelper::tabs($tabs, $type, 'feed');
 
         $search = trim($_GET['search'] ?? '');
         $feed = match ($type) {
@@ -61,7 +61,7 @@ class DisplayFeedAction extends Action {
                     <h1>Accueil</h1>
                 </div>
                 <nav class="feed-tabs" aria-label="Fil d'actualité">
-                    {$ongletsHtml}
+                    {$tabsHtml}
                 </nav>
             </header>
             {$searchSummary}
@@ -93,7 +93,7 @@ class DisplayFeedAction extends Action {
         exit;
     }
 
-    private function noLogin(): String {
+    private function noLogin(): string {
         return <<<HTML
             <section class="landing-page">
                 <div class="landing-icon" aria-hidden="true">

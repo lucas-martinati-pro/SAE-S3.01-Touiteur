@@ -20,9 +20,7 @@ abstract class Action {
      */
     protected bool $requireAuth = true;
 
-    /**
-     * Données de l'utilisateur connecté sous forme de tableau , ou null s'il n'est pas connecté.
-     */
+    /** Données de l'utilisateur connecté, ou null s'il n'est pas connecté. */
     protected ?array $user = null;
 
     /**
@@ -31,8 +29,6 @@ abstract class Action {
      */
     public function __construct() {
         $this->http_method = $_SERVER['REQUEST_METHOD'];
-        $this->hostname = $_SERVER['HTTP_HOST'];
-        $this->script_name = $_SERVER['SCRIPT_NAME'];
 
         try {
             $this->user = AuthnProvider::getSignedInUser();

@@ -18,38 +18,39 @@ class DisplayTrendUsers extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-        $header = HtmlHelper::detailHeader('Influenceur', "?");
+        $header = HtmlHelper::detailHeader('Influenceur', '?');
 
-        $users = $r->findTrendUser();
+        $users = $r->findTrendingUsers();
 
         if ($users === null || empty($users)) {
-            return $header .
-            '<div class="followed-tags-empty">' .
-            HtmlHelper::alert('info', 'Il n\'y a aucun utilisateurs') . '</div>';
-        };
+            return $header
+                . '<div class="followed-tags-empty">'
+                . HtmlHelper::alert('info', 'Il n\'y a aucun utilisateur')
+                . '</div>';
+        }
 
         $items = '';
         foreach ($users as $row) {
             $userId = (int) $row['id'];
-            $nbFollow = (int) $row['nbFol'];
-            $nbTouite = (int) $row['counter_touite'];
-            $abonneLabel = $nbFollow > 1 ? 'abonnés' : 'abonné';
-            $touiteLabel = $nbTouite > 1 ? 'touites' : 'touite';
+            $followerCount = (int) $row['nbFol'];
+            $touiteCount = (int) $row['counter_touite'];
+            $followerLabel = $followerCount > 1 ? 'abonnés' : 'abonné';
+            $touiteLabel = $touiteCount > 1 ? 'touites' : 'touite';
             $nom = htmlspecialchars($row['nom'], ENT_QUOTES, 'UTF-8');
             $prenom = htmlspecialchars($row['prenom'], ENT_QUOTES, 'UTF-8');
-            $completeName = "{$nom} {$prenom}";
-            $completeNameId = "{$nom}_{$prenom}";
+            $fullName = "{$nom} {$prenom}";
+            $profileHandle = "{$nom}_{$prenom}";
             $avatar = HtmlHelper::profileAvatar($row);
 
             $items .= <<<HTML
                 <a href="../index.php?action=profile&id={$userId}" class="followed-tag">
                     {$avatar}
                     <div class="followed-tag-label">
-                        <div class="fw-bold">{$completeName}</div>
-                        <div class="text-secondary small fw-normal">@{$completeNameId}</div>
+                        <div class="fw-bold">{$fullName}</div>
+                        <div class="text-secondary small fw-normal">@{$profileHandle}</div>
                         <div class="d-flex align-items-center flex-wrap gap-3 mt-1 text-secondary small fw-normal">
-                            <span><i class="bi bi-people me-1"></i><strong>{$nbFollow}</strong> {$abonneLabel}</span>
-                            <span><i class="bi bi-chat-left-text me-1"></i><strong>{$nbTouite}</strong> {$touiteLabel}</span>
+                            <span><i class="bi bi-people me-1"></i><strong>{$followerCount}</strong> {$followerLabel}</span>
+                            <span><i class="bi bi-chat-left-text me-1"></i><strong>{$touiteCount}</strong> {$touiteLabel}</span>
                         </div>
                     </div>
                     <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
@@ -68,9 +69,9 @@ class DisplayTrendUsers extends Action {
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
             return HtmlHelper::errorPage(
-                title: "Accès refusé",
+                title: 'Accès refusé',
                 message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
-                backUrl: "index.php",
+                backUrl: 'index.php',
                 backLabel: "Retour à l'accueil"
             );
         }
