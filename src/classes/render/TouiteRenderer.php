@@ -18,27 +18,33 @@ class TouiteRenderer implements Renderer {
     #[Override]
     public function render(TypeRender $selector = TypeRender::COMPACT): string {
         $touiteId = $this->touite->getId();
-        $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
+        $rawContent = $this->touite->getContent();
         $date = htmlspecialchars($this->touite->getPostedAt(), ENT_QUOTES, 'UTF-8');
         $note = $this->touite->getNote();
         $media = '';
         $tags = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
         $contentParts = [];
-        $words = explode(' ', $content);
+        $words = explode(' ', $rawContent);
 
         foreach ($words as $word) {
+            $renderedWord = null;
             if ($tags && str_starts_with($word, '#')) {
-                $tagLibelle = rtrim(substr($word, 1), '.,');
-                foreach ($tags as $tag) {
-                    $id = $tag->getId();
-                    $tagLabel = $tag->getLibelle();
-                    if ($tagLibelle == $tagLabel) {
-                        $word = str_replace("#{$tagLabel}", "<a href=\"?action=tag&id={$id}\">#{$tagLabel}</a>", $word);
-                        break;
+                $tagLibelle = rtrim(substr($word, 1), '.,\'"');
+                if (strlen($tagLibelle) > 0) {
+                    foreach ($tags as $tag) {
+                        $id = $tag->getId();
+                        $tagLabel = $tag->getLibelle();
+                        if ($tagLibelle == $tagLabel) {
+                            $escapedTagLabel = htmlspecialchars($tagLabel, ENT_QUOTES, 'UTF-8');
+                            $suffix = substr($word, strlen($tagLabel) + 1);
+                            $escapedSuffix = htmlspecialchars($suffix, ENT_QUOTES, 'UTF-8');
+                            $renderedWord = "<a href=\"?action=tag&id={$id}\">#{$escapedTagLabel}</a>{$escapedSuffix}";
+                            break;
+                        }
                     }
                 }
             }
-            $contentParts[] = $word;
+            $contentParts[] = $renderedWord ?? htmlspecialchars($word, ENT_QUOTES, 'UTF-8');
         }
 
         $content = implode(' ', $contentParts);

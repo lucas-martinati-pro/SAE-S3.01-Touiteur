@@ -123,9 +123,9 @@ class AddTouiteAction extends Action {
 
             foreach ($words as $word) {
                 if (str_starts_with($word, '#')) {
-                    $tagLibelle = rtrim(substr($word, 1), '.,');
+                    $tagLibelle = rtrim(substr($word, 1), '.,\'"');
 
-                    $_SESSION['tags'][$word] = $r->findTagByLibelle($tagLibelle) ?? new Tag($tagLibelle);
+                    if (strlen($tagLibelle) > 0) $_SESSION['tags'][$word] = $r->findTagByLibelle($tagLibelle) ?? new Tag($tagLibelle);
                 }
             }
 
