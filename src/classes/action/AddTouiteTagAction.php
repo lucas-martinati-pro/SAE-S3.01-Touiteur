@@ -52,6 +52,8 @@ class AddTouiteTagAction extends Action
     #[Override]
     public function post(): string
     {
+        $w = RepositoryFactory::getWriter();
+        $r = RepositoryFactory::getReader();
         
         foreach ($_SESSION['tag'] as $nomtag => $tag) {
             $txt = $_POST[$nomtag];
@@ -71,9 +73,15 @@ class AddTouiteTagAction extends Action
             $desc = filter_var($txt, FILTER_SANITIZE_SPECIAL_CHARS);
 
             $tag->setDescription($desc);
+
+            if (!($r->tagExist($tag->getLibelle))) {
+                $w->addTag($tag);
+            }
+
             
         }
-
+        unset($_SESSION['tag']);
+            
        return "";
     }
 }
