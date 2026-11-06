@@ -76,6 +76,7 @@ class AddTouiteAction extends Action {
 
     #[Override]
     public function post(): string {
+        unset($_SESSION['tags'], $_SESSION['touite']);
         $contenu = trim($_POST["contenu"] ?? '');
         $longueur = mb_strlen($contenu);
         if ($longueur === 0 || $longueur > 235) {
@@ -122,11 +123,9 @@ class AddTouiteAction extends Action {
 
             foreach ($mots as $mot) {
                 if (str_starts_with($mot, '#')) {
-                    $mot = substr($mot,1);
+                    $tagLibelle = rtrim(substr($mot, 1), '.,');
 
-                    if (!($r->tagExist($mot))) {
-                        $_SESSION["tags"][$mot]=  new Tag($mot);
-                    }
+                    $_SESSION['tags'][$mot] = $r->findTagByLibelle($tagLibelle) ?? new Tag($tagLibelle);
                 }
             }
 

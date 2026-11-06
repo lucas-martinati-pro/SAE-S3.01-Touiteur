@@ -112,14 +112,16 @@ class TouiteurWriterRepository extends TouiteurRepository {
         return $touite;
     }
 
-    public function addTag($touiteId, Tag $tag): void {
-        $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO tag (libelle, description) VALUES (:nom, :desc);
-        SQL);
+    public function addTag(int $touiteId, Tag $tag): void {
+        $tagId = $tag->getId();
+        if ($tagId === null) {
+            $stmt = $this->pdo->prepare(<<<SQL
+                INSERT INTO tag (libelle, description) VALUES (:nom, :desc);
+            SQL);
 
-        $stmt->execute(['nom' => $tag->getLibelle(), 'desc' => $tag->getDescription()]);
-
-        $tagId = $this->pdo->lastInsertId();
+            $stmt->execute(['nom' => $tag->getLibelle(), 'desc' => $tag->getDescription()]);
+            $tagId = (int) $this->pdo->lastInsertId();
+        }
 
         $stmt = $this->pdo->prepare(<<<SQL
             INSERT INTO tag2touite (touite_id, tag_id) VALUES (:touite_id, :tag_id);
