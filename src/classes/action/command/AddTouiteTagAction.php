@@ -114,7 +114,7 @@ class AddTouiteTagAction extends Action {
         $touite = $w->addTouite($touite, $this->user['id']);
 
         foreach ($tags as $tag) {
-            $w->addTag($tag, $touite->getId());
+            $w->addTouiteTag($tag, $touite->getId());
         }
 
         unset($_SESSION['tags'], $_SESSION['touite']);

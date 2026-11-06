@@ -11,7 +11,7 @@ use iutnc\touiteur\tag\Tag;
  */
 class TouiteurWriterRepository extends TouiteurRepository {
     /**============================================
-     *               GESTION DES TOUITES
+     *               GESTION DES USERS
      *=============================================**/
 
     public function followUser(int $follower_id, int $followed_id) : void {
@@ -32,6 +32,10 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $stmt->execute(['follower_id' => $follower_id, 'followed_id' => $followed_id]);
     }
 
+    /**============================================
+     *               GESTION DES TAGS
+     *=============================================**/
+
     public function followTag(int $user_id, int $tag_id) : void {
         $stmt = $this->pdo->prepare(<<<SQL
             INSERT INTO users2tag (users_id, tag_id) VALUES (:user_id, :tag_id);
@@ -49,6 +53,10 @@ class TouiteurWriterRepository extends TouiteurRepository {
 
         $stmt->execute(['user_id' => $user_id, 'tag_id' => $tag_id]);
     }
+
+    /**============================================
+     *               GESTION DES TOUITES
+     *=============================================**/
 
     public function noteTouite(int $user_id, int $touite_id, TypeNote $state) {
         if ($state === TypeNote::annuler) {
@@ -71,7 +79,7 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $stmt->execute(['user_id' => $user_id, 'touite_id' => $touite_id, 'state' => $state->getNote()]);
     }
 
-     public function addTouite(Touite $touite, int $user_id): Touite {
+    public function addTouite(Touite $touite, int $user_id): Touite {
         $stmt = $this->pdo->prepare(<<<SQL
             INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :posted_at, :user_id)
         SQL);
@@ -83,7 +91,7 @@ class TouiteurWriterRepository extends TouiteurRepository {
         return $touite;
     }
 
-    public function addTag(Tag $tag, int $touiteId): void {
+    public function addTouiteTag(Tag $tag, int $touiteId): void {
         $tagId = $tag->getId();
         if ($tagId === null) {
             $stmt = $this->pdo->prepare(<<<SQL
