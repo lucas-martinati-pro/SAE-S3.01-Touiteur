@@ -125,17 +125,31 @@ class AddTouiteAction extends Action
 
         // on regarde si un # est présent
         if (str_contains($analyse, '#')) { 
+            $w = RepositoryFactory::getWriter();
+            $r = RepositoryFactory::getReader();
             $mots = explode(' ', $analyse); // on divise la chaîne
-            substr($mots[0],1);
+            
 
             foreach ($mots as $mot) {
                 if (str_starts_with($mot, '#')) {
+                    
                     $mot = substr($mot,1);
-                    $_SESSION["tag"][$mot]=  new Tag($mot);
+
+                    if (!($r->tagExist($mot))) {
+                        $_SESSION["tag"][$mot]=  new Tag($mot);
+                    }
+                    
                 }
 
             }
-            header("Location: ?action=addTouiteTag");
+            if (isset ($_SESSION["tag"])) {
+                header("Location: ?action=addTouiteTag");
+                exit;
+            } else {
+                header("Location: ?action=displayTouite&id=" . $touite->getId());
+                exit;
+            }
+
             exit;
         } else {
             header("Location: ?action=displayTouite&id=" . $touite->getId());

@@ -17,19 +17,21 @@ class AddTouiteTagAction extends Action
     #[Override]
     public function get(): string
     {
+        $w = RepositoryFactory::getWriter();
+        $r = RepositoryFactory::getReader();
 
         $page = <<<HTML
             <form method="post" action="?action=addTouiteTag">
         HTML;
 
+        foreach ($_SESSION['tag'] as $nomtag => $tag) { //nomtag = minecraft tag = Tag(null, minecraft, null)
 
-
-
-        foreach ($_SESSION['tag'] as $nomtag => $tag) {
             $libelle = $tag->getLibelle();
-            $form = <<<HTML
-            <label for="tag-gestion"> $libelle </label>
-            <textarea
+            // on demande seulment la description des tags qui n'existent pas
+            
+                $form = <<<HTML
+                <label for="tag-gestion"> $libelle </label>
+                <textarea
                         name="$nomtag"
                         
                         maxlength="235"
@@ -39,7 +41,8 @@ class AddTouiteTagAction extends Action
                     ></textarea>
             HTML;
 
-            $page .= $form;
+                $page .= $form;
+            
         }
 
         $page .= <<<HTML
@@ -54,37 +57,40 @@ class AddTouiteTagAction extends Action
     {
         $w = RepositoryFactory::getWriter();
         $r = RepositoryFactory::getReader();
-        
+
         foreach ($_SESSION['tag'] as $nomtag => $tag) {
+
             $txt = $_POST[$nomtag];
             if (strlen($txt) > 235 || strlen($txt) === 0) {
+                
                 $message = strlen($txt) === 0
-                ? 'Le contenu du touite ne peut pas être vide.'
-                : 'Le contenu du touite doit comporter entre 1 et 235 caractères.';
+                    ? 'Le contenu du touite ne peut pas être vide.'
+                    : 'Le contenu du touite doit comporter entre 1 et 235 caractères.';
+                unset($_SESSION['tag']);
 
-               return HtmlHelper::formError(
-                    errors: $message ,
+                return HtmlHelper::formError(
+                    errors: $message,
                     backUrl: '?action=addTouite',
                     backLabel: 'Modifier le touite',
                     title: 'Impossible de publier le touite'
                 );
-            } 
+            }
 
             $desc = filter_var($txt, FILTER_SANITIZE_SPECIAL_CHARS);
 
-            $tag->setDescription($desc);
-
-            if (!($r->tagExist($tag->getLibelle()))) {
+            
+                $tag->setDescription($desc);
                 $w->addTag($tag);
-            }
-
+                unset($_SESSION['tag'][$nomtag]);
             
         }
         unset($_SESSION['tag']);
 
-        header("Location: ?action=displayTouite&id=" . $touite->getId());
-            exit;
-            
-       return "";
+        header("Location: ?action=");
+        exit;
+        return "";
     }
 }
+
+
+// on ajoute les tag inexistantes dans l'attribut tab
