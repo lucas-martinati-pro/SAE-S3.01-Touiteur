@@ -9,7 +9,6 @@ use iutnc\touiteur\repository\TouiteurRepository;
 
 require_once __DIR__ . '/../src/vendor/autoload.php';
 
-session_set_cookie_params(['path' => '/']);
 session_start();
 
 try {
