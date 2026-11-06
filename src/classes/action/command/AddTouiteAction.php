@@ -1,8 +1,9 @@
 <?php
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\command;
 
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\HtmlHelper;
+use iutnc\touiteur\action\Action;
 use Override;
 
 class AddTouiteAction extends Action {

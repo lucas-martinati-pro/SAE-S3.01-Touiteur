@@ -1,9 +1,10 @@
 <?php
 
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\command;
 
 use iutnc\touiteur\enum\TypeNote;
 use iutnc\touiteur\repository\RepositoryFactory;
+use iutnc\touiteur\action\Action;
 use Override;
 
 /**

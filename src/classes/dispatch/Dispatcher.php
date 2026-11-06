@@ -2,19 +2,19 @@
 
 namespace iutnc\touiteur\dispatch;
 
-use iutnc\touiteur\action\AddTouiteAction;
-use iutnc\touiteur\action\DisplayFeedAction;
-use iutnc\touiteur\action\DisplayListFollowedTag;
-use iutnc\touiteur\action\DisplayProfile;
-use iutnc\touiteur\action\DisplayTag;
-use iutnc\touiteur\action\DisplayTouite;
-use iutnc\touiteur\action\DisplayUsersAction;
-use iutnc\touiteur\action\LikeAction;
+use iutnc\touiteur\action\display\DisplayFeedAction;
+use iutnc\touiteur\action\display\DisplayListFollowedTag;
+use iutnc\touiteur\action\display\DisplayProfile;
+use iutnc\touiteur\action\display\DisplayTag;
+use iutnc\touiteur\action\display\DisplayTouite;
+use iutnc\touiteur\action\display\DisplayUsersAction;
+use iutnc\touiteur\action\command\AddTouiteAction;
+use iutnc\touiteur\action\command\SubscribeAction;
+use iutnc\touiteur\action\command\SubscribeTagAction;
+use iutnc\touiteur\action\command\LikeAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
-use iutnc\touiteur\action\SubscribeAction;
-use iutnc\touiteur\action\SubscribeTagAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
 use iutnc\touiteur\render\HtmlHelper;
