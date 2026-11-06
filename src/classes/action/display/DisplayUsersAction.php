@@ -1,9 +1,10 @@
 <?php
 
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\display;
 
 use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\repository\RepositoryFactory;
+use iutnc\touiteur\action\Action;
 use Override;
 
 /**

@@ -1,14 +1,15 @@
 <?php
 
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\command;
 
 use iutnc\touiteur\repository\RepositoryFactory;
+use iutnc\touiteur\action\Action;
 use Override;
 
 /**
- * Action pour s'abonner ou se desabonner
+ * Action pour s'abonner ou se desabonner d'un tag
  */
-class SubscribeAction extends Action {
+class SubscribeTagAction extends Action {
 
     #[Override]
     public function post(): string {
@@ -24,13 +25,13 @@ class SubscribeAction extends Action {
         $r = RepositoryFactory::getWriter();
 
         if ($type === "sub"){
-            $r->follow($this->user['id'], $id);
+            $r->followTag($this->user['id'], $id);
         } else if ($type === "unsub"){
-            $r->unfollow($this->user['id'], $id);
+            $r->unfollowTag($this->user['id'], $id);
         }
 
         // Redirection direct vers l'affichage d'un profil
-        header("Location: ?action=displayProfile&id=" . $id);
+        header("Location: ?action=displayTag&id=" . $id);
         exit;
     }
 }
