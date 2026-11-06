@@ -171,7 +171,7 @@ class AdminDispatcher {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="..../index.php">
+                        <a class="nav-link" href="../index.php">
                             <i class="bi bi-house-door-fill me-1"></i>Site public
                         </a>
                     </li>
@@ -196,7 +196,7 @@ class AdminDispatcher {
 
             $accountArea = <<<HTML
                 <div class="sidebar-user">
-                    <a class="sidebar-avatar-link" href="..../index.php?action=displayProfile&id={$userId}"
+                    <a class="sidebar-avatar-link" href="../index.php?action=displayProfile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
