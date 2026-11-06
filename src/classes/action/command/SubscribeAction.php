@@ -1,20 +1,21 @@
 <?php
 
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\command;
 
 use iutnc\touiteur\repository\RepositoryFactory;
+use iutnc\touiteur\action\Action;
 use Override;
 
 /**
- * Action pour s'abonner ou se desabonner d'un tag
+ * Action pour s'abonner ou se desabonner
  */
-class SubscribeTagAction extends Action {
+class SubscribeAction extends Action {
 
     #[Override]
     public function post(): string {
         $id = $_POST['id'] ?? null;
         $type = $_POST['type'] ?? null;
-        
+
         // redirection si l'id est null
         if (!$id) {
             header("Location: ?action=displayFeed");
@@ -24,13 +25,13 @@ class SubscribeTagAction extends Action {
         $r = RepositoryFactory::getWriter();
 
         if ($type === "sub"){
-            $r->followTag($this->user['id'], $id);
+            $r->follow($this->user['id'], $id);
         } else if ($type === "unsub"){
-            $r->unfollowTag($this->user['id'], $id);
+            $r->unfollow($this->user['id'], $id);
         }
 
         // Redirection direct vers l'affichage d'un profil
-        header("Location: ?action=displayTag&id=" . $id);
+        header("Location: ?action=displayProfile&id=" . $id);
         exit;
     }
 }

@@ -110,7 +110,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $res = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
-            WHERE touite.users_id IN (
+            WHERE (touite.users_id IN (
                 SELECT followed_id
                 FROM follow
                 WHERE follower_id = :follower_id
@@ -120,8 +120,8 @@ class TouiteurReaderRepository extends TouiteurRepository {
                 FROM tag2touite
                 INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
                 WHERE users2tag.users_id = :tag_user_id
-            )
-            WHERE content LIKE :search
+            ))
+            AND content LIKE :search
             ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['follower_id' => $id, 'tag_user_id' => $id, 'search' => '%' . $search . '%']);
@@ -134,6 +134,18 @@ class TouiteurReaderRepository extends TouiteurRepository {
             SELECT *
             FROM touite
             WHERE users_id = :id
+            LIMIT :limit OFFSET :offset;
+        SQL, $pagination, ['id' => $id]);
+
+        return $this->rowsToFeed($res);
+    }
+
+    public function findFeedWithMediasByUserId(int $id, Pagination $pagination = new Pagination): Feed {
+        $res = $this->fetchPage(<<<SQL
+            SELECT *
+            FROM touite
+            WHERE users_id = :id
+            AND media_path IS NOT NULL
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['id' => $id]);
 
@@ -195,7 +207,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     public function getUserByTouiteId(int $touite_id) : ?array {
         return $this->fetchOne(<<<SQL
-            SELECT users_id, nom, prenom
+            SELECT users_id as id, nom, prenom
             FROM touite
             INNER JOIN users on users.id = touite.users_id
             WHERE touite.id = :id
@@ -204,7 +216,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     public function getUserById(int $user_id) : ?array {
         return $this->fetchOne(<<<SQL
-            SELECT id, nom, prenom
+            SELECT id, nom, prenom, counter_touite
             FROM users
             WHERE id = :id
         SQL, ['id' => $user_id]);
@@ -235,8 +247,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
         if ($limit < 0) $limit = 0;
 
         $res = $this->fetchAll(<<<SQL
-            SELECT *
+            SELECT tag.*
             FROM tag
+            INNER JOIN users2tag ON users2tag.tag_id = tag.id
+            GROUP BY tag_id
+            ORDER BY COUNT(users_id) DESC, tag.id ASC
             LIMIT :limit;
         SQL, ['limit' => $limit]);
 
@@ -247,7 +262,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
     public function getAllFollowedTag(int $user_id) : ?array {
         $res = $this->fetchAll(<<<SQL
-            SELECT libelle, tag.id
+            SELECT libelle, tag.id, description
             FROM tag
             INNER JOIN users2tag on users2tag.tag_id = tag.id
             WHERE users2tag.users_id = :user_id
@@ -264,7 +279,81 @@ class TouiteurReaderRepository extends TouiteurRepository {
                 FROM tag
                 WHERE libelle = :nom_tag
         SQL, ['nom_tag' => $libelle]);
+    }
 
+    public function getFollowers(int $user_id) : ?array {
+        $res = $this->fetchAll(<<<SQL
+            SELECT users.id, nom, prenom
+            FROM users
+            INNER JOIN follow on follow.follower_id = users.id
+            WHERE followed_id = :user_id
+        SQL, ['user_id' => $user_id]);
+
+        if (!$res) return null;
+
+        return $res;
+    }
+
+    public function getFollowed(int $user_id) : ?array {
+        $res = $this->fetchAll(<<<SQL
+            SELECT users.id, nom, prenom
+            FROM users
+            INNER JOIN follow on follow.followed_id = users.id
+            WHERE follower_id = :user_id
+        SQL, ['user_id' => $user_id]);
+
+        if (!$res) return null;
+
+        return $res;
+    }
+
+    public function getMoyenneNoteTouite(int $user_id) : float {
+        $res = $this->fetchAll(<<<SQL
+            SELECT ROUND(AVG(note),2) AS moyenne
+            FROM note2touite
+            INNER JOIN touite on touite.id = note2touite.touite_id
+            WHERE touite.users_id = :user_id
+        SQL, ['user_id' => $user_id]);
+
+        if (!$res) {
+            return 0.0;
+        }
+
+        return (float) $res[0]['moyenne'];
+    }
+
+    public function isLikedBy(int $user_id, int $touite_id) : bool {
+        return $this->exists(<<<SQL
+            SELECT 1
+            FROM note2touite
+            WHERE users_id = :user_id
+            AND touite_id = :touite_id
+            AND state = 1
+        SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
+    }
+
+    public function isDislikedBy(int $user_id, int $touite_id) : bool {
+        return $this->exists(<<<SQL
+            SELECT 1
+            FROM note2touite
+            WHERE users_id = :user_id
+            AND touite_id = :touite_id
+            AND state = -1
+        SQL, ['user_id' => $user_id, 'touite_id' => $touite_id]);
+    }
+
+    public function getTrendUser() : ?array {
+        $res = $this->fetchAll(<<<SQL
+            SELECT users.id, nom, prenom, COUNT(follow.follower_id) AS nbFol, counter_touite
+            FROM users
+            INNER JOIN follow on users.id = follow.followed_id  
+            GROUP BY users.id
+            ORDER BY nbFol DESC
+        SQL);
+
+        if (!$res) return null;
+
+        return $res;
     }
 
     /**============================================
@@ -297,5 +386,14 @@ class TouiteurReaderRepository extends TouiteurRepository {
             FROM users
             WHERE email = :email
         SQL, ['email' => $email]);
+    }
+
+    public function isAdminUser(array $user): bool {
+        return $this->exists(<<<SQL
+            SELECT id
+            from users
+            WHERE id = :id
+            AND role = 100
+        SQL, ['id' => $user['id']]);
     }
 }

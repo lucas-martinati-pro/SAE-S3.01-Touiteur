@@ -11,22 +11,8 @@ use Override;
 class TouiteRenderer implements Renderer {
     protected Touite $touite;
 
-    private string $nom;
-    private string $prenom;
-    private int $user_id;
-
     public function __construct(Touite $touite) {
         $this->touite = $touite;
-        $this->completeUserDetails();
-    }
-
-    private function completeUserDetails() {
-        $r = RepositoryFactory::getReader();
-        $details = $r->getUserByTouiteId($this->touite->getId());
-
-        $this->nom = $details['nom'];
-        $this->prenom = $details['prenom'];
-        $this->user_id = $details['users_id'];
     }
 
     #[Override]
@@ -36,8 +22,26 @@ class TouiteRenderer implements Renderer {
         $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
         $note = $this->touite->getNote();
         $media = '';
-        // TODO
-        $tag = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
+        $tags = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
+        $content_split = [];
+        $mots = explode(' ', $content);
+
+        foreach ($mots as $mot) {
+            if ($tags && str_starts_with($mot, '#')) {
+                $tagLibelle = rtrim(substr($mot, 1), '.,');
+                foreach ($tags as $tag) {
+                    $id = $tag->getId();
+                    $libelle = $tag->getLibelle();
+                    if ($tagLibelle == $libelle) {
+                        $mot = str_replace("#{$libelle}", "<a href=\"?action=displayTag&id={$id}\">#{$libelle}</a>", $mot);
+                        break;
+                    }
+                }
+            }
+            $content_split[] = $mot;
+        }
+
+        $content = implode(' ', $content_split);
 
         $mediaPath = $this->touite->getmedia_path();
         if ($mediaPath !== null && $mediaPath !== '') {
@@ -62,24 +66,21 @@ class TouiteRenderer implements Renderer {
             }
         }
 
-        $rawName = $this->nom . " " . $this->prenom;
-        $rawNameId = $this->nom . "_" . $this->prenom;
+        $r = RepositoryFactory::getReader();
+        $user = $r->getUserByTouiteId($this->touite->getId());
+        $user_id = $user['id'];
+        $rawName = $user['nom'] . " " . $user['prenom'];
+        $rawNameId = $user['nom'] . "_" . $user['prenom'];
         $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
         $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
-        $subBtn = "";
-        $currentUser = AuthnProvider::getSignedInUser();
-        $currentUserId = $currentUser['id'];
-        $profileUser = [
-            'id' => $this->user_id,
-            'nom' => $this->nom,
-            'prenom' => $this->prenom,
-        ];
-        $profileAvatar = HtmlHelper::profileAvatar($profileUser);
+        $currentUserId = AuthnProvider::getSignedInUser()['id'];
+        $profileAvatar = HtmlHelper::profileAvatar($user);
 
-        if ($this->user_id !== $currentUserId && $selector === TypeRender::LONG) {
+        $subBtn = "";
+        if ($user_id !== $currentUserId && $selector === TypeRender::LONG) {
             $subBtn = HtmlHelper::subscriptionButton(
-                $this->user_id,
-                RepositoryFactory::getReader()->isSub($this->user_id, $currentUserId)
+                $user_id,
+                RepositoryFactory::getReader()->isSub($user_id, $currentUserId)
             );
         }
 
@@ -91,14 +92,17 @@ class TouiteRenderer implements Renderer {
                 <article class="{$class}">
                     {$this->touiteLink($touite_id, $completeName, $selector)}
                     <div class="touite-row">
-                        <a class="touite-profile-link" href="?action=displayProfile&id={$this->user_id}"
-                           aria-label="Voir le profil de {$completeName}">
-                            {$profileAvatar}
-                        </a>
                         <div class="touite-body">
                             <div class="touite-header">
-                                <a class="touite-author" href="?action=displayProfile&id={$this->user_id}"><strong>{$completeName}</strong></a>
-                                <span>@{$completeNameId} · <time datetime="{$date}">{$date}</time></span>
+                                <a class="touite-profile-link" href="?action=displayProfile&id={$user_id}"
+                                   aria-label="Voir le profil de {$completeName}">
+                                    {$profileAvatar}
+                                    <span class="touite-profile-identity">
+                                        <strong class="touite-author">{$completeName}</strong>
+                                        <span>@{$completeNameId}</span>
+                                    </span>
+                                </a>
+                                <time datetime="{$date}">{$date}</time>
                                 {$subBtn}
                             </div>
                             <p class="touite-content">{$content}</p>

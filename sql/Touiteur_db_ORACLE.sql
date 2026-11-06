@@ -26,7 +26,8 @@ CREATE TABLE users (
     passwd varchar2(256) NOT NULL,
     nom varchar2(100) NOT NULL,
     prenom varchar2(100) NOT NULL,
-    counter_touite NUMBER(38) DEFAULT 0 NOT NULL
+    counter_touite NUMBER(38) DEFAULT 0 NOT NULL,
+    role NUMBER(11) DEFAULT 1 NOT NULL
 );
 
 CREATE TABLE tag (
@@ -78,7 +79,7 @@ ALTER TABLE users ADD CONSTRAINT uq_users_email UNIQUE (email);
 ALTER TABLE tag ADD CONSTRAINT uq_tag_libelle UNIQUE (libelle);
 ALTER TABLE users ADD CONSTRAINT chk_counter_touite_positiv CHECK (counter_touite >= 0);
 ALTER TABLE follow ADD CONSTRAINT chk_no_self_follow CHECK (follower_id != followed_id);
-ALTER TABLE note2touite ADD CONSTRAINT chk_note_bool CHECK (state IN (-1, 0, 1));
+ALTER TABLE note2touite ADD CONSTRAINT chk_note_bool CHECK (state IN (-1, 1));
 
 -- Déclencheurs PL/SQL
 -- Mettre à jour le nombre de touites d’un utilisateur lorsqu’un touite est créé :

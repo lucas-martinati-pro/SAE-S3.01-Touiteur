@@ -1,13 +1,13 @@
 <?php
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\command;
 
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\tag\Tag;
+use iutnc\touiteur\action\Action;
 use Override;
 
-class AddTouiteAction extends Action
-{
+class AddTouiteAction extends Action {
     protected bool $requireAuth = true;
 
     #[Override]
@@ -75,10 +75,8 @@ class AddTouiteAction extends Action
     }
 
     #[Override]
-    public function post(): string
-    {
-        //values input
-        $contenu = filter_var($_POST["contenu"], FILTER_SANITIZE_SPECIAL_CHARS);
+    public function post(): string {
+        $contenu = trim($_POST["contenu"] ?? '');
         $longueur = mb_strlen($contenu);
         if ($longueur === 0 || $longueur > 235) {
             $message = $longueur === 0
@@ -92,7 +90,7 @@ class AddTouiteAction extends Action
                 title: 'Impossible de publier le touite'
             );
         }
-        $desc_media = filter_var($_POST["descrip_media"], FILTER_SANITIZE_SPECIAL_CHARS);
+        $desc_media = trim($_POST["descrip_media"] ?? '');
 
         if (
             isset($_FILES['media']) &&

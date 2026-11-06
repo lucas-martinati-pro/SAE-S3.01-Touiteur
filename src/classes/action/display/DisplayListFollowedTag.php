@@ -1,9 +1,10 @@
 <?php
 
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\display;
 
 use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\repository\RepositoryFactory;
+use iutnc\touiteur\action\Action;
 use Override;
 
 /**
@@ -16,8 +17,8 @@ class DisplayListFollowedTag extends Action {
         $r = RepositoryFactory::getReader();
 
         $id = (int) ($_GET['id'] ?? 0);
-        $backUrl = $id > 0 ? "?action=displayProfile&id={$id}" : "?action=displayFeed";
 
+        $backUrl = $id > 0 ? "?action=displayProfile&id={$id}" : "?action=displayFeed";
         $listOfTag = $r->getAllFollowedTag($id);
 
         $header = HtmlHelper::detailHeader('Tags suivis', $backUrl);
@@ -30,13 +31,21 @@ class DisplayListFollowedTag extends Action {
         foreach ($listOfTag as $row) {
             $tagId = (int) $row['id'];
             $libelle = htmlspecialchars($row['libelle'], ENT_QUOTES, 'UTF-8');
+            $rawDescr = $row['description'] ?? '';
+            $descr = htmlspecialchars($rawDescr, ENT_QUOTES, 'UTF-8');
+            $descrHtml = $descr !== ''
+                ? "<div class=\"text-secondary small fw-normal\">{$descr}</div>"
+                : '';
 
             $items .= <<<HTML
                 <a href="?action=displayTag&id={$tagId}" class="followed-tag">
                     <span class="followed-tag-icon" aria-hidden="true">
                         <i class="bi bi-hash"></i>
                     </span>
-                    <span class="followed-tag-label">#{$libelle}</span>
+                    <div class="followed-tag-label">
+                        <div class="fw-bold">#{$libelle}</div>
+                        {$descrHtml}
+                    </div>
                     <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
                 </a>
             HTML;

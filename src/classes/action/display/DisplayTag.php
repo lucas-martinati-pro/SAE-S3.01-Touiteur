@@ -1,12 +1,13 @@
 <?php
 
-namespace iutnc\touiteur\action;
+namespace iutnc\touiteur\action\display;
 
 use iutnc\touiteur\repository\RepositoryFactory;
 use iutnc\touiteur\render\RendererFactory;
 use iutnc\touiteur\enum\TypeRender;
 use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\render\HtmlHelper;
+use iutnc\touiteur\action\Action;
 use Override;
 
 /**
@@ -19,8 +20,8 @@ class DisplayTag extends Action {
 
         $id = (int) ($_GET['id'] ?? 0);
 
-        $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
-        $pagination = new Pagination($page);
+        $pageNumber = (int) ($_GET['page'] ?? 1);
+        $pagination = new Pagination($pageNumber);
 
         $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);

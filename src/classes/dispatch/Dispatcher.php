@@ -2,19 +2,20 @@
 
 namespace iutnc\touiteur\dispatch;
 
-use iutnc\touiteur\action\AddTouiteAction;
-use iutnc\touiteur\action\AddTouiteTagAction;
-use iutnc\touiteur\action\DisplayFeedAction;
-use iutnc\touiteur\action\DisplayListFollowedTag;
-use iutnc\touiteur\action\DisplayProfile;
-use iutnc\touiteur\action\DisplayTag;
-use iutnc\touiteur\action\DisplayTouite;
-use iutnc\touiteur\action\LikeAction;
+use iutnc\touiteur\action\display\DisplayFeedAction;
+use iutnc\touiteur\action\display\DisplayListFollowedTag;
+use iutnc\touiteur\action\display\DisplayProfile;
+use iutnc\touiteur\action\display\DisplayTag;
+use iutnc\touiteur\action\display\DisplayTouite;
+use iutnc\touiteur\action\display\DisplayUsersAction;
+use iutnc\touiteur\action\command\AddTouiteAction;
+use iutnc\touiteur\action\command\AddTouiteTagAction;
+use iutnc\touiteur\action\command\LikeAction;
+use iutnc\touiteur\action\command\SubscribeAction;
+use iutnc\touiteur\action\command\SubscribeTagAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
-use iutnc\touiteur\action\SubscribeAction;
-use iutnc\touiteur\action\SubscribeTagAction;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\exception\AuthnException;
 use iutnc\touiteur\render\HtmlHelper;
@@ -45,19 +46,21 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "addTouiteTag" => (new AddTouiteTagAction())(),
-            "displayTouite" => (new DisplayTouite())(),
-            "displayProfile" => (new DisplayProfile())(),
-            "addTouite" => (new AddTouiteAction())(),
-            "LikeAction" => (new LikeAction())(),
+            "displayFeed" => (new DisplayFeedAction)(),
+            "listFollowTag" => (new DisplayListFollowedTag)(),
+            "displayProfile" => (new DisplayProfile)(),
             "displayTag" => (new DisplayTag)(),
-            "register" => (new RegisterAction())(),
-            "signin" => (new SigninAction())(),
-            "signout" => (new SignoutAction())(),
-            "subscribe" => (new SubscribeAction())(),
-            "subtag" => (new SubscribeTagAction())(),
-            "listFollowTag" => (new DisplayListFollowedTag())(),
-            default => (new DisplayFeedAction())(),
+            "displayTouite" => (new DisplayTouite)(),
+            "displayUsers" => (new DisplayUsersAction)(),
+            "addTouite" => (new AddTouiteAction)(),
+            "addTouiteTag" => (new AddTouiteTagAction)(),
+            "LikeAction" => (new LikeAction)(),
+            "subscribe" => (new SubscribeAction)(),
+            "subtag" => (new SubscribeTagAction)(),
+            "register" => (new RegisterAction)(),
+            "signin" => (new SigninAction)(),
+            "signout" => (new SignoutAction)(),
+            default => (new DisplayFeedAction)(),
         };
 
         $this->renderPage($html);
@@ -124,6 +127,7 @@ class Dispatcher {
                 HTML;
             }
 
+            $searchValue = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
             $search = <<<HTML
                 <form method="post" action="?action=displayFeed" class="search-form mb-3" role="search">
                     <label for="search" class="visually-hidden">Rechercher un touite</label>
@@ -131,6 +135,7 @@ class Dispatcher {
                         type="search"
                         name="search"
                         id="search"
+                        value="{$searchValue}"
                         class="form-control search-input"
                         placeholder="Rechercher un touite"
                         aria-label="Rechercher un touite"
