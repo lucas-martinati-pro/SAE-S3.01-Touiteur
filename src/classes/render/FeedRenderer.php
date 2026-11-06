@@ -10,9 +10,9 @@ use Override;
 class FeedRenderer implements Renderer {
     protected Feed $feed;
     private Pagination $pagination;
-    private String $action;
+    private string $action;
 
-    public function __construct(Feed $feed, Pagination $pagination, String $action) {
+    public function __construct(Feed $feed, Pagination $pagination, string $action) {
         $this->feed = $feed;
         $this->pagination = $pagination;
         $this->action = $action;
@@ -34,11 +34,11 @@ class FeedRenderer implements Renderer {
             return HtmlHelper::alert('info', 'Aucun touite à afficher pour le moment.') . $paginationHtml;
         }
 
-        $res = '<section class="feed" aria-label="Liste des touites">';
+        $html = '<section class="feed" aria-label="Liste des touites">';
         foreach ($this->feed as $touite) {
-            $res .= (new TouiteRenderer($touite))->render($selector);
+            $html .= (new TouiteRenderer($touite))->render($selector);
         }
 
-        return $res . $paginationHtml . '</section>';
+        return $html . $paginationHtml . '</section>';
     }
 }

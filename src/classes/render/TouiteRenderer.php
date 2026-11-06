@@ -17,37 +17,37 @@ class TouiteRenderer implements Renderer {
 
     #[Override]
     public function render(TypeRender $selector = TypeRender::COMPACT): string {
-        $touite_id = $this->touite->getId();
+        $touiteId = $this->touite->getId();
         $content = htmlspecialchars($this->touite->getContent(), ENT_QUOTES, 'UTF-8');
-        $date = htmlspecialchars($this->touite->getPosted_at(), ENT_QUOTES, 'UTF-8');
+        $date = htmlspecialchars($this->touite->getPostedAt(), ENT_QUOTES, 'UTF-8');
         $note = $this->touite->getNote();
         $media = '';
         $tags = RepositoryFactory::getReader()->findTagsByTouiteId($this->touite->getId());
-        $content_split = [];
-        $mots = explode(' ', $content);
+        $contentParts = [];
+        $words = explode(' ', $content);
 
-        foreach ($mots as $mot) {
-            if ($tags && str_starts_with($mot, '#')) {
-                $tagLibelle = rtrim(substr($mot, 1), '.,');
+        foreach ($words as $word) {
+            if ($tags && str_starts_with($word, '#')) {
+                $tagLibelle = rtrim(substr($word, 1), '.,');
                 foreach ($tags as $tag) {
                     $id = $tag->getId();
-                    $libelle = $tag->getLibelle();
-                    if ($tagLibelle == $libelle) {
-                        $mot = str_replace("#{$libelle}", "<a href=\"?action=tag&id={$id}\">#{$libelle}</a>", $mot);
+                    $tagLabel = $tag->getLibelle();
+                    if ($tagLibelle == $tagLabel) {
+                        $word = str_replace("#{$tagLabel}", "<a href=\"?action=tag&id={$id}\">#{$tagLabel}</a>", $word);
                         break;
                     }
                 }
             }
-            $content_split[] = $mot;
+            $contentParts[] = $word;
         }
 
-        $content = implode(' ', $content_split);
+        $content = implode(' ', $contentParts);
 
-        $mediaPath = $this->touite->getmedia_path();
+        $mediaPath = $this->touite->getMediaPath();
         if ($mediaPath !== null && $mediaPath !== '') {
             $path = htmlspecialchars($mediaPath, ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars(
-                $this->touite->getmedia_description() ?? 'Média du touite',
+                $this->touite->getMediaDescription() ?? 'Média du touite',
                 ENT_QUOTES,
                 'UTF-8'
             );
@@ -68,33 +68,33 @@ class TouiteRenderer implements Renderer {
 
         $r = RepositoryFactory::getReader();
         $user = $r->findUserByTouiteId($this->touite->getId());
-        $user_id = $user['id'];
-        $rawName = $user['nom'] . " " . $user['prenom'];
-        $rawNameId = $user['nom'] . "_" . $user['prenom'];
+        $userId = $user['id'];
+        $rawName = $user['nom'] . ' ' . $user['prenom'];
+        $rawNameId = $user['nom'] . '_' . $user['prenom'];
         $completeName = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
         $completeNameId = htmlspecialchars($rawNameId, ENT_QUOTES, 'UTF-8');
         $currentUserId = AuthnProvider::getSignedInUser()['id'];
         $profileAvatar = HtmlHelper::profileAvatar($user);
 
-        $subBtn = "";
-        if ($user_id !== $currentUserId && $selector === TypeRender::LONG) {
+        $subBtn = '';
+        if ($userId !== $currentUserId && $selector === TypeRender::LONG) {
             $subBtn = HtmlHelper::subscriptionButton(
-                $user_id,
-                RepositoryFactory::getReader()->isSub($user_id, $currentUserId)
+                $userId,
+                RepositoryFactory::getReader()->isFollowingUser($userId, $currentUserId)
             );
         }
 
         $actionsClass = $selector === TypeRender::LONG ? 'touite-actions-long' : 'touite-actions-compact';
-        $noteActions = HtmlHelper::touiteActions($touite_id, $note, $selector);
+        $noteActions = HtmlHelper::touiteActions($touiteId, $note, $selector);
 
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
         $card = <<<HTML
                 <article class="{$class}">
-                    {$this->touiteLink($touite_id, $completeName, $selector)}
+                    {$this->touiteLink($touiteId, $completeName, $selector)}
                     <div class="touite-row">
                         <div class="touite-body">
                             <div class="touite-header">
-                                <a class="touite-profile-link" href="?action=profile&id={$user_id}"
+                                <a class="touite-profile-link" href="?action=profile&id={$userId}"
                                    aria-label="Voir le profil de {$completeName}">
                                     {$profileAvatar}
                                     <span class="touite-profile-identity">

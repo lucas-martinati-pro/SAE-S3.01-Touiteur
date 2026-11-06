@@ -28,10 +28,10 @@ class DisplayListFollowedTag extends Action {
         }
 
         $items = '';
-        foreach ($followedTags as $row) {
-            $tagId = (int) $row->getId();
-            $tagLabel = htmlspecialchars($row->getLibelle(), ENT_QUOTES, 'UTF-8');
-            $rawDescr = $row['description'] ?? '';
+        foreach ($followedTags as $tag) {
+            $tagId = (int) $tag->getId();
+            $tagLabel = htmlspecialchars($tag->getLibelle(), ENT_QUOTES, 'UTF-8');
+            $rawDescr = $tag['description'] ?? '';
             $descr = htmlspecialchars($rawDescr, ENT_QUOTES, 'UTF-8');
             $descrHtml = $descr !== ''
                 ? "<div class=\"text-secondary small fw-normal\">{$descr}</div>"

@@ -18,7 +18,7 @@ class TouiteurRepository {
     public static function setConfig(string $file): void {
         $conf = parse_ini_file($file);
         if ($conf === false) {
-            throw new ConfigIOException("Error reading configuration file");
+            throw new ConfigIOException('Error reading configuration file');
         }
         self::$config = [
             'dsn' => "{$conf['driver']}:host={$conf['host']};dbname={$conf['database']}",
@@ -31,10 +31,10 @@ class TouiteurRepository {
      * Exécute une requête et retourne sa première ligne.
      */
     protected function fetchOne(string $sql, array $parameters = []): ?array {
-        $statement = $this->pdo->prepare($sql);
-        $this->bindParameters($statement, $parameters);
-        $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare($sql);
+        $this->bindParameters($stmt, $parameters);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result === false ? null : $result;
     }
@@ -45,11 +45,11 @@ class TouiteurRepository {
      * @return array<int, array<string, mixed>>
      */
     protected function fetchAll(string $sql, array $parameters = []): array {
-        $statement = $this->pdo->prepare($sql);
-        $this->bindParameters($statement, $parameters);
-        $statement->execute();
+        $stmt = $this->pdo->prepare($sql);
+        $this->bindParameters($stmt, $parameters);
+        $stmt->execute();
 
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     protected function exists(string $sql, array $parameters = []): bool {
@@ -62,16 +62,16 @@ class TouiteurRepository {
      * @return array<int, array<string, mixed>>
      */
     protected function fetchPage(string $sql, Pagination $pagination, array $parameters = []): array {
-        $statement = $this->pdo->prepare($sql);
-        $this->bindParameters($statement, $parameters);
-        $statement->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
-        $statement->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
-        $statement->execute();
+        $stmt = $this->pdo->prepare($sql);
+        $this->bindParameters($stmt, $parameters);
+        $stmt->bindValue('limit', $pagination->getLimit(), PDO::PARAM_INT);
+        $stmt->bindValue('offset', $pagination->getOffset(), PDO::PARAM_INT);
+        $stmt->execute();
 
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    private function bindParameters(\PDOStatement $statement, array $parameters): void {
+    private function bindParameters(\PDOStatement $stmt, array $parameters): void {
         foreach ($parameters as $name => $value) {
             $type = match (true) {
                 is_int($value) => PDO::PARAM_INT,
@@ -79,7 +79,7 @@ class TouiteurRepository {
                 is_null($value) => PDO::PARAM_NULL,
                 default => PDO::PARAM_STR,
             };
-            $statement->bindValue($name, $value, $type);
+            $stmt->bindValue($name, $value, $type);
         }
     }
 }
