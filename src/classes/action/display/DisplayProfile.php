@@ -37,7 +37,7 @@ class DisplayProfile extends Action {
         if (!$details) {
             return HtmlHelper::formError(
                 errors: "Le profil demandé est introuvable.",
-                backUrl: "?action=displayFeed",
+                backUrl: "?action=feed",
                 backLabel: "Retour à l'accueil",
                 title: "Profil introuvable"
             );
@@ -86,9 +86,9 @@ class DisplayProfile extends Action {
             'medias' => 'Médias',
         ];
 
-        $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'displayProfile', ['id' => $id]);
+        $ongletsHtml = HtmlHelper::tabs($tabs, $type, 'profile', ['id' => $id]);
 
-        $backLink = HtmlHelper::backLink('?action=displayFeed');
+        $backLink = HtmlHelper::backLink('?action=feed');
         $page = <<<HTML
             <header class="feed-header detail-header">
                 {$backLink}
@@ -105,10 +105,10 @@ class DisplayProfile extends Action {
                     <h2>{$completeName}</h2>
                     <p class="profile-handle">@{$completeNameId}</p>
                     <div class="d-flex flex-wrap gap-2 my-2 align-items-center">
-                        <a href="?action=displayUsers&id={$id}&type=followed" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <a href="?action=users&id={$id}&type=followed" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-person-check me-1"></i> <strong>{$nbFollowed}</strong> abonnements
                         </a>
-                        <a href="?action=displayUsers&id={$id}&type=followers" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <a href="?action=users&id={$id}&type=followers" class="btn btn-outline-primary btn-sm rounded-pill">
                             <i class="bi bi-people me-1"></i> <strong>{$nbFollowers}</strong> abonnés
                         </a>
                         <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">
@@ -130,7 +130,7 @@ class DisplayProfile extends Action {
             </section>
         HTML;
 
-        $action = 'displayProfile&' . http_build_query([
+        $action = 'profile&' . http_build_query([
             'type' => $type,
             'id' => $id,
         ]);

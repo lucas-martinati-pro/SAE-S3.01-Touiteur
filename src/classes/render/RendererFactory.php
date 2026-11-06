@@ -17,7 +17,7 @@ class RendererFactory {
      * @return Renderer Instance de Renderer adaptée.
      * @throws \InvalidArgumentException Si l'objet n'est pas pris en charge.
      */
-    public static function getRenderer(object $element, Pagination $pagination = new Pagination(), String $url = 'displayFeed'): Renderer {
+    public static function getRenderer(object $element, Pagination $pagination = new Pagination(), String $url = 'feed'): Renderer {
         return match (true) {
             $element instanceof Touite => new TouiteRenderer($element),
             $element instanceof Feed => new FeedRenderer($element, $pagination, $url),

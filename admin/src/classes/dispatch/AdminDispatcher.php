@@ -38,8 +38,8 @@ class AdminDispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "displayTrendUsers" => (new DisplayTrendUsers)(),
-            "displayTrendTags" => (new DisplayTrendTags)(),
+            "trendUsers" => (new DisplayTrendUsers)(),
+            "trendTags" => (new DisplayTrendTags)(),
             "register" => (new RegisterAction)(),
             "signin" => (new SigninAction)(),
             "signout" => (new SignoutAction)(),
@@ -106,13 +106,13 @@ class AdminDispatcher {
             $tags = $r->findAllTags(10);
             foreach ($tags as $tag) {
                 $tagsHtml .= <<<HTML
-                    <a href="../index.php?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
+                    <a href="../index.php?action=tag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
                 HTML;
             }
 
             $searchValue = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
             $search = <<<HTML
-                <form method="post" action="../index.php?action=displayFeed" class="search-form mb-3" role="search">
+                <form method="post" action="../index.php?action=feed" class="search-form mb-3" role="search">
                     <label for="search" class="visually-hidden">Rechercher un touite</label>
                     <input
                         type="search"
@@ -161,12 +161,12 @@ class AdminDispatcher {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=displayTrendTags">
+                        <a class="nav-link" href="?action=trendTags">
                             <i class="bi bi-hash me-1"></i>Tags populaires
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=displayTrendUsers">
+                        <a class="nav-link" href="?action=trendUsers">
                             <i class="bi bi-people me-1"></i>Utilisateurs populaires
                         </a>
                     </li>
@@ -196,7 +196,7 @@ class AdminDispatcher {
 
             $accountArea = <<<HTML
                 <div class="sidebar-user">
-                    <a class="sidebar-avatar-link" href="../index.php?action=displayProfile&id={$userId}"
+                    <a class="sidebar-avatar-link" href="../index.php?action=profile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">

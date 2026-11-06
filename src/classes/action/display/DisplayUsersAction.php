@@ -18,7 +18,7 @@ class DisplayUsersAction extends Action {
 
         $id = (int) ($_GET['id'] ?? $this->user['id']);
 
-        $backUrl = "?action=displayProfile&id={$id}";
+        $backUrl = "?action=profile&id={$id}";
         $type = $_GET['type'] ?? 'followed';
 
         $header = match ($type) {
@@ -48,7 +48,7 @@ class DisplayUsersAction extends Action {
             $avatar = HtmlHelper::profileAvatar($row);
 
             $items .= <<<HTML
-                <a href="?action=displayProfile&id={$userId}" class="followed-tag">
+                <a href="?action=profile&id={$userId}" class="followed-tag">
                     {$avatar}
                     <div class="followed-tag-label">
                         <div class="fw-bold">{$completeName}</div>

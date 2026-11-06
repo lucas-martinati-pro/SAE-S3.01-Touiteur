@@ -18,7 +18,7 @@ class SubscribeAction extends Action {
 
         // redirection si l'id est null
         if (!$id) {
-            header("Location: ?action=displayFeed");
+            header("Location: ?action=feed");
         exit;
         }
 
@@ -31,7 +31,7 @@ class SubscribeAction extends Action {
         }
 
         // Redirection direct vers l'affichage d'un profil
-        header("Location: ?action=displayProfile&id=" . $id);
+        header("Location: ?action=profile&id=" . $id);
         exit;
     }
 }

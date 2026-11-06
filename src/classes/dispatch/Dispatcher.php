@@ -46,17 +46,17 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "displayFeed" => (new DisplayFeedAction)(),
+            "feed" => (new DisplayFeedAction)(),
             "listFollowTag" => (new DisplayListFollowedTag)(),
-            "displayProfile" => (new DisplayProfile)(),
-            "displayTag" => (new DisplayTag)(),
-            "displayTouite" => (new DisplayTouite)(),
-            "displayUsers" => (new DisplayUsersAction)(),
+            "profile" => (new DisplayProfile)(),
+            "tag" => (new DisplayTag)(),
+            "touite" => (new DisplayTouite)(),
+            "users" => (new DisplayUsersAction)(),
             "addTouite" => (new AddTouiteAction)(),
             "addTouiteTag" => (new AddTouiteTagAction)(),
-            "LikeAction" => (new LikeAction)(),
+            "like" => (new LikeAction)(),
             "subscribe" => (new SubscribeAction)(),
-            "subtag" => (new SubscribeTagAction)(),
+            "subscribeTag" => (new SubscribeTagAction)(),
             "register" => (new RegisterAction)(),
             "signin" => (new SigninAction)(),
             "signout" => (new SignoutAction)(),
@@ -123,13 +123,13 @@ class Dispatcher {
             $tags = $r->findAllTags(10);
             foreach ($tags as $tag) {
                 $tagsHtml .= <<<HTML
-                    <a href="?action=displayTag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
+                    <a href="?action=tag&id={$tag->getId()}">#{$tag->getLibelle()}</a>
                 HTML;
             }
 
             $searchValue = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
             $search = <<<HTML
-                <form method="post" action="?action=displayFeed" class="search-form mb-3" role="search">
+                <form method="post" action="?action=feed" class="search-form mb-3" role="search">
                     <label for="search" class="visually-hidden">Rechercher un touite</label>
                     <input
                         type="search"
@@ -198,7 +198,7 @@ class Dispatcher {
 
             $accountArea = <<<HTML
                 <div class="sidebar-user">
-                    <a class="sidebar-avatar-link" href="?action=displayProfile&id={$userId}"
+                    <a class="sidebar-avatar-link" href="?action=profile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">

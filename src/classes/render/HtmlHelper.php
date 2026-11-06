@@ -40,7 +40,7 @@ class HtmlHelper {
 
     public static function alreadyLogin(string $email): string {
         $title = HtmlHelper::title("Déjà connecté", "bi-person-plus-fill");
-        $feedButton = HtmlHelper::linkButton('Mon feed', '?action=displayFeed', 'bi-collection-play-fill');
+        $feedButton = HtmlHelper::linkButton('Mon feed', '?action=feed', 'bi-collection-play-fill');
         $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
         $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
         return <<<HTML
@@ -131,15 +131,15 @@ class HtmlHelper {
         $dislikeType = $isDisliked ? 'annuler' : 'dislike';
         $likePressed = $isLiked ? 'true' : 'false';
         $dislikePressed = $isDisliked ? 'true' : 'false';
-        $returnQuery = htmlspecialchars(http_build_query($_GET ?: ['action' => 'displayFeed']), ENT_QUOTES, 'UTF-8');
+        $returnQuery = htmlspecialchars(http_build_query($_GET ?: ['action' => 'feed']), ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
-            <form method="POST" action="?action=LikeAction&id={$touiteId}&type={$likeType}">
+            <form method="POST" action="?action=like&id={$touiteId}&type={$likeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
                 <button type="submit" class="touite-like {$likeClass}" aria-label="J'aime" aria-pressed="{$likePressed}"><i class="bi {$likeIcon}" aria-hidden="true"></i></button>
             </form>
             {$noteHtml}
-            <form method="POST" action="?action=LikeAction&id={$touiteId}&type={$dislikeType}">
+            <form method="POST" action="?action=like&id={$touiteId}&type={$dislikeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
                 <button type="submit" class="touite-dislike {$dislikeClass}" aria-label="Je n'aime pas" aria-pressed="{$dislikePressed}"><i class="bi {$dislikeIcon}" aria-hidden="true"></i></button>
             </form>
@@ -158,7 +158,7 @@ class HtmlHelper {
         return "<a class=\"btn btn-{$variant}\" href=\"{$url}\">{$iconHtml}{$label}</a>";
     }
 
-    public static function backLink(string $url = '?action=displayFeed', string $label = 'Retour au feed'): string {
+    public static function backLink(string $url = '?action=feed', string $label = 'Retour au feed'): string {
         return <<<HTML
             <a class="back-link" href="{$url}" aria-label="{$label}">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
@@ -166,7 +166,7 @@ class HtmlHelper {
         HTML;
     }
 
-    public static function detailHeader(string $title, string $backUrl = '?action=displayFeed'): string {
+    public static function detailHeader(string $title, string $backUrl = '?action=feed'): string {
         $backLink = self::backLink($backUrl);
 
         return <<<HTML
@@ -321,11 +321,11 @@ class HtmlHelper {
      * Génère un écran d'accès interdit pour un utilisateur sans droits suffisants.
      *
      * @param string $message Message d'erreur explicatif.
-     * @param string $backUrl URL de retour (défaut: '?action=displayFeed').
+     * @param string $backUrl URL de retour (défaut: '?action=feed').
      * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à mon feed').
      * @return string Balises HTML de l'écran d'interdiction.
      */
-    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = "?action=displayFeed", string $backLabel = "Retour à mon feed"): string {
+    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = "?action=feed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
         $titleHtml = self::title("Accès refusé", "bi-shield-lock-fill", "text-danger");
@@ -348,11 +348,11 @@ class HtmlHelper {
      *
      * @param string $item Nom de la ressource introuvable.
      * @param string $message Message d'erreur explicatif.
-     * @param string $backUrl URL du lien de retour (défaut: '?action=displayFeed').
+     * @param string $backUrl URL du lien de retour (défaut: '?action=feed').
      * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à mon compte').
      * @return string Balises HTML de la page 404.
      */
-    public static function notFound(string $item = "Ressource", string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = "?action=displayFeed", string $backLabel = "Retour à mon feed"): string {
+    public static function notFound(string $item = "Ressource", string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = "?action=feed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('danger', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
         $titleHtml = self::title("{$item} introuvable", "bi-exclamation-triangle-fill", "text-danger");
@@ -402,11 +402,11 @@ class HtmlHelper {
      *
      * @param string $title Titre du message de succès (défaut: 'Opération réussie').
      * @param string $message Message de confirmation textuel ou HTML.
-     * @param string $backUrl URL de redirection ou d'action suivante (défaut: '?action=displayFeed').
+     * @param string $backUrl URL de redirection ou d'action suivante (défaut: '?action=feed').
      * @param string $backLabel Libellé du bouton d'action suivante (défaut: 'Retour à mon feed').
      * @return string Balises HTML de la page de confirmation de succès.
      */
-    public static function successPage(string $title = "Opération réussie", string $message = "L'opération s'est déroulée avec succès.", string $backUrl = "?action=displayFeed", string $backLabel = "Retour à mon feed"): string {
+    public static function successPage(string $title = "Opération réussie", string $message = "L'opération s'est déroulée avec succès.", string $backUrl = "?action=feed", string $backLabel = "Retour à mon feed"): string {
         $alert = self::alert('success', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/check-circle-fill/
         $titleHtml = self::title($title, "bi-check-circle-fill", "text-success");
