@@ -365,4 +365,13 @@ class TouiteurReaderRepository extends TouiteurRepository {
             WHERE email = :email
         SQL, ['email' => $email]);
     }
+
+    public function isAdminUser(array $user): bool {
+        return $this->exists(<<<SQL
+            SELECT id
+            from users
+            WHERE id = :id
+            AND role = 100
+        SQL, ['id' => $user['id']]);
+    }
 }

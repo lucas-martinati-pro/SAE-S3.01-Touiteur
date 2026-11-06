@@ -26,7 +26,8 @@ CREATE TABLE users (
     passwd varchar2(256) NOT NULL,
     nom varchar2(100) NOT NULL,
     prenom varchar2(100) NOT NULL,
-    counter_touite NUMBER(38) DEFAULT 0 NOT NULL
+    counter_touite NUMBER(38) DEFAULT 0 NOT NULL,
+    role NUMBER(11) DEFAULT 1 NOT NULL
 );
 
 CREATE TABLE tag (

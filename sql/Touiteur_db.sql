@@ -24,7 +24,8 @@ create table users (
     passwd VARCHAR(256) NOT NULL,
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
-    counter_touite INT DEFAULT 0 NOT NULL
+    counter_touite INT DEFAULT 0 NOT NULL,
+    role INT(11) NOT NULL DEFAULT 1
 );
 
 create table tag (
