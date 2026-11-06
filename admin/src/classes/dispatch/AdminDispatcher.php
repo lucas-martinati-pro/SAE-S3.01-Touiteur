@@ -196,7 +196,7 @@ class AdminDispatcher {
 
             $accountArea = <<<HTML
                 <div class="sidebar-user">
-                    <a class="sidebar-avatar-link" href="/index.php?action=displayProfile&id={$userId}"
+                    <a class="sidebar-avatar-link" href="../index.php?action=displayProfile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
