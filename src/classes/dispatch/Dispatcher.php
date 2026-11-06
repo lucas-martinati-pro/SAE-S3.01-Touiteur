@@ -9,9 +9,9 @@ use iutnc\touiteur\action\display\DisplayTag;
 use iutnc\touiteur\action\display\DisplayTouite;
 use iutnc\touiteur\action\display\DisplayUsersAction;
 use iutnc\touiteur\action\command\AddTouiteAction;
+use iutnc\touiteur\action\command\LikeAction;
 use iutnc\touiteur\action\command\SubscribeAction;
 use iutnc\touiteur\action\command\SubscribeTagAction;
-use iutnc\touiteur\action\command\LikeAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
@@ -45,19 +45,20 @@ class Dispatcher {
      */
     public function run(): void {
         $html = match ($this->action) {
-            "displayTouite" => (new DisplayTouite())(),
-            "displayProfile" => (new DisplayProfile())(),
-            "addTouite" => (new AddTouiteAction())(),
-            "LikeAction" => (new LikeAction())(),
+            "displayFeed" => (new DisplayFeedAction)(),
+            "listFollowTag" => (new DisplayListFollowedTag)(),
+            "displayProfile" => (new DisplayProfile)(),
             "displayTag" => (new DisplayTag)(),
-            "register" => (new RegisterAction())(),
-            "signin" => (new SigninAction())(),
-            "signout" => (new SignoutAction())(),
-            "subscribe" => (new SubscribeAction())(),
-            "subtag" => (new SubscribeTagAction())(),
-            "listFollowTag" => (new DisplayListFollowedTag())(),
-            "displayUsers" => (new DisplayUsersAction())(),
-            default => (new DisplayFeedAction())(),
+            "displayTouite" => (new DisplayTouite)(),
+            "displayUsers" => (new DisplayUsersAction)(),
+            "addTouite" => (new AddTouiteAction)(),
+            "LikeAction" => (new LikeAction)(),
+            "subscribe" => (new SubscribeAction)(),
+            "subtag" => (new SubscribeTagAction)(),
+            "register" => (new RegisterAction)(),
+            "signin" => (new SigninAction)(),
+            "signout" => (new SignoutAction)(),
+            default => (new DisplayFeedAction)(),
         };
 
         $this->renderPage($html);

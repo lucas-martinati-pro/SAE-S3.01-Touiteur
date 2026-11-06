@@ -8,6 +8,10 @@ RewriteBase /www/e32772u/BUT_Info_S3/SAE/Touiteur
 # les ressources statiques vers les dossiers partagés à la racine.
 RewriteRule ^admin/(css|js|image)/(.*)$ $1/$2 [L]
 
+# Le Dispatcher utilise des chemins relatifs. Depuis /admin/, redirige
+# les ressources statiques vers les dossiers partagés à la racine.
+RewriteRule ^admin/(css|js|image)/(.*)$ $1/$2 [L]
+
 #
 # Pour interdire l'accès aux répertoires contenant du code
 RewriteRule ^sql(/.*|)$ - [NC,F]   # interdit l'accès à touiteur/sql

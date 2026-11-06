@@ -4,26 +4,26 @@
 -- DuckWare domine les tags ; les comptes 4 et 20 dominent les abonnements et les likes.
 
 -- Comptes existants (mots de passe conservés).
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user1@mail.com', '$2y$12$lmiNXX3ZuugxraHsKDQqUOSg9kdfD/Migr2aZwu4DeVF97hoLfOWi', 'Martinati', 'Lucas', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user2@mail.com', '$2y$12$QgKInBbsrQeTbfCIyD95NODfnzjbo7cws9wtVCb4nFtFZ7DL6aZJe', 'Charles', 'Samuel', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user3@mail.com', '$2y$12$8b/URlqWKUJ4O5ko5sh8Wu99F/2ceSri6luYSLzQeNKQKfVkkFMYS', 'Le-Madec', 'Jean', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user4@mail.com', '$2y$12$ebVfR5yVmxoLgPtSr4IJU.USlnID/zcZZXo25Xt1tdbwueDiiBoUK', 'Massin', 'Pierrick', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user5@mail.com', '$2y$12$rA8BHUOvWcrGbq.8LW7PLOIBcTmS3Ljy22Vkb4ZGnJBy9fh5v7w8.', 'Cartiaux', 'Noémie', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user6@mail.com', '$2y$12$c4VL.4Yl91WktpKwoKzGgOAyEb9c6b5ozSTHTEsO9H7YUNHujXZFO', 'Taccon', 'Liam', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user7@mail.com', '$2y$12$Ume7u9B.BHmCWO2FFQjITOSdtbIyyhVV3ffkA80fjqDdFId81Cp/2', 'Maillot', 'Charles', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user8@mail.com', '$2y$12$/0Mk9Scdes0oyx6oBvE29eP549e9kue9HDN5dJkElXxKqAdX8535C', 'Charles', 'Hélène', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user9@mail.com', '$2y$12$SvPiYORkO6Qj3I083F.0BOJxi9n1Jc6gz8hq/S1MNSmHBXt3Npu/u', 'Delvaux', 'Thomas', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user10@mail.com', '$2y$12$Ddxzb4QiAT7PaadPJ9TDCOliuMttxHVF0ybHRyI.c8jCS5PRX8y4K', 'Bernard', 'Aaron', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user11@mail.com', '$2y$12$JdIvVqoLfZEK.6Q0WIfRwOFMRcTwYbASjZ2c9hw.yszpBgk4G6kqm', 'Saez', 'Aidan', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user12@mail.com', '$2y$12$SJCv4iUz2aVNrQSp3mRWtuPvNKvzqrdIQE1aWnEU53Yw/QnIAeNIu', 'Gallois', 'Pierre', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user13@mail.com', '$2y$12$gjOX/TXU8UON5xlyRfUxA.40TCTZd/qi1rV8yRyI33W9tgOiXhd5O', 'Thiery-Sauvageot', 'Léo', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user14@mail.com', '$2y$12$CpPO0wqvKki1S8l7z0Je0uH3YEph92cJ8ZmZp7eceix9if/lfcz0W', 'Hoareaux', 'Amarylis', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user15@mail.com', '$2y$12$rIMTyecbY4k.cKvKxSsTEOmrp4j771m3Ay3IfPcas7uvYpgrzO4rC', 'Andre', 'Mila', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user16@mail.com', '$2y$12$fG3zgseHHp8uu0QEP57rbOtmS0Ma6i4cBN7OFVJyHwAMRUL51czSa', 'Mercier', 'Theo', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user17@mail.com', '$2y$12$Fz5410V0AqrTVmpY8mOxdudnnoYZ6CkitlmtiF./mqSqi6E0NY1Ie', 'Blanc', 'Jade', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user18@mail.com', '$2y$12$AMjhJ9Savnx0ssSd7.tGO.8rL/7gFJFrhv0nMPbWzR0136RTy9Wne', 'Guerin', 'Eliot', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('user19@mail.com', '$2y$12$LrpLc07m6wmB.v9Ui8EkpuQjHxqTsi8mtiwwZHXgDbp/K7dXILb9C', 'Boyer', 'Nina', 0);
-INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES ('admin@mail.com', '$2y$12$RBLDPC1rAK4kGQAmwm8ieegd9.7ZnqUHyWlLknCpPaKDnu9V8azMK', 'Administrateur', 'Admin', 0);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user1@mail.com', '$2y$12$lmiNXX3ZuugxraHsKDQqUOSg9kdfD/Migr2aZwu4DeVF97hoLfOWi', 'Martinati', 'Lucas', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user2@mail.com', '$2y$12$QgKInBbsrQeTbfCIyD95NODfnzjbo7cws9wtVCb4nFtFZ7DL6aZJe', 'Charles', 'Samuel', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user3@mail.com', '$2y$12$8b/URlqWKUJ4O5ko5sh8Wu99F/2ceSri6luYSLzQeNKQKfVkkFMYS', 'Le-Madec', 'Jean', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user4@mail.com', '$2y$12$ebVfR5yVmxoLgPtSr4IJU.USlnID/zcZZXo25Xt1tdbwueDiiBoUK', 'Massin', 'Pierrick', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user5@mail.com', '$2y$12$rA8BHUOvWcrGbq.8LW7PLOIBcTmS3Ljy22Vkb4ZGnJBy9fh5v7w8.', 'Cartiaux', 'Noémie', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user6@mail.com', '$2y$12$c4VL.4Yl91WktpKwoKzGgOAyEb9c6b5ozSTHTEsO9H7YUNHujXZFO', 'Taccon', 'Liam', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user7@mail.com', '$2y$12$Ume7u9B.BHmCWO2FFQjITOSdtbIyyhVV3ffkA80fjqDdFId81Cp/2', 'Maillot', 'Charles', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user8@mail.com', '$2y$12$/0Mk9Scdes0oyx6oBvE29eP549e9kue9HDN5dJkElXxKqAdX8535C', 'Charles', 'Hélène', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user9@mail.com', '$2y$12$SvPiYORkO6Qj3I083F.0BOJxi9n1Jc6gz8hq/S1MNSmHBXt3Npu/u', 'Delvaux', 'Thomas', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user10@mail.com', '$2y$12$Ddxzb4QiAT7PaadPJ9TDCOliuMttxHVF0ybHRyI.c8jCS5PRX8y4K', 'Bernard', 'Aaron', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user11@mail.com', '$2y$12$JdIvVqoLfZEK.6Q0WIfRwOFMRcTwYbASjZ2c9hw.yszpBgk4G6kqm', 'Saez', 'Aidan', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user12@mail.com', '$2y$12$SJCv4iUz2aVNrQSp3mRWtuPvNKvzqrdIQE1aWnEU53Yw/QnIAeNIu', 'Gallois', 'Pierre', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user13@mail.com', '$2y$12$gjOX/TXU8UON5xlyRfUxA.40TCTZd/qi1rV8yRyI33W9tgOiXhd5O', 'Thiery-Sauvageot', 'Léo', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user14@mail.com', '$2y$12$CpPO0wqvKki1S8l7z0Je0uH3YEph92cJ8ZmZp7eceix9if/lfcz0W', 'Hoareaux', 'Amarylis', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user15@mail.com', '$2y$12$rIMTyecbY4k.cKvKxSsTEOmrp4j771m3Ay3IfPcas7uvYpgrzO4rC', 'Andre', 'Mila', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user16@mail.com', '$2y$12$fG3zgseHHp8uu0QEP57rbOtmS0Ma6i4cBN7OFVJyHwAMRUL51czSa', 'Mercier', 'Theo', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user17@mail.com', '$2y$12$Fz5410V0AqrTVmpY8mOxdudnnoYZ6CkitlmtiF./mqSqi6E0NY1Ie', 'Blanc', 'Jade', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user18@mail.com', '$2y$12$AMjhJ9Savnx0ssSd7.tGO.8rL/7gFJFrhv0nMPbWzR0136RTy9Wne', 'Guerin', 'Eliot', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('user19@mail.com', '$2y$12$LrpLc07m6wmB.v9Ui8EkpuQjHxqTsi8mtiwwZHXgDbp/K7dXILb9C', 'Boyer', 'Nina', 0, 1);
+INSERT INTO users (email, passwd, nom, prenom, counter_touite, role) VALUES ('admin@mail.com', '$2y$12$RBLDPC1rAK4kGQAmwm8ieegd9.7ZnqUHyWlLknCpPaKDnu9V8azMK', 'Administrateur', 'Admin', 0, 100);
 
 -- Tags : sujets variés et forte présence des langages et outils informatiques.
 INSERT INTO tag (id, libelle, description) VALUES (1, 'annonce', 'Informations et annonces importantes.');

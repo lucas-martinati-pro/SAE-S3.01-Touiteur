@@ -100,4 +100,13 @@ class AuthnProvider {
 
         return $user;
     }
+
+    /**
+     * @throws AuthnException Si aucun utilisateur n'est connecté en session.
+     */
+    public static function isAdminUser(): bool {
+        $user = self::getSignedInUser();
+
+        return RepositoryFactory::getReader()->isAdminUser($user);
+    }
 }
