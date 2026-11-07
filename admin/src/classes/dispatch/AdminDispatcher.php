@@ -74,13 +74,13 @@ class AdminDispatcher {
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
                     <link href="../css/style.css" rel="stylesheet">
                     <!-- Icône personnalisée pour le site -->
-                    <link rel="icon" type="image/x-icon" href="image/favicon.png">
+                    <link rel="icon" type="image/x-icon" href="../image/favicon-admin.png">
                 </head>
                 <body>
                     <div class="app-layout" id="swup">
                         <aside class="sidebar">
                             <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php">
-                                <img src="../image/favicon.png" alt="" width="28" height="28" class="me-2">
+                                <img src="../image/favicon-admin.png" alt="" width="28" height="28" class="me-2">
                                 <span class="logo-word">Touiteur - Admin</span>
                             </a>
                             {$navbar}
