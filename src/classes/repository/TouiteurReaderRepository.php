@@ -138,6 +138,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             SELECT *
             FROM touite
             WHERE users_id = :id
+            ORDER BY posted_at DESC
             LIMIT :limit OFFSET :offset;
         SQL, $pagination, ['id' => $id]);
 
