@@ -31,7 +31,7 @@ class DisplayListFollowedTag extends Action {
         foreach ($followedTags as $tag) {
             $tagId = (int) $tag->getId();
             $tagLabel = htmlspecialchars($tag->getLibelle(), ENT_QUOTES, 'UTF-8');
-            $rawDescr = $tag['description'] ?? '';
+            $rawDescr = $tag->getDescription() ?? '';
             $descr = htmlspecialchars($rawDescr, ENT_QUOTES, 'UTF-8');
             $descrHtml = $descr !== ''
                 ? "<div class=\"text-secondary small fw-normal\">{$descr}</div>"
