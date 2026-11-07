@@ -227,7 +227,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
      */
     public function findAllFollowedTagByUserId(int $userId): ?array {
         $result = $this->fetchAll(<<<SQL
-            SELECT libelle, tag.id, description
+            SELECT tag.*
             FROM tag
             INNER JOIN users2tag on users2tag.tag_id = tag.id
             WHERE users2tag.users_id = :user_id
@@ -235,7 +235,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         if (!$result) return null;
 
-        return $result;
+        return $this->rowsToTags($result);
     }
 
     public function findTagById(int $id): ?Tag {
