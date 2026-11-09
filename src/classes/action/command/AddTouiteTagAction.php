@@ -17,8 +17,8 @@ class AddTouiteTagAction extends Action {
             return HtmlHelper::errorPage(
                 title: 'Aucun tag à décrire',
                 message: 'Publie d’abord un touite contenant un nouveau tag.',
-                backUrl: '?action=addTouite',
-                backLabel: 'Créer un touite'
+                backUrl: '?action=feed',
+                backLabel: 'Retour au fil'
             );
         }
 
@@ -61,7 +61,7 @@ class AddTouiteTagAction extends Action {
         }
 
         $submitButton = HtmlHelper::button('Publier le touite', 'bi-send-fill');
-        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=addTouite', '', 'outline-secondary');
+        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=feed', '', 'outline-secondary');
         $page .= <<<HTML
                 <div class="d-flex gap-2">
                     {$submitButton}
@@ -82,8 +82,8 @@ class AddTouiteTagAction extends Action {
             return HtmlHelper::errorPage(
                 title: 'Formulaire invalide',
                 message: 'Les tags ou le touite à publier sont introuvables. Recommence la publication.',
-                backUrl: '?action=addTouite',
-                backLabel: 'Créer un touite'
+                backUrl: '?action=feed',
+                backLabel: 'Retour au fil'
             );
         }
 
@@ -101,7 +101,7 @@ class AddTouiteTagAction extends Action {
                     return HtmlHelper::formError(
                         errors: $message,
                         backUrl: '?action=addTouiteTag',
-                        backLabel: 'Reprendre les descriptions',
+                        backLabel: 'Retour au fil',
                         title: 'Impossible de publier le touite'
                     );
                 }
