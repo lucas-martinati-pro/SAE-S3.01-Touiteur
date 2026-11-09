@@ -170,11 +170,6 @@ class AdminDispatcher {
                             <i class="bi bi-people me-1"></i>Utilisateurs populaires
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../index.php">
-                            <i class="bi bi-house-door-fill me-1"></i>Site public
-                        </a>
-                    </li>
                 </ul>
             </div>
         HTML;
@@ -187,6 +182,13 @@ class AdminDispatcher {
             </div>
         HTML;
 
+        $btnSitePublic = <<<HTML
+            <a href="../index.php" class="btn btn-outline-primary w-100 mb-2">
+                <i class="bi bi-house-door-fill" aria-hidden="true"></i>
+                Site public
+            </a>
+        HTML;
+
         try {
             $user = AuthnProvider::getSignedInUser();
 
@@ -195,6 +197,7 @@ class AdminDispatcher {
             $profileAvatar = HtmlHelper::profileAvatar($user, 'sidebar-avatar');
 
             $accountArea = <<<HTML
+                {$btnSitePublic}
                 <div class="sidebar-user">
                     <a class="sidebar-avatar-link" href="../index.php?action=profile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
@@ -206,6 +209,7 @@ class AdminDispatcher {
             HTML;
         } catch (AuthnException) {
             $accountArea = <<<HTML
+                {$btnSitePublic}
                 <div class="sidebar-user guest-user">
                     <a class="btn btn-outline-primary" href="?action=signin">
                         <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
