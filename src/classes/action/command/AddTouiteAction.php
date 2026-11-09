@@ -75,7 +75,8 @@ class AddTouiteAction extends Action {
 
         $w = RepositoryFactory::getWriter();
         $touite = $w->addTouite($touite, $this->user['id']);
-        header('Location: ?action=touite&id=' . $touite->getId());
+        // header('Location: ?action=touite&id=' . $touite->getId());
+        header('Location: ?action=feed&type=global');
         exit;
     }
 

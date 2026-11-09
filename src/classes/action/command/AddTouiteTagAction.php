@@ -119,7 +119,8 @@ class AddTouiteTagAction extends Action {
 
         unset($_SESSION['tags'], $_SESSION['touite']);
 
-        header('Location: ?action=touite&id=' . $touite->getId());
+        // header('Location: ?action=touite&id=' . $touite->getId());
+        header('Location: ?action=feed&type=global');
         exit;
     }
 }
