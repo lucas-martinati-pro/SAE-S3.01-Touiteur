@@ -20,8 +20,9 @@ class TouiteurRepository {
         if ($conf === false) {
             throw new ConfigIOException('Error reading configuration file');
         }
+        // On ajoute le charset=utf8mb4 dans la ligne du dns pour que sur webetu les caractères codés sur plusieurs bits s'affichent correctement (sinon on avait des problèmes)
         self::$config = [
-            'dsn' => "{$conf['driver']}:host={$conf['host']};dbname={$conf['database']}",
+            'dsn' => "{$conf['driver']}:host={$conf['host']};dbname={$conf['database']};charset=utf8mb4",
             'user' => $conf['username'],
             'pass' => $conf['password']
         ];
