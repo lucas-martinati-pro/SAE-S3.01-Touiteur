@@ -392,11 +392,11 @@ class TouiteurReaderRepository extends TouiteurRepository {
 
         public function findTrendingTags(): ?array {
         $result = $this->fetchAll(<<<SQL
-            SELECT tag.id, libelle, description, COUNT(tag2touite.tag_id) AS nbAparition,
+            SELECT tag.id, libelle, description, COUNT(tag2touite.tag_id) AS nbAparition
             FROM tag
-            INNER JOIN tag2touite on tag2touite.id = tag.id
+            INNER JOIN tag2touite on tag2touite.tag_id = tag.id
             GROUP BY tag.id
-            ORDER BY nbFol ASC
+            ORDER BY nbAparition DESC
             LIMIT :limit
         SQL, ['limit' => self::$limitTrendTag]);
 

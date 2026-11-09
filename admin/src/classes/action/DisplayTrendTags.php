@@ -38,7 +38,7 @@ class DisplayTrendTags extends Action {
             $nbAparition = $tag['nbAparition'];
 
             $items .= <<<HTML
-                <a href="../index.php?action=profile&id={$id}" class="followed-tag">
+                <a href="../index.php?action=tag&id={$id}" class="followed-tag">
                     $libelle;
                     $descr;
                     $id;
@@ -47,7 +47,11 @@ class DisplayTrendTags extends Action {
             HTML;
         }
 
-        return '';
+        return $header . <<<HTML
+            <section class="followed-tags" aria-label="Influenceurs">
+                {$items}
+            </section>
+        HTML;
     }
 
     #[Override]
