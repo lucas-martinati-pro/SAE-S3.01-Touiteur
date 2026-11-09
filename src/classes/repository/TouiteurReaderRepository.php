@@ -11,6 +11,8 @@ use iutnc\touiteur\tag\Tag;
  * Repository centralisant les opérations d'accès à la base de données.
  */
 class TouiteurReaderRepository extends TouiteurRepository {
+    static $limitTrendTag = 200;
+    
     /**============================================
      * CREATIONS DES TOUITES/TAGS
      *=============================================**/
@@ -382,6 +384,21 @@ class TouiteurReaderRepository extends TouiteurRepository {
             GROUP BY users.id
             ORDER BY nbFol DESC
         SQL);
+
+        if (!$result) return null;
+
+        return $result;
+    }
+
+        public function findTrendingTags(): ?array {
+        $result = $this->fetchAll(<<<SQL
+            SELECT tag.id, libelle, description, COUNT(tag2touite.tag_id) AS nbAparition,
+            FROM tag
+            INNER JOIN tag2touite on tag2touite.id = tag.id
+            GROUP BY tag.id
+            ORDER BY nbFol ASC
+            LIMIT :limit
+        SQL, ['limit' => self::$limitTrendTag]);
 
         if (!$result) return null;
 
