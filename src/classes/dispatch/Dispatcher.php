@@ -196,7 +196,16 @@ class Dispatcher {
             $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
             $profileAvatar = HtmlHelper::profileAvatar($user, 'sidebar-avatar');
 
+            $btnAdmin = "";
+
+            if(AuthnProvider::isAdminUser()){
+                $btnAdmin = <<<HTML
+                    <a href="admin"> Espace Admin </a>
+                HTML;
+            }
+
             $accountArea = <<<HTML
+                {$btnAdmin}
                 <div class="sidebar-user">
                     <a class="sidebar-avatar-link" href="?action=profile&id={$userId}"
                        aria-label="Voir mon profil">{$profileAvatar}</a>
