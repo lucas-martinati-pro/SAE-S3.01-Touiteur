@@ -12,69 +12,6 @@ class AddTouiteAction extends Action {
     protected bool $requireAuth = true;
 
     #[Override]
-    public function get(): string {
-        $title = HtmlHelper::title('Publier un touite', 'bi-pencil-square');
-        $publishButton = HtmlHelper::button('Publier', 'bi-send-fill');
-        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=feed', '', 'outline-secondary');
-
-        return <<<HTML
-            {$title}
-            <form method="post" action="?action=addTouite" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="contenu" class="form-label">Contenu</label>
-                    <textarea
-                        name="contenu"
-                        class="form-control"
-                        id="contenu"
-                        maxlength="235"
-                        rows="4"
-                        placeholder="Quoi de neuf ?"
-                        required
-                    ></textarea>
-                    <div class="form-text">235 caractères maximum.</div>
-                </div>
-
-                <div class="mb-3 media-upload">
-                    <label for="media" class="form-label">Média <span class="text-muted">(optionnel)</span></label>
-                    <input
-                        type="file"
-                        name="media"
-                        class="form-control media-input"
-                        id="media"
-                        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
-                    >
-                    <div class="media-upload-help">
-                        <i class="bi bi-image" aria-hidden="true"></i>
-                        <span>Ajoutez un média à votre touite</span>
-                        <small>JPG, PNG, WEBP, GIF ou MP4 · 2 Mo maximum</small>
-                    </div>
-                </div>
-
-                <details class="media-description mb-3">
-                    <summary>
-                        <i class="bi bi-card-text" aria-hidden="true"></i>
-                        Ajouter une description au média
-                    </summary>
-                    <label for="descrip_media" class="form-label">Description <span class="text-muted">(optionnelle)</span></label>
-                    <input
-                        type="text"
-                        name="descrip_media"
-                        class="form-control"
-                        id="descrip_media"
-                        maxlength="235"
-                        placeholder="Décrivez votre média"
-                    >
-                </details>
-
-                <div class="d-flex gap-2">
-                    {$publishButton}
-                    {$cancelButton}
-                </div>
-            </form>
-        HTML;
-    }
-
-    #[Override]
     public function post(): string {
         unset($_SESSION['tags'], $_SESSION['touite']);
         $content = trim($_POST['contenu'] ?? '');
@@ -138,7 +75,8 @@ class AddTouiteAction extends Action {
 
         $w = RepositoryFactory::getWriter();
         $touite = $w->addTouite($touite, $this->user['id']);
-        header('Location: ?action=touite&id=' . $touite->getId());
+        // header('Location: ?action=touite&id=' . $touite->getId());
+        header('Location: ?action=feed&type=global');
         exit;
     }
 

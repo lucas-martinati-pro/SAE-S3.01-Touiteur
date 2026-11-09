@@ -138,14 +138,15 @@ h1, h2, h3 { letter-spacing: -.02em; }
 .theme-toggle {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
-    gap: .7rem;
+    gap: .4rem;
     padding: .7rem 1rem;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: var(--surface);
     color: var(--text);
-    text-align: left;
+    text-align: center;
     transition: background .2s, border-color .2s, color .2s;
 }
 .theme-toggle:hover, .theme-toggle:focus-visible {
@@ -308,11 +309,135 @@ h1, h2, h3 { letter-spacing: -.02em; }
     padding: 1rem;
     border-bottom: 1px solid var(--border);
 }
-.compose-content {
+.compose-form {
+    flex: 1;
     min-width: 0;
-    padding-top: .1rem;
+    max-width: none;
 }
-.compose-box p { margin: 0 0 .85rem; color: var(--muted); }
+.compose-fields {
+    display: grid;
+}
+.compose-textarea {
+    display: block;
+    width: 100%;
+    min-height: 1.5em;
+    max-height: 200px;
+    padding: .25rem 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.25rem;
+    line-height: 1.4;
+    field-sizing: content;
+    overflow-y: auto;
+    resize: none;
+}
+.compose-textarea::placeholder { color: var(--muted); opacity: 1; }
+.compose-attachment { position: relative; }
+.compose-attachment > summary {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--brand);
+    cursor: pointer;
+    list-style: none;
+}
+.compose-attachment > summary::-webkit-details-marker { display: none; }
+.compose-attachment > summary:hover,
+.compose-attachment > summary:focus-visible { background: var(--brand-soft); outline: 0; }
+.compose-attachment > summary i { font-size: 1.15rem; }
+.compose-attachment-panel {
+    position: absolute;
+    top: calc(100% + .6rem);
+    left: -.5rem;
+    z-index: 30;
+    display: grid;
+    gap: .65rem;
+    width: min(440px, calc(100vw - 4rem));
+    padding: .9rem;
+    border: 1px solid var(--border);
+    border-radius: .9rem;
+    background: var(--surface);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .2);
+}
+.compose-file-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    color: var(--brand);
+    font-weight: 700;
+}
+.compose-file-input {
+    min-width: 0;
+    width: 100%;
+    color: var(--muted);
+    font-size: .85rem;
+}
+.compose-file-input::file-selector-button {
+    margin-right: .55rem;
+    padding: .35rem .7rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+.compose-file-input::file-selector-button:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+}
+.compose-attachment-panel > small {
+    color: var(--muted);
+    font-size: .78rem;
+}
+.compose-description {
+    display: grid;
+    gap: .35rem;
+}
+.compose-description label {
+    color: var(--muted);
+    font-size: .88rem;
+    font-weight: 700;
+}
+.compose-description label span { font-weight: 400; }
+.compose-description textarea {
+    width: 100%;
+    min-height: 54px;
+    padding: .65rem .75rem;
+    border: 1px solid var(--border);
+    border-radius: .65rem;
+    outline: 0;
+    background: var(--surface);
+    color: var(--text);
+    resize: vertical;
+}
+.compose-description textarea:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 2px var(--brand-soft);
+}
+.compose-footer {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-top: .8rem;
+    padding-top: .7rem;
+    border-top: 1px solid var(--border);
+}
+.compose-character-limit {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: .78rem;
+}
+.compose-submit {
+    min-height: 38px;
+    padding: .5rem 1.1rem;
+    border-radius: 999px;
+}
 
 .touite-card {
     position: relative;
@@ -742,9 +867,20 @@ textarea.form-control { resize: vertical; }
     .page-content { min-height: auto; border: 0; }
     .feed-heading, .detail-header { padding: .85rem 1rem; }
     .touite-card, .compose-box { padding: 1rem; }
+    .compose-box { gap: .6rem; }
+    .compose-footer { flex-wrap: nowrap; gap: .45rem; }
+    .compose-character-limit { margin-left: auto; white-space: nowrap; }
     .touite-header { flex-wrap: wrap; gap: .25rem .55rem; }
     .feed-pagination { padding: .85rem 1rem; }
     .feed-pagination .btn { font-size: 0; min-width: 42px; padding: .55rem; }
     .feed-pagination .btn i { font-size: 1rem; }
     .page-content > :not(.feed-header):not(.profile-header):not(.feed):not(.touite-detail) { padding-right: 1rem; padding-left: 1rem; }
+}
+
+@media (max-width: 380px) {
+    .compose-box { gap: .5rem; padding: .8rem; }
+    .compose-box > .touite-avatar { width: 38px; height: 38px; }
+    .compose-footer { gap: .3rem; }
+    .compose-character-limit { display: none; }
+    .compose-submit { min-height: 36px; padding: .4rem .8rem; }
 }

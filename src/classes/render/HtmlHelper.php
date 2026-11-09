@@ -11,6 +11,59 @@ use iutnc\touiteur\repository\RepositoryFactory;
  * Classe d'assistance pour la génération des composants HTML de Touiteur.
  */
 class HtmlHelper {
+    public static function addTouite(array $user): string {
+        $profileAvatar = HtmlHelper::profileAvatar($user);
+        return <<<HTML
+            <section class="compose-box" aria-label="Écrire un touite">
+                {$profileAvatar}
+                <form class="compose-form" method="post" action="?action=addTouite" enctype="multipart/form-data">
+                    <div class="compose-fields">
+                        <textarea
+                            name="contenu"
+                            class="compose-textarea"
+                            id="contenu"
+                            maxlength="235"
+                            rows="1"
+                            placeholder="Quoi de neuf ?"
+                            aria-label="Contenu du touite"
+                            required
+                        ></textarea>
+                    </div>
+                    <div class="compose-footer">
+                        <details class="compose-attachment">
+                            <summary aria-label="Ajouter une image ou une vidéo" title="Ajouter une image ou une vidéo">
+                                <i class="bi bi-image" aria-hidden="true"></i>
+                            </summary>
+                            <div class="compose-attachment-panel">
+                                <label class="compose-file-label" for="media">Ajouter une image ou une vidéo</label>
+                                <input
+                                    type="file"
+                                    name="media"
+                                    class="compose-file-input"
+                                    id="media"
+                                    accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
+                                    aria-describedby="media-help"
+                                >
+                                <small id="media-help">JPG, PNG, WEBP, GIF ou MP4 · 2 Mo maximum</small>
+                                <div class="compose-description">
+                                    <label for="descrip_media">Description de l’image <span>(facultative)</span></label>
+                                    <textarea
+                                        name="descrip_media"
+                                        id="descrip_media"
+                                        maxlength="235"
+                                        rows="2"
+                                        placeholder="Décrivez l’image pour les personnes qui ne peuvent pas la voir"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </details>
+                        <span class="compose-character-limit">235 caractères maximum</span>
+                        <button type="submit" class="btn btn-primary compose-submit">Publier</button>
+                    </div>
+                </form>
+            </section>
+        HTML;
+    }
     /**
      * Génère les liens à placer dans la balise nav des onglets.
      *
