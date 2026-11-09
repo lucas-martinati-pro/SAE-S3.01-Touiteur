@@ -13,70 +13,55 @@ use iutnc\touiteur\repository\RepositoryFactory;
 class HtmlHelper {
     public static function addTouite(array $user): string {
         $profileAvatar = HtmlHelper::profileAvatar($user);
-        // return <<<HTML
-        //     <div class="compose-box">
-        //         {$profileAvatar}
-        //         <div class="compose-content">
-        //             <p>Quoi de neuf ?</p>
-        //             <a class="btn btn-primary" href="?action=addTouite">Touiter</a>
-        //         </div>
-        //     </div>
-        //     HTML;
-
-        $publishButton = HtmlHelper::button('Publier', 'bi-send-fill');
-
         return <<<HTML
-            <form method="post" action="?action=addTouite" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="contenu" class="form-label">Contenu</label>
-                    <textarea
-                        name="contenu"
-                        class="form-control"
-                        id="contenu"
-                        maxlength="235"
-                        rows="4"
-                        placeholder="Quoi de neuf ?"
-                        required
-                    ></textarea>
-                    <div class="form-text">235 caractères maximum.</div>
-                </div>
-
-                <div class="mb-3 media-upload">
-                    <label for="media" class="form-label">Média <span class="text-muted">(optionnel)</span></label>
-                    <input
-                        type="file"
-                        name="media"
-                        class="form-control media-input"
-                        id="media"
-                        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
-                    >
-                    <div class="media-upload-help">
-                        <i class="bi bi-image" aria-hidden="true"></i>
-                        <span>Ajoutez un média à votre touite</span>
-                        <small>JPG, PNG, WEBP, GIF ou MP4 · 2 Mo maximum</small>
+            <section class="compose-box" aria-label="Écrire un touite">
+                {$profileAvatar}
+                <form class="compose-form" method="post" action="?action=addTouite" enctype="multipart/form-data">
+                    <div class="compose-fields">
+                        <textarea
+                            name="contenu"
+                            class="compose-textarea"
+                            id="contenu"
+                            maxlength="235"
+                            rows="1"
+                            placeholder="Quoi de neuf ?"
+                            aria-label="Contenu du touite"
+                            required
+                        ></textarea>
                     </div>
-                </div>
-
-                <details class="media-description mb-3">
-                    <summary>
-                        <i class="bi bi-card-text" aria-hidden="true"></i>
-                        Ajouter une description au média
-                    </summary>
-                    <label for="descrip_media" class="form-label">Description <span class="text-muted">(optionnelle)</span></label>
-                    <input
-                        type="text"
-                        name="descrip_media"
-                        class="form-control"
-                        id="descrip_media"
-                        maxlength="235"
-                        placeholder="Décrivez votre média"
-                    >
-                </details>
-
-                <div class="d-flex gap-2">
-                    {$publishButton}
-                </div>
-            </form>
+                    <div class="compose-footer">
+                        <details class="compose-attachment">
+                            <summary aria-label="Ajouter une image ou une vidéo" title="Ajouter une image ou une vidéo">
+                                <i class="bi bi-image" aria-hidden="true"></i>
+                            </summary>
+                            <div class="compose-attachment-panel">
+                                <label class="compose-file-label" for="media">Ajouter une image ou une vidéo</label>
+                                <input
+                                    type="file"
+                                    name="media"
+                                    class="compose-file-input"
+                                    id="media"
+                                    accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
+                                    aria-describedby="media-help"
+                                >
+                                <small id="media-help">JPG, PNG, WEBP, GIF ou MP4 · 2 Mo maximum</small>
+                                <div class="compose-description">
+                                    <label for="descrip_media">Description de l’image <span>(facultative)</span></label>
+                                    <textarea
+                                        name="descrip_media"
+                                        id="descrip_media"
+                                        maxlength="235"
+                                        rows="2"
+                                        placeholder="Décrivez l’image pour les personnes qui ne peuvent pas la voir"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </details>
+                        <span class="compose-character-limit">235 caractères maximum</span>
+                        <button type="submit" class="btn btn-primary compose-submit">Publier</button>
+                    </div>
+                </form>
+            </section>
         HTML;
     }
     /**
