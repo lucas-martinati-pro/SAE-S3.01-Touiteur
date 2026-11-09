@@ -198,9 +198,12 @@ class Dispatcher {
 
             $btnAdmin = "";
 
-            if(AuthnProvider::isAdminUser()){
+            if (AuthnProvider::isAdminUser()) {
                 $btnAdmin = <<<HTML
-                    <a href="admin"> Espace Admin </a>
+                    <a href="admin" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-shield-lock-fill" aria-hidden="true"></i>
+                        Espace Admin
+                    </a>
                 HTML;
             }
 
