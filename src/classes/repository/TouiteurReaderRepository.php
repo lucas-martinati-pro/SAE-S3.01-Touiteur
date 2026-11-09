@@ -381,6 +381,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             INNER JOIN follow on users.id = follow.followed_id
             GROUP BY users.id
             ORDER BY nbFol DESC
+            LIMIT 200
         SQL);
 
         if (!$result) return null;
