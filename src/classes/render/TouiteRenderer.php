@@ -94,34 +94,34 @@ class TouiteRenderer implements Renderer {
         $noteActions = HtmlHelper::touiteActions($touiteId, $note, $selector);
 
         $class = $selector === TypeRender::LONG ? 'touite-card touite-card-long' : 'touite-card';
-        $card = <<<HTML
-                <article class="{$class}">
-                    {$this->touiteLink($touiteId, $completeName, $selector)}
-                    <div class="touite-row">
-                        <div class="touite-body">
-                            <div class="touite-header">
-                                <a class="touite-profile-link" href="?action=profile&id={$userId}"
-                                   aria-label="Voir le profil de {$completeName}">
-                                    {$profileAvatar}
-                                    <span class="touite-profile-identity">
-                                        <strong class="touite-author">{$completeName}</strong>
-                                        <span>@{$completeNameId}</span>
-                                    </span>
-                                </a>
-                                <time datetime="{$date}">{$date}</time>
-                                {$subBtn}
-                            </div>
-                            <p class="touite-content">{$content}</p>
-                            {$media}
-                            <div class="touite-actions {$actionsClass}" aria-label="Actions du touite">
-                                {$noteActions}
-                            </div>
+        $touiteRenderer = $this->touiteLink($touiteId, $completeName, $selector);
+
+        return <<<HTML
+            <article class="{$class}">
+                {$touiteRenderer}
+                <div class="touite-row">
+                    <div class="touite-body">
+                        <div class="touite-header">
+                            <a class="touite-profile-link" href="?action=profile&id={$userId}"
+                                aria-label="Voir le profil de {$completeName}">
+                                {$profileAvatar}
+                                <span class="touite-profile-identity">
+                                    <strong class="touite-author">{$completeName}</strong>
+                                    <span>@{$completeNameId}</span>
+                                </span>
+                            </a>
+                            <time datetime="{$date}">{$date}</time>
+                            {$subBtn}
+                        </div>
+                        <p class="touite-content">{$content}</p>
+                        {$media}
+                        <div class="touite-actions {$actionsClass}" aria-label="Actions du touite">
+                            {$noteActions}
                         </div>
                     </div>
-                </article>
+                </div>
+            </article>
         HTML;
-
-        return $card;
     }
 
     private function touiteLink(int $touiteId, string $author, TypeRender $selector): string {

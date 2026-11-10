@@ -20,14 +20,11 @@ class FeedRenderer implements Renderer {
 
     #[Override]
     public function render(TypeRender $selector = TypeRender::COMPACT): string {
-        $previous = $this->pagination->previous();
-        $next = $this->pagination->next();
-        $pageNumber = $this->pagination->getPage();
+        $this->pagination->setIsLastPage($this->feed->getLength());
         $paginationHtml = HtmlHelper::pagination(
             'Pagination du feed',
-            "?action={$this->action}&page={$previous}",
-            "?action={$this->action}&page={$next}",
-            $pageNumber
+            $this->action,
+            $this->pagination
         );
 
         if ($this->feed->isEmpty()) {

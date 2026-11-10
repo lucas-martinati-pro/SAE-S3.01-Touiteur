@@ -5,6 +5,7 @@ namespace iutnc\touiteur\render;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\enum\TypeRender;
 use iutnc\touiteur\exception\AuthnException;
+use iutnc\touiteur\pagination\Pagination;
 use iutnc\touiteur\repository\RepositoryFactory;
 
 /**
@@ -229,17 +230,21 @@ public static function profileColor(int $userId): string {
         HTML;
     }
 
-    public static function pagination(string $ariaLabel, string $previousUrl, string $nextUrl, int $page): string {
-        $previousAttributes = $page === 1 ? ' aria-disabled="true" tabindex="-1"' : '';
+    public static function pagination(string $ariaLabel, string $action, Pagination $pagination): string {
+        $previous = $pagination->previous();
+        $next = $pagination->next();
+        $page = $pagination->getPage();
+        $previousAttributes = ($page === 1) ? ' aria-disabled="true" tabindex="-1"' : '';
+        $nextAttribute = $pagination->getIsLastPage() ? ' aria-disabled="true" tabindex="-1"' : '';
 
         return <<<HTML
             <nav class="feed-pagination" aria-label="{$ariaLabel}">
-                <a class="btn btn-outline-secondary"{$previousAttributes} href="{$previousUrl}">
+                <a class="btn btn-outline-secondary"{$previousAttributes} href="action={$action}&page={$previous}">
                     <i class="bi bi-chevron-left" aria-hidden="true"></i>
                     Page précédente
                 </a>
                 <span>Page {$page}</span>
-                <a class="btn btn-outline-secondary" href="{$nextUrl}">
+                <a class="btn btn-outline-secondary"{$nextAttribute} href="?action={$action}&page={$next}">
                     Page suivante
                     <i class="bi bi-chevron-right" aria-hidden="true"></i>
                 </a>
