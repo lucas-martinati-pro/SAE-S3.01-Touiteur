@@ -31,7 +31,6 @@ class DeleteTouiteAction extends Action {
         if ($author === null || (int) $author['id'] !== (int) $this->user['id']) {
             return HtmlHelper::forbidden(
                 message: "Vous n'avez pas les droits de supprimer ce touite.",
-                backUrl: '?action=feed',
                 backLabel: 'Retour au fil'
             );
         }

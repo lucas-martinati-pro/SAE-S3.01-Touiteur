@@ -23,7 +23,6 @@ class AddTouiteAction extends Action {
 
             return HtmlHelper::formError(
                 errors: $message,
-                backUrl: '?action=addTouite',
                 backLabel: 'Modifier le touite',
                 title: 'Impossible de publier le touite'
             );
@@ -37,7 +36,6 @@ class AddTouiteAction extends Action {
         ) {
             return HtmlHelper::formError(
                 errors: 'Le fichier ne doit pas dépasser 2 Mo.',
-                backUrl: '?action=addTouite',
                 backLabel: 'Modifier le touite',
                 title: 'Impossible de publier le touite'
             );

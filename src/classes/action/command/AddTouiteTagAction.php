@@ -17,7 +17,6 @@ class AddTouiteTagAction extends Action {
             return HtmlHelper::errorPage(
                 title: 'Aucun tag à décrire',
                 message: 'Publie d’abord un touite contenant un nouveau tag.',
-                backUrl: '?action=feed',
                 backLabel: 'Retour au fil'
             );
         }
@@ -82,7 +81,6 @@ class AddTouiteTagAction extends Action {
             return HtmlHelper::errorPage(
                 title: 'Formulaire invalide',
                 message: 'Les tags ou le touite à publier sont introuvables. Recommence la publication.',
-                backUrl: '?action=feed',
                 backLabel: 'Retour au fil'
             );
         }

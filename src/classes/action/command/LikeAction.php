@@ -22,7 +22,6 @@ class LikeAction extends Action {
             return HtmlHelper::errorPage(
                 title: 'Vote invalide',
                 message: 'Le touite ou le type de vote est invalide.',
-                backUrl: '?action=feed',
                 backLabel: 'Retour au fil'
             );
         }
