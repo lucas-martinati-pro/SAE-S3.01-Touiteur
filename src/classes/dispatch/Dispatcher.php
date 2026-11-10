@@ -10,6 +10,7 @@ use iutnc\touiteur\action\display\DisplayTouite;
 use iutnc\touiteur\action\display\DisplayUsersAction;
 use iutnc\touiteur\action\command\AddTouiteAction;
 use iutnc\touiteur\action\command\AddTouiteTagAction;
+use iutnc\touiteur\action\command\DeleteTouiteAction;
 use iutnc\touiteur\action\command\LikeAction;
 use iutnc\touiteur\action\command\SubscribeAction;
 use iutnc\touiteur\action\command\SubscribeTagAction;
@@ -54,6 +55,7 @@ class Dispatcher {
             'users' => (new DisplayUsersAction())(),
             'addTouite' => (new AddTouiteAction())(),
             'addTouiteTag' => (new AddTouiteTagAction())(),
+            'deleteTouite' => (new DeleteTouiteAction())(),
             'like' => (new LikeAction())(),
             'subscribe' => (new SubscribeAction())(),
             'subscribeTag' => (new SubscribeTagAction())(),

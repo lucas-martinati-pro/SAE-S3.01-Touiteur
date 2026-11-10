@@ -90,6 +90,19 @@ class TouiteRenderer implements Renderer {
             );
         }
 
+        $deleteBtn = '';
+        if ($userId === $currentUserId && $selector === TypeRender::LONG) {
+            $deleteBtn = <<<HTML
+                <form method="post" action="?action=deleteTouite&amp;id={$touiteId}"
+                    onsubmit="return confirm('Supprimer ce touite ?');">
+                    <button type="submit" class="touite-delete-button" aria-label="Supprimer ce touite">
+                        <i class="bi bi-trash3" aria-hidden="true"></i>
+                        <span>Supprimer</span>
+                    </button>
+                </form>
+            HTML;
+        }
+
         $actionsClass = $selector === TypeRender::LONG ? 'touite-actions-long' : 'touite-actions-compact';
         $noteActions = HtmlHelper::touiteActions($touiteId, $note, $selector);
 
@@ -117,6 +130,7 @@ class TouiteRenderer implements Renderer {
                         {$media}
                         <div class="touite-actions {$actionsClass}" aria-label="Actions du touite">
                             {$noteActions}
+                            {$deleteBtn}
                         </div>
                     </div>
                 </div>

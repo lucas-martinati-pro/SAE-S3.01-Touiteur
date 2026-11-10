@@ -537,6 +537,23 @@ h1, h2, h3 { letter-spacing: -.02em; }
     color: var(--muted);
     transition: background .2s, color .2s;
 }
+.touite-actions .touite-delete-button {
+    display: inline-flex;
+    width: auto;
+    align-items: center;
+    gap: .4rem;
+    padding: .4rem .7rem;
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border));
+    border-radius: 999px;
+    color: var(--danger);
+    font-size: .82rem;
+    font-weight: 650;
+}
+.touite-actions .touite-delete-button:hover,
+.touite-actions .touite-delete-button:focus-visible {
+    background: color-mix(in srgb, var(--danger) 12%, transparent);
+    color: var(--danger);
+}
 .touite-actions .touite-like:hover { color: var(--success); }
 .touite-actions .touite-dislike:hover { color: var(--danger); }
 .touite-note { min-width: 2ch; text-align: center; font-weight: 700; }
