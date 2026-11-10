@@ -15,21 +15,17 @@ class TouiteurWriterRepository extends TouiteurRepository {
      *=============================================**/
 
     public function followUser(int $followerId, int $followedId): void {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             INSERT INTO follow (follower_id, followed_id) VALUES (:follower_id, :followed_id);
-        SQL);
-
-        $stmt->execute(['follower_id' => $followerId, 'followed_id' => $followedId]);
+        SQL, ['follower_id' => $followerId, 'followed_id' => $followedId]);
     }
 
     public function unfollowUser(int $followerId, int $followedId): void {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             DELETE FROM follow
             WHERE follower_id = :follower_id
             AND followed_id = :followed_id;
-        SQL);
-
-        $stmt->execute(['follower_id' => $followerId, 'followed_id' => $followedId]);
+        SQL, ['follower_id' => $followerId, 'followed_id' => $followedId]);
     }
 
     /**============================================
@@ -37,21 +33,17 @@ class TouiteurWriterRepository extends TouiteurRepository {
      *=============================================**/
 
     public function followTag(int $userId, int $tagId): void {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             INSERT INTO users2tag (users_id, tag_id) VALUES (:user_id, :tag_id);
-        SQL);
-
-        $stmt->execute(['user_id' => $userId, 'tag_id' => $tagId]);
+        SQL, ['user_id' => $userId, 'tag_id' => $tagId]);
     }
 
     public function unfollowTag(int $userId, int $tagId): void {
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             DELETE FROM users2tag
             WHERE users_id = :user_id
             AND tag_id = :tag_id;
-        SQL);
-
-        $stmt->execute(['user_id' => $userId, 'tag_id' => $tagId]);
+        SQL, ['user_id' => $userId, 'tag_id' => $tagId]);
     }
 
     /**============================================
@@ -60,31 +52,24 @@ class TouiteurWriterRepository extends TouiteurRepository {
 
     public function noteTouite(int $userId, int $touiteId, TypeNote $state) {
         if ($state === TypeNote::annuler) {
-            $stmt = $this->pdo->prepare(<<<SQL
+            $this->updateRequest(<<<SQL
                 DELETE FROM note2touite
                 WHERE users_id = :user_id
                 AND touite_id = :touite_id
-            SQL);
-
-            $stmt->execute(['user_id' => $userId, 'touite_id' => $touiteId]);
-            return;
+            SQL, ['user_id' => $userId, 'touite_id' => $touiteId]);
+        } else {
+            $this->updateRequest(<<<SQL
+                INSERT INTO note2touite (users_id, touite_id, state)
+                VALUES (:user_id, :touite_id, :state)
+                ON DUPLICATE KEY UPDATE state = VALUES(state)
+            SQL, ['user_id' => $userId, 'touite_id' => $touiteId, 'state' => $state->getNote()]);
         }
-
-        $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO note2touite (users_id, touite_id, state)
-            VALUES (:user_id, :touite_id, :state)
-            ON DUPLICATE KEY UPDATE state = VALUES(state)
-        SQL);
-
-        $stmt->execute(['user_id' => $userId, 'touite_id' => $touiteId, 'state' => $state->getNote()]);
     }
 
     public function addTouite(Touite $touite, int $userId): Touite {
-        $stmt = $this->pdo->prepare(<<<SQL
-            INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :posted_at, :user_id)
-        SQL);
-
-        $stmt->execute(['content' => $touite->getContent(), 'note' => 0, 'media_path' => $touite->getMediaPath(), 'media_desc' => $touite->getMediaDescription(), 'posted_at' => $touite->getPostedAt(), 'user_id' => $userId]);
+        $this->updateRequest(<<<SQL
+                INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :posted_at, :user_id)
+        SQL, ['content' => $touite->getContent(), 'note' => 0, 'media_path' => $touite->getMediaPath(), 'media_desc' => $touite->getMediaDescription(), 'posted_at' => $touite->getPostedAt(), 'user_id' => $userId]);
 
         $touite->setId($this->pdo->lastInsertId());
 
@@ -94,39 +79,30 @@ class TouiteurWriterRepository extends TouiteurRepository {
     public function addTouiteTag(Tag $tag, int $touiteId): void {
         $tagId = $tag->getId();
         if ($tagId === null) {
-            $stmt = $this->pdo->prepare(<<<SQL
+            $this->updateRequest(<<<SQL
                 INSERT INTO tag (libelle, description) VALUES (:nom, :desc);
-            SQL);
+            SQL, ['nom' => $tag->getLibelle(), 'desc' => $tag->getDescription()]);
 
-            $stmt->execute(['nom' => $tag->getLibelle(), 'desc' => $tag->getDescription()]);
-            $tagId = (int) $this->pdo->lastInsertId();
+            $tagId = $this->pdo->lastInsertId();
         }
 
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             INSERT INTO tag2touite (touite_id, tag_id) VALUES (:touite_id, :tag_id);
-        SQL);
-
-        $stmt->execute(['touite_id' => $touiteId, 'tag_id' => $tagId]);
+        SQL, ['touite_id' => $touiteId, 'tag_id' => $tagId]);
     }
 
     public function deleteTouite(Touite $touite) {
-        $stmt = $this->pdo->prepare(<<<SQL
-            DELETE FROM tag2touite WHERE touite_id = :touite_id;
-        SQL);
-
-        $stmt->execute(['touite_id' => $touite->getId()]);
-
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             DELETE FROM note2touite WHERE touite_id = :touite_id;
-        SQL);
+        SQL, ['touite_id' => $touite->getId()]);
 
-        $stmt->execute(['touite_id' => $touite->getId()]);
+        $this->updateRequest(<<<SQL
+            DELETE FROM tag2touite WHERE touite_id = :touite_id;
+        SQL, ['touite_id' => $touite->getId()]);
 
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             DELETE FROM touite WHERE id = :touite_id;
-        SQL);
-
-        $stmt->execute(['touite_id' => $touite->getId()]);
+        SQL, ['touite_id' => $touite->getId()]);
     }
 
     /**============================================
@@ -149,10 +125,8 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $prenom = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $password = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $this->pdo->prepare(<<<SQL
+        $this->updateRequest(<<<SQL
             INSERT INTO users (email, passwd, nom, prenom, counter_touite) VALUES (:email, :password, :nom, :prenom, 0)
-        SQL);
-
-        $stmt->execute(['email' => $email, 'password' => $password, 'nom' => $nom, 'prenom' => $prenom]);
+        SQL, ['email' => $email, 'password' => $password, 'nom' => $nom, 'prenom' => $prenom]);
     }
 }
