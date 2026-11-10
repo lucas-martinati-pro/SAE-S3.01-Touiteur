@@ -133,18 +133,19 @@ public static function profileColor(int $userId): string {
     public static function subscriptionButton(
         int $userId,
         bool $isSubscribed,
-        string $action = 'subscribe',
+        string $type = 'user',
         string $buttonClass = 'btn btn-sm'
     ): string {
-        $type = $isSubscribed ? 'unsub' : 'sub';
+        $state = $isSubscribed ? 'unsub' : 'sub';
         $label = $isSubscribed ? 'Abonné' : "S'abonner";
         $variant = $isSubscribed ? 'outline-primary' : 'primary';
-        $action = htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
+        $type = htmlspecialchars($type, ENT_QUOTES, 'UTF-8');
         $buttonClass = htmlspecialchars($buttonClass, ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
-            <form method="POST" action="?action={$action}">
-                <input type="hidden" name="state" value="{$type}">
+            <form method="POST" action="?action=subscribe">
+                <input type="hidden" name="state" value="{$state}">
+                <input type="hidden" name="type" value="{$type}">
                 <input type="hidden" name="id" value="{$userId}">
                 <button type="submit" class="{$buttonClass} btn-{$variant}">{$label}</button>
             </form>

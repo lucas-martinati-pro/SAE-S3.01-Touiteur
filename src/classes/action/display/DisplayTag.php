@@ -35,7 +35,7 @@ class DisplayTag extends Action {
         $subTagBtn = HtmlHelper::subscriptionButton(
             $id,
             $r->isFollowingTag($this->user['id'], $id),
-            'subscribeTag',
+            'tag',
             'btn btn-sm rounded-pill ms-auto'
         );
 
