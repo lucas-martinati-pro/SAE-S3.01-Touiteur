@@ -239,7 +239,7 @@ public static function profileColor(int $userId): string {
 
         return <<<HTML
             <nav class="feed-pagination" aria-label="{$ariaLabel}">
-                <a class="btn btn-outline-secondary"{$previousAttributes} href="action={$action}&page={$previous}">
+                <a class="btn btn-outline-secondary"{$previousAttributes} href="?action={$action}&page={$previous}">
                     <i class="bi bi-chevron-left" aria-hidden="true"></i>
                     Page précédente
                 </a>
