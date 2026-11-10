@@ -10,7 +10,6 @@ use Override;
  * Action pour s'abonner ou se desabonner
  */
 class SubscribeAction extends Action {
-
     #[Override]
     public function post(): string {
         $id = $_POST['id'] ?? null;
@@ -19,7 +18,7 @@ class SubscribeAction extends Action {
         // redirection si l'id est null
         if (!$id) {
             header('Location: ?action=feed');
-        exit;
+            exit;
         }
 
         $w = RepositoryFactory::getWriter();

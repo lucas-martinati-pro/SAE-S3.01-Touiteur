@@ -34,7 +34,7 @@ class DisplayProfile extends Action {
         };
 
         $details = $r->findUserById($id);
-        if (!$details) {
+        if (empty($details)) {
             return HtmlHelper::notFound('Profil', 'Le profil demandé est introuvable.');
         }
 
