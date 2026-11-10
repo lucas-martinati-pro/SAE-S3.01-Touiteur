@@ -36,7 +36,9 @@ class TouiteurRepository {
         $this->bindParameters($stmt, $parameters);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result === false ? null : $result;
     }
 
     protected function fetchAll(string $sql, array $parameters = []): array {
