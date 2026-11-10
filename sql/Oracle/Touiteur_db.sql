@@ -84,7 +84,7 @@ ALTER TABLE note2touite ADD CONSTRAINT chk_note_bool CHECK (state IN (-1, 1));
 -- Déclencheurs PL/SQL
 -- Mettre à jour le nombre de touites d’un utilisateur lorsqu’un touite est créé :
 CREATE OR REPLACE TRIGGER count_touite_users_insert
-AFTER INSERT OR UPDATE OR DELETE ON touite
+AFTER INSERT OR UPDATE ON touite
 FOR EACH ROW
 BEGIN
     UPDATE users
@@ -153,7 +153,7 @@ END;
 
 -- Triggers persos :
 -- Triggers permettant de mettre à jour automatiquement les notes d'un touites lors de l'ajout d'une note
-CREATE OR REPLACE TRIGGER update_note
+CREATE OR REPLACE TRIGGER update_note_insert
 AFTER INSERT OR UPDATE ON note2touite
 FOR EACH ROW
 DECLARE
@@ -164,7 +164,7 @@ BEGIN
     WHERE touite_id = :NEW.touite_id;
 END;
 
-CREATE OR REPLACE TRIGGER update_note
+CREATE OR REPLACE TRIGGER update_note_delete
 AFTER DELETE ON note2touite
 FOR EACH ROW
 DECLARE
