@@ -29,6 +29,10 @@ class Feed implements Iterator {
         return empty($this->touites);
     }
 
+    public function getLength(): int {
+        return count($this->touites);
+    }
+
     /**========================================================================
      * METHODES ITERATOR
      *========================================================================**/
