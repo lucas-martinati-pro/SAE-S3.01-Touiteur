@@ -249,12 +249,16 @@ public static function profileColor(int $userId): string {
         $returnQuery = htmlspecialchars(http_build_query($_GET ?: ['action' => 'feed']), ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
-            <form method="POST" action="?action=like&id={$touiteId}&type={$likeType}">
+            <form method="POST" action="?action=like">
+                <input type="hidden" name="id" value="{$touiteId}">
+                <input type="hidden" name="type" value="{$likeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
                 <button type="submit" class="touite-like {$likeClass}" aria-label="J'aime" aria-pressed="{$likePressed}"><i class="bi {$likeIcon}" aria-hidden="true"></i></button>
             </form>
             {$noteHtml}
-            <form method="POST" action="?action=like&id={$touiteId}&type={$dislikeType}">
+            <form method="POST" action="?action=like">
+                <input type="hidden" name="id" value="{$touiteId}">
+                <input type="hidden" name="type" value="{$dislikeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
                 <button type="submit" class="touite-dislike {$dislikeClass}" aria-label="Je n'aime pas" aria-pressed="{$dislikePressed}"><i class="bi {$dislikeIcon}" aria-hidden="true"></i></button>
             </form>
