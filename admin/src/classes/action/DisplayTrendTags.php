@@ -22,7 +22,7 @@ class DisplayTrendTags extends Action {
 
         $tags = $r->findTrendingTags();
 
-        if (!$tags) {
+        if (empty($tags)) {
             return $header
                 . '<div class="followed-tags-empty">'
                 . HtmlHelper::alert('info', 'Il n\'y a aucun tag')

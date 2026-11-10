@@ -25,8 +25,7 @@ class AuthnProvider {
 
         $user = $r->findUserByEmail(filter_var($email, FILTER_SANITIZE_EMAIL));
 
-        // Faire !$user au cas où user vaux false
-        if (!$user || !password_verify($password, $user['passwd'])) {
+        if (empty($user) || !password_verify($password, $user['passwd'])) {
             throw new AuthnException('Auth error : invalid credentials');
         }
         $_SESSION['user'] = serialize($user);

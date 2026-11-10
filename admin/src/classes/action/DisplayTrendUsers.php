@@ -22,7 +22,7 @@ class DisplayTrendUsers extends Action {
 
         $users = $r->findTrendingUsers();
 
-        if ($users === null || empty($users)) {
+        if (empty($users)) {
             return $header
                 . '<div class="followed-tags-empty">'
                 . HtmlHelper::alert('info', 'Il n\'y a aucun utilisateur')

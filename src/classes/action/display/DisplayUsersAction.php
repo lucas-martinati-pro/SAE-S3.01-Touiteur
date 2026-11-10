@@ -31,7 +31,7 @@ class DisplayUsersAction extends Action {
             default => $r->findFollowedByUserId($id),
         };
 
-        if ($users === null || empty($users)) {
+        if (empty($users)) {
             return $header . match ($type) {
                 'followers' => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n’a aucun abonné.') . '</div>',
                 default => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur ne suit personne.') . '</div>',

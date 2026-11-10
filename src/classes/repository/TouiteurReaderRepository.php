@@ -183,7 +183,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             WHERE id = :id;
         SQL, ['id' => $id]);
 
-        if (!$result) return null;
+        if (empty($result)) return null;
 
         return $this->rowToTouite($result);
     }
@@ -217,7 +217,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
                 WHERE libelle = :libelle
         SQL, ['libelle' => $libelle]);
 
-        if (!$result) return null;
+        if (empty($result)) return null;
 
         return $this->rowToTag($result);
     }
@@ -243,7 +243,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             WHERE id = :id;
         SQL, ['id' => $id]);
 
-        if (!$result) return null;
+        if (empty($result)) return null;
 
         return $this->rowToTag($result);
     }
@@ -309,9 +309,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             WHERE touite.users_id = :user_id
         SQL, ['user_id' => $userId]);
 
-        if (!$result) {
-            return 0.0;
-        }
+        if (empty($result)) return 0.0;
 
         return (float) $result[0]['moyenne'];
     }
