@@ -50,7 +50,7 @@ class TouiteurWriterRepository extends TouiteurRepository {
      * GESTION DES TOUITES
      *=============================================**/
 
-    public function noteTouite(int $userId, int $touiteId, TypeNote $state) {
+    public function noteTouite(int $userId, int $touiteId, TypeNote $state): void {
         if ($state === TypeNote::annuler) {
             $this->updateRequest(<<<SQL
                 DELETE FROM note2touite
@@ -91,7 +91,7 @@ class TouiteurWriterRepository extends TouiteurRepository {
         SQL, ['touite_id' => $touiteId, 'tag_id' => $tagId]);
     }
 
-    public function deleteTouite(Touite $touite) {
+    public function deleteTouite(Touite $touite): void {
         $this->updateRequest(<<<SQL
             DELETE FROM note2touite WHERE touite_id = :touite_id;
         SQL, ['touite_id' => $touite->getId()]);

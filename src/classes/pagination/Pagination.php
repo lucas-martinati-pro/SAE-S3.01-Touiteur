@@ -29,7 +29,7 @@ class Pagination {
         return $this->isLastPage;
     }
 
-    public function setIsLastPage(int $length) {
+    public function setIsLastPage(int $length): void {
         $this->isLastPage = $length < $this->getLimit();
     }
 
