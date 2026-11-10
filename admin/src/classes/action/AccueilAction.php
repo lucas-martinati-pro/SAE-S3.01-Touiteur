@@ -15,12 +15,35 @@ class AccueilAction extends Action {
 
     #[Override]
     public function get(): string {
-        $tagsButton = HtmlHelper::linkButton('Tags populaires', '?action=trendTags', 'bi-hash');
-        $usersButton = HtmlHelper::linkButton('Utilisateurs populaires', '?action=trendUsers', 'bi-people');
-
-        return HtmlHelper::title('Administration', 'bi-speedometer2')
-            . '<p>Bienvenue dans le back-office de Touiteur.</p>'
-            . '<div class="d-flex gap-2">' . $tagsButton . $usersButton . '</div>';
+        return <<<HTML
+            <header class="feed-header">
+                <div class="feed-heading">
+                    <h1>Administration</h1>
+                    <i class="bi bi-shield-lock-fill text-primary" aria-hidden="true"></i>
+                </div>
+            </header>
+            <section class="tag-intro" aria-label="Bienvenue">
+                <p class="tag-description">Bienvenue dans le back-office de Touiteur. Consultez les tendances de la communauté.</p>
+            </section>
+            <nav class="followed-tags" aria-label="Outils d’administration">
+                <a href="?action=trendTags" class="followed-tag">
+                    <span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-hash"></i></span>
+                    <span class="followed-tag-label">
+                        <span class="d-block">Tags populaires</span>
+                        <span class="text-secondary small fw-normal">Les sujets les plus présents dans les touites</span>
+                    </span>
+                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
+                </a>
+                <a href="?action=trendUsers" class="followed-tag">
+                    <span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-people"></i></span>
+                    <span class="followed-tag-label">
+                        <span class="d-block">Utilisateurs populaires</span>
+                        <span class="text-secondary small fw-normal">Les membres qui rassemblent le plus d’abonnés</span>
+                    </span>
+                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
+                </a>
+            </nav>
+        HTML;
     }
 
     #[Override]
