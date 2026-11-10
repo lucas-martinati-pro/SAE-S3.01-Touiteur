@@ -79,7 +79,7 @@ class AdminDispatcher {
                 <body>
                     <div class="app-layout" id="swup">
                         <aside class="sidebar">
-                            <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php">
+                            <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php" aria-label="Administration">
                                 <img src="../image/favicon-admin.png" alt="" width="28" height="28" class="me-2">
                                 <span class="logo-word">Touiteur - Admin</span>
                             </a>
@@ -140,19 +140,19 @@ class AdminDispatcher {
         $sidebarLinks = <<<HTML
             <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="bi bi-speedometer2 me-1"></i>Administration
+                    <li class="nav-item nav-admin-home">
+                        <a class="nav-link" href="index.php" aria-label="Administration">
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i><span>Administration</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=trendTags">
-                            <i class="bi bi-hash me-1"></i>Tags populaires
+                        <a class="nav-link" href="?action=trendTags" aria-label="Tags populaires">
+                            <i class="bi bi-hash" aria-hidden="true"></i><span>Tags populaires</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=trendUsers">
-                            <i class="bi bi-people me-1"></i>Utilisateurs populaires
+                        <a class="nav-link" href="?action=trendUsers" aria-label="Utilisateurs populaires">
+                            <i class="bi bi-people" aria-hidden="true"></i><span>Utilisateurs</span>
                         </a>
                     </li>
                 </ul>
@@ -168,9 +168,9 @@ class AdminDispatcher {
         HTML;
 
         $btnSitePublic = <<<HTML
-            <a href="../index.php" class="btn btn-outline-primary w-100 mb-2">
+            <a href="../index.php" class="btn btn-outline-primary w-100 mb-2 sidebar-public-link" aria-label="Site public">
                 <i class="bi bi-house-door-fill" aria-hidden="true"></i>
-                Site public
+                <span>Site public</span>
             </a>
         HTML;
 
@@ -184,8 +184,8 @@ class AdminDispatcher {
             $accountArea = <<<HTML
                 {$btnSitePublic}
                 <div class="sidebar-user">
-                    <a class="sidebar-avatar-link" href="../index.php?action=profile&id={$userId}"
-                       aria-label="Voir mon profil">{$profileAvatar}</a>
+                    <a class="sidebar-avatar-link sidebar-profile-link" href="../index.php?action=profile&id={$userId}"
+                       aria-label="Voir mon profil"><span>{$profileAvatar}</span><span class="sidebar-profile-label">Profil</span></a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
                         <i class="bi bi-box-arrow-right"></i>
@@ -196,13 +196,13 @@ class AdminDispatcher {
             $accountArea = <<<HTML
                 {$btnSitePublic}
                 <div class="sidebar-user guest-user">
-                    <a class="btn btn-outline-primary" href="?action=signin">
+                    <a class="btn btn-outline-primary mobile-nav-auth" href="?action=signin" aria-label="Se connecter">
                         <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-                        Se connecter
+                        <span>Connexion</span>
                     </a>
-                    <a class="btn btn-primary" href="?action=register">
+                    <a class="btn btn-primary mobile-nav-auth" href="?action=register" aria-label="Créer un compte">
                         <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
-                        Créer un compte
+                        <span>Inscription</span>
                     </a>
                 </div>
             HTML;
