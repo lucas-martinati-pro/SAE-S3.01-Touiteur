@@ -35,12 +35,7 @@ class DisplayProfile extends Action {
 
         $details = $r->findUserById($id);
         if (!$details) {
-            return HtmlHelper::formError(
-                errors: 'Le profil demandé est introuvable.',
-                backUrl: '?action=feed',
-                backLabel: "Retour à l'accueil",
-                title: 'Profil introuvable'
-            );
+            return HtmlHelper::notFound('Profil', 'Le profil demandé est introuvable.');
         }
 
         $nbTouite = (int) ($details['counter_touite'] ?? 0);
@@ -61,24 +56,12 @@ class DisplayProfile extends Action {
 
         $subBtn = '';
 
-        if ($id !== $userId) {
-            if ($r->isFollowingUser($id, $userId)) {
-                    $subBtn = <<<HTML
-                    <form method="POST" action="?action=subscribe">
-                        <input type="hidden" name="type" value="unsub">
-                        <input type="hidden" name="id" value="{$id}">
-                        <button type="submit" class="btn btn-outline-primary profile-button">Abonné</button>
-                    </form>
-                HTML;
-            } else {
-                $subBtn = <<<HTML
-                    <form method="POST" action="?action=subscribe">
-                        <input type="hidden" name="type" value="sub">
-                        <input type="hidden" name="id" value="{$id}">
-                        <button type="submit" class="btn btn-primary profile-button">S'abonner</button>
-                    </form>
-                HTML;
-            }
+        if ((int) $id !== (int) $userId) {
+            $subBtn = HtmlHelper::subscriptionButton(
+                $id,
+                $r->isFollowingUser($id, $userId),
+                buttonClass: 'btn profile-button'
+            );
         }
 
         $tabs = [
@@ -88,15 +71,7 @@ class DisplayProfile extends Action {
 
         $tabsHtml = HtmlHelper::tabs($tabs, $type, 'profile', ['id' => $id]);
 
-        $backLink = HtmlHelper::backLink('?action=feed');
-        $page = <<<HTML
-            <header class="feed-header detail-header">
-                {$backLink}
-                <div>
-                    <h1 class="mb-0 fw-bold" style="font-size: 1.25rem; line-height: 1.2;">{$completeName}</h1>
-                    <div class="text-secondary small" style="font-size: .8rem;">{$touiteLabel}</div>
-                </div>
-            </header>
+        $page = HtmlHelper::detailHeader($rawName, '?action=feed', '', $touiteLabel) . <<<HTML
             <section class="profile-header">
                 <div class="profile-cover {$profileColor}"></div>
                 <div class="profile-main">

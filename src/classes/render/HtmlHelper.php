@@ -130,16 +130,77 @@ public static function profileColor(int $userId): string {
         return "<div class=\"{$class} {$color}\">{$initial}</div>";
     }
 
-    public static function subscriptionButton(int $userId, bool $isSubscribed): string {
+    public static function subscriptionButton(
+        int $userId,
+        bool $isSubscribed,
+        string $action = 'subscribe',
+        string $buttonClass = 'btn btn-sm'
+    ): string {
         $type = $isSubscribed ? 'unsub' : 'sub';
         $label = $isSubscribed ? 'Abonné' : "S'abonner";
         $variant = $isSubscribed ? 'outline-primary' : 'primary';
+        $action = htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
+        $buttonClass = htmlspecialchars($buttonClass, ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
-            <form method="POST" action="?action=subscribe">
+            <form method="POST" action="?action={$action}">
                 <input type="hidden" name="type" value="{$type}">
                 <input type="hidden" name="id" value="{$userId}">
-                <button type="submit" class="btn btn-sm btn-{$variant}">{$label}</button>
+                <button type="submit" class="{$buttonClass} btn-{$variant}">{$label}</button>
+            </form>
+        HTML;
+    }
+
+    /**
+     * Génère une ligne cliquable cohérente pour une liste (tag, profil ou raccourci).
+     * $leadingHtml est du HTML de présentation généré par l'application, par exemple un avatar.
+     */
+    public static function listLink(string $url, string $leadingHtml, string $title, string $subtitle = '', string $meta = ''): string {
+        $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+        $title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+        $subtitle = htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8');
+        $meta = htmlspecialchars($meta, ENT_QUOTES, 'UTF-8');
+        $subtitleHtml = $subtitle !== ''
+            ? "<span class=\"d-block text-secondary small fw-normal\">{$subtitle}</span>"
+            : '';
+        $metaHtml = $meta !== ''
+            ? "<span class=\"d-block text-secondary small fw-normal\">{$meta}</span>"
+            : '';
+
+        return <<<HTML
+            <a href="{$url}" class="followed-tag">
+                {$leadingHtml}
+                <span class="followed-tag-label">
+                    <span class="d-block">{$title}</span>
+                    {$subtitleHtml}
+                    {$metaHtml}
+                </span>
+                <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
+            </a>
+        HTML;
+    }
+
+    public static function searchForm(string $action, string $value = '', string $placeholder = 'Rechercher un touite'): string {
+        $action = htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
+        $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        $placeholder = htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8');
+
+        return <<<HTML
+            <form method="post" action="{$action}" class="search-form mb-3" role="search">
+                <label for="search" class="visually-hidden">{$placeholder}</label>
+                <input
+                    type="search"
+                    name="search"
+                    id="search"
+                    value="{$value}"
+                    class="form-control search-input"
+                    placeholder="{$placeholder}"
+                    aria-label="{$placeholder}"
+                    required
+                >
+                <button type="submit" class="search-button" aria-label="Rechercher">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                </button>
             </form>
         HTML;
     }
@@ -212,6 +273,9 @@ public static function profileColor(int $userId): string {
     }
 
     public static function backLink(string $url = '?action=feed', string $label = 'Retour au feed'): string {
+        $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+        $label = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
+
         return <<<HTML
             <a class="back-link" href="{$url}" aria-label="{$label}">
                 <i class="bi bi-arrow-left" aria-hidden="true"></i>
@@ -219,13 +283,24 @@ public static function profileColor(int $userId): string {
         HTML;
     }
 
-    public static function detailHeader(string $title, string $backUrl = '?action=feed'): string {
+    public static function detailHeader(
+        string $title,
+        string $backUrl = '?action=feed',
+        string $trailingContent = '',
+        string $subtitle = ''
+    ): string {
         $backLink = self::backLink($backUrl);
+        $title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+        $subtitle = htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8');
+        $titleContent = $subtitle === ''
+            ? "<h1>{$title}</h1>"
+            : "<div><h1 class=\"mb-0 fw-bold\">{$title}</h1><span class=\"text-secondary small\">{$subtitle}</span></div>";
 
         return <<<HTML
             <header class="feed-header detail-header">
                 {$backLink}
-                <h1>{$title}</h1>
+                {$titleContent}
+                {$trailingContent}
             </header>
         HTML;
     }
@@ -463,10 +538,27 @@ public static function profileColor(int $userId): string {
      * @param string $backLabel Libellé du bouton d'action suivante (défaut: 'Retour à mon feed').
      * @return string Balises HTML de la page de confirmation de succès.
      */
-    public static function successPage(string $title = 'Opération réussie', string $message = "L'opération s'est déroulée avec succès.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
+    public static function successPage(
+        string $title = 'Opération réussie',
+        string $message = "L'opération s'est déroulée avec succès.",
+        string $backUrl = '?action=feed',
+        string $backLabel = 'Retour à mon feed',
+        string $secondaryUrl = '',
+        string $secondaryLabel = ''
+    ): string {
         $alert = self::alert('success', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/check-circle-fill/
         $titleHtml = self::title($title, 'bi-check-circle-fill', 'text-success');
+        $secondaryAction = '';
+        if ($secondaryUrl !== '' && $secondaryLabel !== '') {
+            $secondaryUrl = htmlspecialchars($secondaryUrl, ENT_QUOTES, 'UTF-8');
+            $secondaryLabel = htmlspecialchars($secondaryLabel, ENT_QUOTES, 'UTF-8');
+            $secondaryAction = <<<HTML
+                <a class="btn btn-secondary ms-2 d-inline-flex align-items-center" href="{$secondaryUrl}">
+                    {$secondaryLabel}
+                </a>
+            HTML;
+        }
 
         return <<<HTML
             {$titleHtml}
@@ -477,6 +569,7 @@ public static function profileColor(int $userId): string {
                     <i class="bi bi-arrow-left me-2"></i>
                     {$backLabel}
                 </a>
+                {$secondaryAction}
             </p>
         HTML;
     }

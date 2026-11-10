@@ -26,46 +26,20 @@ class DisplayTag extends Action {
         $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);
         if ($tag === null) {
-            return HtmlHelper::errorPage(
-                title: 'Tag introuvable',
-                message: 'Le tag demandé est introuvable.',
-                backUrl: '?action=feed',
-                backLabel: "Retour à l'accueil"
-            );
+            return HtmlHelper::notFound('Tag', 'Le tag demandé est introuvable.');
         }
         $tagLabel = $tag->getLibelle();
         $tagDescription = $tag->getDescription();
-        $escapedTagLabel = htmlspecialchars($tagLabel, ENT_QUOTES, 'UTF-8');
         $escapedTagDescription = htmlspecialchars($tagDescription, ENT_QUOTES, 'UTF-8');
 
-        $subTagBtn = '';
+        $subTagBtn = HtmlHelper::subscriptionButton(
+            $id,
+            $r->isFollowingTag($this->user['id'], $id),
+            'subscribeTag',
+            'btn btn-sm rounded-pill ms-auto'
+        );
 
-        if ($r->isFollowingTag($this->user['id'], $id)) {
-            $subTagBtn = <<<HTML
-                <form method="POST" action="?action=subscribeTag" class="ms-auto">
-                    <input type="hidden" name="type" value="unsub">
-                    <input type="hidden" name="id" value="{$id}">
-                    <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Abonné</button>
-                </form>
-            HTML;
-        } else {
-            $subTagBtn = <<<HTML
-                <form method="POST" action="?action=subscribeTag" class="ms-auto">
-                    <input type="hidden" name="type" value="sub">
-                    <input type="hidden" name="id" value="{$id}">
-                    <button type="submit" class="btn btn-sm btn-primary rounded-pill">S'abonner</button>
-                </form>
-            HTML;
-        }
-
-        $page = <<< HTML
-            <header class="feed-header detail-header d-flex align-items-center">
-                <a class="back-link" href="?action=feed" aria-label="Retour au feed">
-                    <i class="bi bi-arrow-left"></i>
-                </a>
-                <h1 class="mb-0">#{$escapedTagLabel}</h1>
-                {$subTagBtn}
-            </header>
+        $page = HtmlHelper::detailHeader("#{$tagLabel}", '?action=feed', $subTagBtn) . <<<HTML
             <section class="tag-intro">
                 <p class="tag-description">{$escapedTagDescription}</p>
             </section>

@@ -15,21 +15,44 @@ class AccueilAction extends Action {
 
     #[Override]
     public function get(): string {
-        $tagsButton = HtmlHelper::linkButton('Tags populaires', '?action=trendTags', 'bi-hash');
-        $usersButton = HtmlHelper::linkButton('Utilisateurs populaires', '?action=trendUsers', 'bi-people');
+        $tagsIcon = '<span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-hash"></i></span>';
+        $usersIcon = '<span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-people"></i></span>';
+        $tagsLink = HtmlHelper::listLink(
+            '?action=trendTags',
+            $tagsIcon,
+            'Tags populaires',
+            'Les sujets les plus présents dans les touites'
+        );
+        $usersLink = HtmlHelper::listLink(
+            '?action=trendUsers',
+            $usersIcon,
+            'Utilisateurs populaires',
+            'Les membres qui rassemblent le plus d’abonnés'
+        );
 
-        return HtmlHelper::title('Administration', 'bi-speedometer2')
-            . '<p>Bienvenue dans le back-office de Touiteur.</p>'
-            . '<div class="d-flex gap-2">' . $tagsButton . $usersButton . '</div>';
+        return <<<HTML
+            <header class="feed-header">
+                <div class="feed-heading">
+                    <h1>Administration</h1>
+                    <i class="bi bi-shield-lock-fill text-primary" aria-hidden="true"></i>
+                </div>
+            </header>
+            <section class="tag-intro" aria-label="Bienvenue">
+                <p class="tag-description">Bienvenue dans le back-office de Touiteur. Consultez les tendances de la communauté.</p>
+            </section>
+            <nav class="followed-tags" aria-label="Outils d’administration">
+                {$tagsLink}
+                {$usersLink}
+            </nav>
+        HTML;
     }
 
     #[Override]
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
-            return HtmlHelper::errorPage(
-                title: 'Accès refusé',
+            return HtmlHelper::forbidden(
                 message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
-                backUrl: 'index.php',
+                backUrl: '../index.php',
                 backLabel: "Retour à l'accueil"
             );
         }
