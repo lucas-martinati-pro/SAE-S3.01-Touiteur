@@ -109,6 +109,15 @@ class TouiteurWriterRepository extends TouiteurRepository {
         $stmt->execute(['touite_id' => $touiteId, 'tag_id' => $tagId]);
     }
 
+    public function deleteTouite(Touite $touite) {
+        $stmt = $this->pdo->prepare(<<<SQL
+            DELETE FROM tag2touite WHERE touite_id = :touite_id;
+            DELETE FROM touite WHERE id = :touite_id;
+        SQL);
+
+        $stmt->execute(['touite_id' => $touite->getId()]);
+    }
+
     /**============================================
      *               GESTION DE L'AUTH
      *=============================================**/
