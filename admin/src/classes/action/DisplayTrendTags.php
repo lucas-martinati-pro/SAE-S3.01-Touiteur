@@ -2,7 +2,6 @@
 
 namespace iutnc\touiteur\admin\action;
 
-use \iutnc\touiteur\tag\Tag;
 use iutnc\touiteur\auth\AuthnProvider;
 use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\action\Action;
@@ -23,32 +22,44 @@ class DisplayTrendTags extends Action {
 
         $tags = $r->findTrendingTags();
 
-        if ($tags === null || empty($tags)) {
+        if (!$tags) {
             return $header
                 . '<div class="followed-tags-empty">'
                 . HtmlHelper::alert('info', 'Il n\'y a aucun tag')
                 . '</div>';
         }
 
-         $items = '';
+        $items = '';
         foreach ($tags as $tag) {
-            $libelle = $tag['libelle'];
-            $descr = $tag['description'];
-            $id = $tag['id'];
-            $nbAparition = $tag['nbAparition'];
+            $libelle = htmlspecialchars($tag['libelle'], ENT_QUOTES, 'UTF-8');
+            $descr = htmlspecialchars($tag['description'] ?? '', ENT_QUOTES, 'UTF-8');
+            $id = (int) $tag['id'];
+            $nbAparition = (int) $tag['nbAparition'];
+            $appearanceLabel = $nbAparition > 1 ? 'apparitions' : 'apparition';
+            $descrHtml = $descr !== ''
+                ? "<div class=\"text-secondary small fw-normal\">{$descr}</div>"
+                : '';
 
             $items .= <<<HTML
                 <a href="../index.php?action=tag&id={$id}" class="followed-tag">
-                    $libelle;
-                    $descr;
-                    $id;
-                    $nbAparition;
+                    <span class="followed-tag-icon" aria-hidden="true">
+                        <i class="bi bi-hash"></i>
+                    </span>
+                    <div class="followed-tag-label">
+                        <div class="fw-bold">#{$libelle}</div>
+                        {$descrHtml}
+                        <div class="text-secondary small fw-normal">
+                            <i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>
+                            {$nbAparition} {$appearanceLabel}
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
                 </a>
             HTML;
         }
 
         return $header . <<<HTML
-            <section class="followed-tags" aria-label="Influenceurs">
+            <section class="followed-tags" aria-label="Tags les plus populaires">
                 {$items}
             </section>
         HTML;

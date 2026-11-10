@@ -12,7 +12,7 @@ use iutnc\touiteur\tag\Tag;
  */
 class TouiteurReaderRepository extends TouiteurRepository {
     static $limitTrendTag = 200;
-    
+
     /**============================================
      * CREATIONS DES TOUITES/TAGS
      *=============================================**/
@@ -362,8 +362,8 @@ class TouiteurReaderRepository extends TouiteurRepository {
      * GESTION DES PANELS ADMIN
      *=============================================**/
 
-    public function findTrendingUsers(): ?array {
-        $result = $this->fetchAll(<<<SQL
+    public function findTrendingUsers(): array {
+        return $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom, COUNT(follow.follower_id) AS nbFol, counter_touite
             FROM users
             INNER JOIN follow on users.id = follow.followed_id
@@ -371,14 +371,10 @@ class TouiteurReaderRepository extends TouiteurRepository {
             ORDER BY nbFol DESC
             LIMIT 200
         SQL);
-
-        if (!$result) return null;
-
-        return $result;
     }
 
-        public function findTrendingTags(): ?array {
-        $result = $this->fetchAll(<<<SQL
+        public function findTrendingTags(): array {
+        return $this->fetchAll(<<<SQL
             SELECT tag.id, libelle, description, COUNT(tag2touite.tag_id) AS nbAparition
             FROM tag
             INNER JOIN tag2touite on tag2touite.tag_id = tag.id
@@ -386,10 +382,6 @@ class TouiteurReaderRepository extends TouiteurRepository {
             ORDER BY nbAparition DESC
             LIMIT :limit
         SQL, ['limit' => self::$limitTrendTag]);
-
-        if (!$result) return null;
-
-        return $result;
     }
 
     /**============================================
