@@ -195,7 +195,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
     /**
      * @return Tag[] Touts les tags
      */
-    public function findAllTags(int $limit = 1844674407370955161): ?array {
+    public function findAllTags(int $limit = 1844674407370955161): array {
         if ($limit < 0) $limit = 0;
 
         $result = $this->fetchAll(<<<SQL
@@ -206,8 +206,6 @@ class TouiteurReaderRepository extends TouiteurRepository {
             ORDER BY COUNT(users_id) DESC, tag.id ASC
             LIMIT :limit;
         SQL, ['limit' => $limit]);
-
-        if (!$result) return null;
 
         return $this->rowsToTags($result);
     }
@@ -227,15 +225,13 @@ class TouiteurReaderRepository extends TouiteurRepository {
     /**
      * @return Tag[]
      */
-    public function findAllFollowedTagByUserId(int $userId): ?array {
+    public function findAllFollowedTagByUserId(int $userId): array {
         $result = $this->fetchAll(<<<SQL
             SELECT tag.*
             FROM tag
             INNER JOIN users2tag on users2tag.tag_id = tag.id
             WHERE users2tag.users_id = :user_id
         SQL, ['user_id' => $userId]);
-
-        if (!$result) return null;
 
         return $this->rowsToTags($result);
     }
@@ -255,15 +251,13 @@ class TouiteurReaderRepository extends TouiteurRepository {
     /**
      * @return Tag[]
      */
-    public function findTagsByTouiteId(int $id): ?array {
+    public function findTagsByTouiteId(int $id): array {
         $result = $this->fetchAll(<<<SQL
             SELECT tag.*
             FROM tag
             INNER JOIN tag2touite on tag.id = tag2touite.tag_id
             WHERE touite_id = :id;
         SQL, ['id' => $id]);
-
-        if (!$result) return null;
 
         return $this->rowsToTags($result);
     }
@@ -289,30 +283,22 @@ class TouiteurReaderRepository extends TouiteurRepository {
         SQL, ['id' => $userId]);
     }
 
-    public function findFollowersByUserId(int $userId): ?array {
-        $result = $this->fetchAll(<<<SQL
+    public function findFollowersByUserId(int $userId): array {
+        return $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom
             FROM users
             INNER JOIN follow on follow.follower_id = users.id
             WHERE followed_id = :user_id
         SQL, ['user_id' => $userId]);
-
-        if (!$result) return null;
-
-        return $result;
     }
 
-    public function findFollowedByUserId(int $userId): ?array {
-        $result = $this->fetchAll(<<<SQL
+    public function findFollowedByUserId(int $userId): array {
+        return $result = $this->fetchAll(<<<SQL
             SELECT users.id, nom, prenom
             FROM users
             INNER JOIN follow on follow.followed_id = users.id
             WHERE follower_id = :user_id
         SQL, ['user_id' => $userId]);
-
-        if (!$result) return null;
-
-        return $result;
     }
 
     public function findAverageNoteTouitesByUserId(int $userId): float {
@@ -383,6 +369,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             INNER JOIN follow on users.id = follow.followed_id
             GROUP BY users.id
             ORDER BY nbFol DESC
+            LIMIT 200
         SQL);
 
         if (!$result) return null;

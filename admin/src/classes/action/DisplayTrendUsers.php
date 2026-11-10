@@ -18,7 +18,7 @@ class DisplayTrendUsers extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-        $header = HtmlHelper::detailHeader('Influenceur', '?');
+        $header = HtmlHelper::detailHeader('Les 200 meilleurs Influenceurs', '?');
 
         $users = $r->findTrendingUsers();
 

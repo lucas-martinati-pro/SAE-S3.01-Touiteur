@@ -54,7 +54,7 @@ class DisplayFeedAction extends Action {
             HTML;
         }
 
-        $profileAvatar = HtmlHelper::profileAvatar($this->user);
+        $addTouite = HtmlHelper::addTouite($this->user);
         $page = <<< HTML
             <header class="feed-header">
                 <div class="feed-heading">
@@ -65,13 +65,7 @@ class DisplayFeedAction extends Action {
                 </nav>
             </header>
             {$searchSummary}
-            <div class="compose-box">
-                {$profileAvatar}
-                <div class="compose-content">
-                    <p>Quoi de neuf ?</p>
-                    <a class="btn btn-primary" href="?action=addTouite">Touiter</a>
-                </div>
-            </div>
+            {$addTouite}
         HTML;
 
         // Le http_build_query permet d'automatiquement créer la query
