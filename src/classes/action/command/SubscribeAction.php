@@ -25,17 +25,23 @@ class SubscribeAction extends Action {
         $w = RepositoryFactory::getWriter();
 
         if ($state === 'sub') {
-            if ($type === 'user') $w->followUser($this->user['id'], $id);
-            else if ($type === 'tag') $w->followTag($this->user['id'], $id);
+            match ($type) {
+                'user' => $w->followUser($this->user['id'], $id),
+                'tag' => $w->followTag($this->user['id'], $id),
+            };
         } else if ($state === 'unsub') {
-            if ($type === 'user') $w->unfollowUser($this->user['id'], $id);
-            else if ($type === 'tag') $w->unfollowTag($this->user['id'], $id);
+            match ($type) {
+                'user' => $w->unfollowUser($this->user['id'], $id),
+                'tag' => $w->unfollowTag($this->user['id'], $id),
+            };
         }
 
         // Redirection direct vers l'affichage d'un profil
-        if ($type === 'user') header('Location: ?action=profile&id=' . $id);
-        else if ($type === 'tag') header('Location: ?action=tag&id=' . $id);
-        else header('Location: ?action=feed');
+        match ($type) {
+            'user' => header('Location: ?action=profile&id=' . $id),
+            'tag' => header('Location: ?action=tag&id=' . $id),
+            default => header('Location: ?action=feed'),
+        };
         exit;
     }
 }
