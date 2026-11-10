@@ -35,16 +35,10 @@ class TouiteurRepository {
         $stmt = $this->pdo->prepare($sql);
         $this->bindParameters($stmt, $parameters);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $result === false ? null : $result;
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Exécute une requête et retourne toutes ses lignes.
-     *
-     * @return array<int, array<string, mixed>>
-     */
     protected function fetchAll(string $sql, array $parameters = []): array {
         $stmt = $this->pdo->prepare($sql);
         $this->bindParameters($stmt, $parameters);
@@ -53,15 +47,6 @@ class TouiteurRepository {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    protected function exists(string $sql, array $parameters = []): bool {
-        return $this->fetchOne($sql, $parameters) !== null;
-    }
-
-    /**
-     * Exécute une requête paginée en liant explicitement les valeurs numériques.
-     *
-     * @return array<int, array<string, mixed>>
-     */
     protected function fetchPage(string $sql, Pagination $pagination, array $parameters = []): array {
         $stmt = $this->pdo->prepare($sql);
         $this->bindParameters($stmt, $parameters);
@@ -70,6 +55,16 @@ class TouiteurRepository {
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    protected function updateRequest(string $sql, array $parameters = []): void {
+        $stmt = $this->pdo->prepare($sql);
+        $this->bindParameters($stmt, $parameters);
+        $stmt->execute();
+    }
+
+    protected function exists(string $sql, array $parameters = []): bool {
+        return $this->fetchOne($sql, $parameters) !== null;
     }
 
     private function bindParameters(\PDOStatement $stmt, array $parameters): void {
