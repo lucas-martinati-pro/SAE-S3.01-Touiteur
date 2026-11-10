@@ -17,8 +17,7 @@ class RegisterAction extends Action {
     public function get(): string {
         try {
             $user = AuthnProvider::getSignedInUser();
-            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
-            return HtmlHelper::alreadyLogin($email);
+            return HtmlHelper::alreadyLogin($user['email']);
         } catch (AuthnException) {
             $require = '<span class="text-danger">*</span>';
             $registerButton = HtmlHelper::button('Inscription', 'bi-person-plus-fill');
@@ -72,8 +71,7 @@ class RegisterAction extends Action {
     public function post(): string {
         try {
             $user = AuthnProvider::getSignedInUser();
-            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
-            return HtmlHelper::alreadyLogin($email);
+            return HtmlHelper::alreadyLogin($user['email']);
         } catch (AuthnException) {
             if (!isset($_POST['email'], $_POST['nom'], $_POST['prenom'], $_POST['password'], $_POST['password-double'])) {
                 return HtmlHelper::formError(errors: 'Tous les champs sont obligatoires.', backUrl: '?action=register&form=1', title: "Échec de l'inscription");

@@ -11,7 +11,8 @@ class DeleteTouiteAction extends Action {
 
     #[Override]
     public function post(): string {
-        if (!isset($_GET['id'])) {
+        $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT);
+        if ($id === false || $id === null || $id < 1) {
             return HtmlHelper::notFound(
                 'Touite',
                 'Aucun touite n’a été indiqué pour la suppression.',
@@ -21,7 +22,7 @@ class DeleteTouiteAction extends Action {
         }
 
         $r = RepositoryFactory::getReader();
-        $touite = $r->findTouiteById($_GET['id']);
+        $touite = $r->findTouiteById($id);
         if ($touite === null) {
             return HtmlHelper::notFound('Touite', 'Ce touite n’existe plus ou a déjà été supprimé.');
         }

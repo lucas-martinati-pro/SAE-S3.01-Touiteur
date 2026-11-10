@@ -13,7 +13,6 @@ use iutnc\touiteur\action\command\AddTouiteTagAction;
 use iutnc\touiteur\action\command\DeleteTouiteAction;
 use iutnc\touiteur\action\command\LikeAction;
 use iutnc\touiteur\action\command\SubscribeAction;
-use iutnc\touiteur\action\command\SubscribeTagAction;
 use iutnc\touiteur\action\RegisterAction;
 use iutnc\touiteur\action\SigninAction;
 use iutnc\touiteur\action\SignoutAction;
@@ -58,7 +57,6 @@ class Dispatcher {
             'deleteTouite' => (new DeleteTouiteAction())(),
             'like' => (new LikeAction())(),
             'subscribe' => (new SubscribeAction())(),
-            'subscribeTag' => (new SubscribeTagAction())(),
             'register' => (new RegisterAction())(),
             'signin' => (new SigninAction())(),
             'signout' => (new SignoutAction())(),

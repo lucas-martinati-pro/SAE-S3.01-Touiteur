@@ -93,8 +93,9 @@ class TouiteRenderer implements Renderer {
         $deleteBtn = '';
         if ($userId === $currentUserId && $selector === TypeRender::LONG) {
             $deleteBtn = <<<HTML
-                <form method="post" action="?action=deleteTouite&amp;id={$touiteId}"
+                <form method="post" action="?action=deleteTouite"
                     onsubmit="return confirm('Supprimer ce touite ?');">
+                    <input type="hidden" name="id" value="{$touiteId}">
                     <button type="submit" class="touite-delete-button" aria-label="Supprimer ce touite">
                         <i class="bi bi-trash3" aria-hidden="true"></i>
                         <span>Supprimer</span>

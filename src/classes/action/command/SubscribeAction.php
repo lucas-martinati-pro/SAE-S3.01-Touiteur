@@ -13,6 +13,7 @@ class SubscribeAction extends Action {
     #[Override]
     public function post(): string {
         $id = $_POST['id'] ?? null;
+        $state = $_POST['state'] ?? null;
         $type = $_POST['type'] ?? null;
 
         // redirection si l'id est null
@@ -23,14 +24,24 @@ class SubscribeAction extends Action {
 
         $w = RepositoryFactory::getWriter();
 
-        if ($type === 'sub'){
-            $w->followUser($this->user['id'], $id);
-        } else if ($type === 'unsub'){
-            $w->unfollowUser($this->user['id'], $id);
+        if ($state === 'sub') {
+            match ($type) {
+                'user' => $w->followUser($this->user['id'], $id),
+                'tag' => $w->followTag($this->user['id'], $id),
+            };
+        } else if ($state === 'unsub') {
+            match ($type) {
+                'user' => $w->unfollowUser($this->user['id'], $id),
+                'tag' => $w->unfollowTag($this->user['id'], $id),
+            };
         }
 
         // Redirection direct vers l'affichage d'un profil
-        header('Location: ?action=profile&id=' . $id);
+        match ($type) {
+            'user' => header('Location: ?action=profile&id=' . $id),
+            'tag' => header('Location: ?action=tag&id=' . $id),
+            default => header('Location: ?action=feed'),
+        };
         exit;
     }
 }

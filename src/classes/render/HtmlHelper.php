@@ -93,6 +93,8 @@ class HtmlHelper {
     }
 
     public static function alreadyLogin(string $email): string {
+        $email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+
         $title = HtmlHelper::title('Déjà connecté', 'bi-person-plus-fill');
         $feedButton = HtmlHelper::linkButton('Mon feed', '?action=feed', 'bi-collection-play-fill');
         $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
@@ -133,17 +135,18 @@ public static function profileColor(int $userId): string {
     public static function subscriptionButton(
         int $userId,
         bool $isSubscribed,
-        string $action = 'subscribe',
+        string $type = 'user',
         string $buttonClass = 'btn btn-sm'
     ): string {
-        $type = $isSubscribed ? 'unsub' : 'sub';
+        $state = $isSubscribed ? 'unsub' : 'sub';
         $label = $isSubscribed ? 'Abonné' : "S'abonner";
         $variant = $isSubscribed ? 'outline-primary' : 'primary';
-        $action = htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
+        $type = htmlspecialchars($type, ENT_QUOTES, 'UTF-8');
         $buttonClass = htmlspecialchars($buttonClass, ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
-            <form method="POST" action="?action={$action}">
+            <form method="POST" action="?action=subscribe">
+                <input type="hidden" name="state" value="{$state}">
                 <input type="hidden" name="type" value="{$type}">
                 <input type="hidden" name="id" value="{$userId}">
                 <button type="submit" class="{$buttonClass} btn-{$variant}">{$label}</button>
@@ -248,12 +251,16 @@ public static function profileColor(int $userId): string {
         $returnQuery = htmlspecialchars(http_build_query($_GET ?: ['action' => 'feed']), ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
-            <form method="POST" action="?action=like&id={$touiteId}&type={$likeType}">
+            <form method="POST" action="?action=like">
+                <input type="hidden" name="id" value="{$touiteId}">
+                <input type="hidden" name="type" value="{$likeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
                 <button type="submit" class="touite-like {$likeClass}" aria-label="J'aime" aria-pressed="{$likePressed}"><i class="bi {$likeIcon}" aria-hidden="true"></i></button>
             </form>
             {$noteHtml}
-            <form method="POST" action="?action=like&id={$touiteId}&type={$dislikeType}">
+            <form method="POST" action="?action=like">
+                <input type="hidden" name="id" value="{$touiteId}">
+                <input type="hidden" name="type" value="{$dislikeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
                 <button type="submit" class="touite-dislike {$dislikeClass}" aria-label="Je n'aime pas" aria-pressed="{$dislikePressed}"><i class="bi {$dislikeIcon}" aria-hidden="true"></i></button>
             </form>

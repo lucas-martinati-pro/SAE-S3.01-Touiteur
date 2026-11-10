@@ -17,8 +17,7 @@ class SigninAction extends Action {
     public function get(): string {
         try {
             $user = AuthnProvider::getSignedInUser();
-            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
-            return HtmlHelper::alreadyLogin($email);
+            return HtmlHelper::alreadyLogin($user['email']);
         } catch (AuthnException) {
             $require = '<span class="text-danger">*</span>';
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/
@@ -68,8 +67,7 @@ class SigninAction extends Action {
     public function post(): string {
         try {
             $user = AuthnProvider::getSignedInUser();
-            $email = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
-            return HtmlHelper::alreadyLogin($email);
+            return HtmlHelper::alreadyLogin($user['email']);
         } catch (AuthnException) {
             if (!isset($_POST['email'], $_POST['password'])) {
                 return HtmlHelper::formError(errors: 'Tous les champs sont obligatoires.', backUrl: '?action=signin&form=1', title: 'Échec de la connexion');
