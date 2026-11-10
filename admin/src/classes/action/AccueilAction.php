@@ -15,6 +15,21 @@ class AccueilAction extends Action {
 
     #[Override]
     public function get(): string {
+        $tagsIcon = '<span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-hash"></i></span>';
+        $usersIcon = '<span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-people"></i></span>';
+        $tagsLink = HtmlHelper::listLink(
+            '?action=trendTags',
+            $tagsIcon,
+            'Tags populaires',
+            'Les sujets les plus présents dans les touites'
+        );
+        $usersLink = HtmlHelper::listLink(
+            '?action=trendUsers',
+            $usersIcon,
+            'Utilisateurs populaires',
+            'Les membres qui rassemblent le plus d’abonnés'
+        );
+
         return <<<HTML
             <header class="feed-header">
                 <div class="feed-heading">
@@ -26,22 +41,8 @@ class AccueilAction extends Action {
                 <p class="tag-description">Bienvenue dans le back-office de Touiteur. Consultez les tendances de la communauté.</p>
             </section>
             <nav class="followed-tags" aria-label="Outils d’administration">
-                <a href="?action=trendTags" class="followed-tag">
-                    <span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-hash"></i></span>
-                    <span class="followed-tag-label">
-                        <span class="d-block">Tags populaires</span>
-                        <span class="text-secondary small fw-normal">Les sujets les plus présents dans les touites</span>
-                    </span>
-                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
-                </a>
-                <a href="?action=trendUsers" class="followed-tag">
-                    <span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-people"></i></span>
-                    <span class="followed-tag-label">
-                        <span class="d-block">Utilisateurs populaires</span>
-                        <span class="text-secondary small fw-normal">Les membres qui rassemblent le plus d’abonnés</span>
-                    </span>
-                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
-                </a>
+                {$tagsLink}
+                {$usersLink}
             </nav>
         HTML;
     }
@@ -49,10 +50,9 @@ class AccueilAction extends Action {
     #[Override]
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
-            return HtmlHelper::errorPage(
-                title: 'Accès refusé',
+            return HtmlHelper::forbidden(
                 message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
-                backUrl: 'index.php',
+                backUrl: '../index.php',
                 backLabel: "Retour à l'accueil"
             );
         }

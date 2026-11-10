@@ -41,22 +41,16 @@ class DisplayUsersAction extends Action {
         $items = '';
         foreach ($users as $row) {
             $userId = (int) $row['id'];
-            $nom = htmlspecialchars($row['nom'], ENT_QUOTES, 'UTF-8');
-            $prenom = htmlspecialchars($row['prenom'], ENT_QUOTES, 'UTF-8');
-            $fullName = "{$nom} {$prenom}";
-            $profileHandle = "{$nom}_{$prenom}";
             $avatar = HtmlHelper::profileAvatar($row);
+            $fullName = trim($row['nom'] . ' ' . $row['prenom']);
+            $handle = '@' . $row['nom'] . '_' . $row['prenom'];
 
-            $items .= <<<HTML
-                <a href="?action=profile&id={$userId}" class="followed-tag">
-                    {$avatar}
-                    <div class="followed-tag-label">
-                        <div class="fw-bold">{$fullName}</div>
-                        <div class="text-secondary small fw-normal">@{$profileHandle}</div>
-                    </div>
-                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
-                </a>
-            HTML;
+            $items .= HtmlHelper::listLink(
+                "?action=profile&id={$userId}",
+                $avatar,
+                $fullName,
+                $handle
+            );
         }
 
         $listLabel = $type === 'followers' ? 'Liste des abonnés' : 'Liste des abonnements';

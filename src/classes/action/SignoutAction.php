@@ -40,15 +40,13 @@ class SignoutAction extends Action {
     public function post(): string {
         unset($_SESSION['user']);
 
-        $reconnectButton = HtmlHelper::linkButton('Se reconnecter', '?action=signin', 'bi-box-arrow-in-right');
-        $homeButton = HtmlHelper::linkButton("Retour à l'accueil", 'index.php', 'bi-house-door-fill', 'secondary');
-
-        return HtmlHelper::title('Déconnexion réussie', 'bi-check-circle-fill', 'text-success') . <<<HTML
-            <p>Vous avez été déconnecté avec succès.</p>
-            <p>
-                {$reconnectButton}
-                {$homeButton}
-            </p>
-        HTML;
+        return HtmlHelper::successPage(
+            title: 'Déconnexion réussie',
+            message: 'Vous avez été déconnecté avec succès.',
+            backUrl: '?action=signin',
+            backLabel: 'Se reconnecter',
+            secondaryUrl: 'index.php',
+            secondaryLabel: "Retour à l'accueil"
+        );
     }
 }

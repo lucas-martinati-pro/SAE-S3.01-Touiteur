@@ -129,25 +129,7 @@ class Dispatcher {
                 HTML;
             }
 
-            $searchValue = htmlspecialchars(trim($_GET['search'] ?? ''), ENT_QUOTES, 'UTF-8');
-            $search = <<<HTML
-                <form method="post" action="?action=feed" class="search-form mb-3" role="search">
-                    <label for="search" class="visually-hidden">Rechercher un touite</label>
-                    <input
-                        type="search"
-                        name="search"
-                        id="search"
-                        value="{$searchValue}"
-                        class="form-control search-input"
-                        placeholder="Rechercher un touite"
-                        aria-label="Rechercher un touite"
-                        required
-                    >
-                    <button type="submit" class="search-button" aria-label="Rechercher">
-                        <i class="bi bi-search" aria-hidden="true"></i>
-                    </button>
-                </form>
-            HTML;
+            $search = HtmlHelper::searchForm('?action=feed', trim((string) ($_GET['search'] ?? '')));
 
             return <<<HTML
                 <aside class="right-sidebar">

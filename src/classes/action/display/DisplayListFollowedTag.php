@@ -23,32 +23,17 @@ class DisplayListFollowedTag extends Action {
 
         $header = HtmlHelper::detailHeader('Tags suivis', $backUrl);
 
-        if ($followedTags === null) {
-            return $header . '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur ne suit aucun tag.') . '</div>';
-        }
-
         $items = '';
         foreach ($followedTags as $tag) {
             $tagId = (int) $tag->getId();
-            $tagLabel = htmlspecialchars($tag->getLibelle(), ENT_QUOTES, 'UTF-8');
-            $rawDescr = $tag->getDescription() ?? '';
-            $descr = htmlspecialchars($rawDescr, ENT_QUOTES, 'UTF-8');
-            $descrHtml = $descr !== ''
-                ? "<div class=\"text-secondary small fw-normal\">{$descr}</div>"
-                : '';
+            $icon = '<span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-hash"></i></span>';
 
-            $items .= <<<HTML
-                <a href="?action=tag&id={$tagId}" class="followed-tag">
-                    <span class="followed-tag-icon" aria-hidden="true">
-                        <i class="bi bi-hash"></i>
-                    </span>
-                    <div class="followed-tag-label">
-                        <div class="fw-bold">#{$tagLabel}</div>
-                        {$descrHtml}
-                    </div>
-                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
-                </a>
-            HTML;
+            $items .= HtmlHelper::listLink(
+                "?action=tag&id={$tagId}",
+                $icon,
+                '#' . $tag->getLibelle(),
+                $tag->getDescription() ?? ''
+            );
         }
 
         return $header . <<<HTML

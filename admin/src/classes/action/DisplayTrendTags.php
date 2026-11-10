@@ -31,31 +31,17 @@ class DisplayTrendTags extends Action {
 
         $items = '';
         foreach ($tags as $tag) {
-            $libelle = htmlspecialchars($tag['libelle'], ENT_QUOTES, 'UTF-8');
-            $descr = htmlspecialchars($tag['description'] ?? '', ENT_QUOTES, 'UTF-8');
             $id = (int) $tag['id'];
             $nbAparition = (int) $tag['nbAparition'];
             $appearanceLabel = $nbAparition > 1 ? 'apparitions' : 'apparition';
-            $descrHtml = $descr !== ''
-                ? "<div class=\"text-secondary small fw-normal\">{$descr}</div>"
-                : '';
-
-            $items .= <<<HTML
-                <a href="../index.php?action=tag&id={$id}" class="followed-tag">
-                    <span class="followed-tag-icon" aria-hidden="true">
-                        <i class="bi bi-hash"></i>
-                    </span>
-                    <div class="followed-tag-label">
-                        <div class="fw-bold">#{$libelle}</div>
-                        {$descrHtml}
-                        <div class="text-secondary small fw-normal">
-                            <i class="bi bi-chat-left-text me-1" aria-hidden="true"></i>
-                            {$nbAparition} {$appearanceLabel}
-                        </div>
-                    </div>
-                    <i class="bi bi-chevron-right followed-tag-arrow" aria-hidden="true"></i>
-                </a>
-            HTML;
+            $icon = '<span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-hash"></i></span>';
+            $items .= HtmlHelper::listLink(
+                "../index.php?action=tag&id={$id}",
+                $icon,
+                '#' . $tag['libelle'],
+                $tag['description'] ?? '',
+                "{$nbAparition} {$appearanceLabel}"
+            );
         }
 
         return $header . <<<HTML
@@ -68,10 +54,9 @@ class DisplayTrendTags extends Action {
     #[Override]
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
-            return HtmlHelper::errorPage(
-                title: 'Accès refusé',
+            return HtmlHelper::forbidden(
                 message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
-                backUrl: 'index.php',
+                backUrl: '../index.php',
                 backLabel: "Retour à l'accueil"
             );
         }
