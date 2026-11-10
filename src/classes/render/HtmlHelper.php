@@ -144,7 +144,7 @@ public static function profileColor(int $userId): string {
 
         return <<<HTML
             <form method="POST" action="?action={$action}">
-                <input type="hidden" name="type" value="{$type}">
+                <input type="hidden" name="state" value="{$type}">
                 <input type="hidden" name="id" value="{$userId}">
                 <button type="submit" class="{$buttonClass} btn-{$variant}">{$label}</button>
             </form>

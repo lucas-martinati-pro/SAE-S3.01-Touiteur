@@ -13,7 +13,7 @@ class SubscribeAction extends Action {
     #[Override]
     public function post(): string {
         $id = $_POST['id'] ?? null;
-        $type = $_POST['type'] ?? null;
+        $state = $_POST['state'] ?? null;
 
         // redirection si l'id est null
         if (!$id) {
@@ -23,9 +23,9 @@ class SubscribeAction extends Action {
 
         $w = RepositoryFactory::getWriter();
 
-        if ($type === 'sub'){
+        if ($state === 'sub'){
             $w->followUser($this->user['id'], $id);
-        } else if ($type === 'unsub'){
+        } else if ($state === 'unsub'){
             $w->unfollowUser($this->user['id'], $id);
         }
 
