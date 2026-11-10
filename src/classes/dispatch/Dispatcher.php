@@ -96,7 +96,7 @@ class Dispatcher {
                 <body>
                     <div class="app-layout" id="swup">
                         <aside class="sidebar">
-                            <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php">
+                            <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php" aria-label="Accueil">
                                 <img src="image/favicon.png" alt="" width="28" height="28" class="me-2">
                                 <span class="logo-word">Touiteur</span>
                             </a>
@@ -155,8 +155,8 @@ class Dispatcher {
             <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            <i class="bi bi-house-door-fill me-1"></i>Accueil
+                        <a class="nav-link" href="index.php" aria-label="Accueil">
+                            <i class="bi bi-house-door-fill" aria-hidden="true"></i><span>Accueil</span>
                         </a>
                     </li>
                 </ul>
@@ -182,9 +182,9 @@ class Dispatcher {
 
             if (AuthnProvider::isAdminUser()) {
                 $btnAdmin = <<<HTML
-                    <a href="admin" class="btn btn-outline-primary w-100 mb-2">
+                    <a href="admin" class="btn btn-outline-primary w-100 mb-2 sidebar-admin-link" aria-label="Espace Admin">
                         <i class="bi bi-shield-lock-fill" aria-hidden="true"></i>
-                        Espace Admin
+                        <span>Espace Admin</span>
                     </a>
                 HTML;
             }
@@ -192,8 +192,8 @@ class Dispatcher {
             $accountArea = <<<HTML
                 {$btnAdmin}
                 <div class="sidebar-user">
-                    <a class="sidebar-avatar-link" href="?action=profile&id={$userId}"
-                       aria-label="Voir mon profil">{$profileAvatar}</a>
+                    <a class="sidebar-avatar-link sidebar-profile-link" href="?action=profile&id={$userId}"
+                       aria-label="Voir mon profil"><span>{$profileAvatar}</span><span class="sidebar-profile-label">Profil</span></a>
                     <span class="sidebar-email">{$email}</span>
                     <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
                         <i class="bi bi-box-arrow-right"></i>
@@ -203,13 +203,13 @@ class Dispatcher {
         } catch (AuthnException) {
             $accountArea = <<<HTML
                 <div class="sidebar-user guest-user">
-                    <a class="btn btn-outline-primary" href="?action=signin">
+                    <a class="btn btn-outline-primary mobile-nav-auth" href="?action=signin" aria-label="Se connecter">
                         <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-                        Se connecter
+                        <span>Connexion</span>
                     </a>
-                    <a class="btn btn-primary" href="?action=register">
+                    <a class="btn btn-primary mobile-nav-auth" href="?action=register" aria-label="Créer un compte">
                         <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
-                        Créer un compte
+                        <span>Inscription</span>
                     </a>
                 </div>
             HTML;
