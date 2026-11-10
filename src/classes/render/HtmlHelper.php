@@ -93,6 +93,8 @@ class HtmlHelper {
     }
 
     public static function alreadyLogin(string $email): string {
+        $email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+
         $title = HtmlHelper::title('Déjà connecté', 'bi-person-plus-fill');
         $feedButton = HtmlHelper::linkButton('Mon feed', '?action=feed', 'bi-collection-play-fill');
         $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');

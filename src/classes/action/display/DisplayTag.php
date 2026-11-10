@@ -29,8 +29,7 @@ class DisplayTag extends Action {
             return HtmlHelper::notFound('Tag', 'Le tag demandé est introuvable.');
         }
         $tagLabel = $tag->getLibelle();
-        $tagDescription = $tag->getDescription();
-        $escapedTagDescription = htmlspecialchars($tagDescription, ENT_QUOTES, 'UTF-8');
+        $tagDescription = htmlspecialchars($tag->getDescription(), ENT_QUOTES, 'UTF-8');
 
         $subTagBtn = HtmlHelper::subscriptionButton(
             $id,
@@ -41,7 +40,7 @@ class DisplayTag extends Action {
 
         $page = HtmlHelper::detailHeader("#{$tagLabel}", '?action=feed', $subTagBtn) . <<<HTML
             <section class="tag-intro">
-                <p class="tag-description">{$escapedTagDescription}</p>
+                <p class="tag-description">{$tagDescription}</p>
             </section>
         HTML;
 
