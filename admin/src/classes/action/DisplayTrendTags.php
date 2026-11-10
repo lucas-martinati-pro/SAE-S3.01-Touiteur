@@ -19,7 +19,7 @@ class DisplayTrendTags extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-        $header = HtmlHelper::detailHeader('Famous-Tag', '?');
+        $header = HtmlHelper::detailHeader('Les 200 Tags les plus populaires', '?');
 
         $tags = $r->findTrendingTags();
 
