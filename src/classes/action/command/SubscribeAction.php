@@ -14,7 +14,7 @@ class SubscribeAction extends Action {
     public function post(): string {
         $id = $_POST['id'] ?? null;
         $state = $_POST['state'] ?? null;
-        $type = $_POST['type'] ?? null;
+        $type = $_POST['type'] ?? '';
 
         // redirection si l'id est null
         if (!$id) {
@@ -24,17 +24,8 @@ class SubscribeAction extends Action {
 
         $w = RepositoryFactory::getWriter();
 
-        if ($state === 'sub') {
-            match ($type) {
-                'user' => $w->followUser($this->user['id'], $id),
-                'tag' => $w->followTag($this->user['id'], $id),
-            };
-        } else if ($state === 'unsub') {
-            match ($type) {
-                'user' => $w->unfollowUser($this->user['id'], $id),
-                'tag' => $w->unfollowTag($this->user['id'], $id),
-            };
-        }
+        if ($state === 'sub') $w->follow($this->user['id'], $id, $type);
+        elseif ($state === 'unsub') $w->unfollow($this->user['id'], $id, $type);
 
         // Redirection direct vers l'affichage d'un profil
         match ($type) {

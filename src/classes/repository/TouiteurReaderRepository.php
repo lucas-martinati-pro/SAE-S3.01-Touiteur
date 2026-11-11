@@ -67,70 +67,39 @@ class TouiteurReaderRepository extends TouiteurRepository {
      * CREATIONS DES FEEDS
      *=============================================**/
 
-    public function findFeed(Pagination $pagination = new Pagination()): ?Feed {
-        $result = $this->fetchPage(<<<SQL
-            SELECT *
-            FROM touite
-            ORDER BY posted_at DESC
-            LIMIT :limit OFFSET :offset;
-        SQL, $pagination);
-
-        return $this->rowsToFeed($result);
-    }
-
-    public function findFollowedFeedByUserId(int $userId, Pagination $pagination = new Pagination()): Feed {
-        $result = $this->fetchPage(<<<SQL
-            SELECT touite.*
-            FROM touite
-            WHERE touite.users_id IN (
-                SELECT followed_id
-                FROM follow
-                WHERE follower_id = :follower_id
-            )
-            OR touite.id IN (
-                SELECT tag2touite.touite_id
-                FROM tag2touite
-                INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
-                WHERE users2tag.users_id = :tag_user_id
-            )
-            ORDER BY posted_at DESC
-            LIMIT :limit OFFSET :offset;
-        SQL, $pagination, ['follower_id' => $userId, 'tag_user_id' => $userId]);
-
-        return $this->rowsToFeed($result);
-    }
-
-    public function findFeedSearched(string $search, Pagination $pagination = new Pagination()): Feed {
+    public function findFeed(string $search = '', Pagination $pagination = new Pagination()): ?Feed {
         $result = $this->fetchPage(<<<SQL
             SELECT *
             FROM touite
             WHERE content LIKE :search
             ORDER BY posted_at DESC
-            LIMIT :limit OFFSET :offset;
+            LIMIT :limit OFFSET :offset
         SQL, $pagination, ['search' => '%' . $search . '%']);
 
         return $this->rowsToFeed($result);
     }
 
-    public function findFollowedFeedSearched(int $id, string $search, Pagination $pagination = new Pagination()): Feed {
+    public function findFollowedFeedByUserId(int $userId, string $search = '', Pagination $pagination = new Pagination()): Feed {
         $result = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
-            WHERE (touite.users_id IN (
-                SELECT followed_id
-                FROM follow
-                WHERE follower_id = :follower_id
+            WHERE (
+                touite.users_id IN (
+                    SELECT followed_id
+                    FROM follow
+                    WHERE follower_id = :follower_id
+                )
+                OR touite.id IN (
+                    SELECT tag2touite.touite_id
+                    FROM tag2touite
+                    INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
+                    WHERE users2tag.users_id = :tag_user_id
+                )
             )
-            OR touite.id IN (
-                SELECT tag2touite.touite_id
-                FROM tag2touite
-                INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
-                WHERE users2tag.users_id = :tag_user_id
-            ))
             AND content LIKE :search
             ORDER BY posted_at DESC
-            LIMIT :limit OFFSET :offset;
-        SQL, $pagination, ['follower_id' => $id, 'tag_user_id' => $id, 'search' => '%' . $search . '%']);
+            LIMIT :limit OFFSET :offset
+        SQL, $pagination, ['follower_id' => $userId, 'tag_user_id' => $userId, 'search' => '%' . $search . '%']);
 
         return $this->rowsToFeed($result);
     }
@@ -141,7 +110,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             FROM touite
             WHERE users_id = :id
             ORDER BY posted_at DESC
-            LIMIT :limit OFFSET :offset;
+            LIMIT :limit OFFSET :offset
         SQL, $pagination, ['id' => $id]);
 
         return $this->rowsToFeed($result);
@@ -153,7 +122,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             FROM touite
             WHERE users_id = :id
             AND media_path IS NOT NULL
-            LIMIT :limit OFFSET :offset;
+            LIMIT :limit OFFSET :offset
         SQL, $pagination, ['id' => $id]);
 
         return $this->rowsToFeed($result);
@@ -166,7 +135,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             INNER JOIN tag2touite on touite.id = tag2touite.touite_id
             WHERE tag2touite.tag_id = :id
             ORDER BY posted_at DESC
-            LIMIT :limit OFFSET :offset;
+            LIMIT :limit OFFSET :offset
         SQL, $pagination, ['id' => $id]);
 
         return $this->rowsToFeed($result);
@@ -180,7 +149,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $result = $this->fetchOne(<<<SQL
             SELECT *
             FROM touite
-            WHERE id = :id;
+            WHERE id = :id
         SQL, ['id' => $id]);
 
         if (empty($result)) return null;
@@ -204,7 +173,7 @@ class TouiteurReaderRepository extends TouiteurRepository {
             INNER JOIN users2tag ON users2tag.tag_id = tag.id
             GROUP BY tag_id
             ORDER BY COUNT(users_id) DESC, tag.id ASC
-            LIMIT :limit;
+            LIMIT :limit
         SQL, ['limit' => $limit]);
 
         return $this->rowsToTags($result);
