@@ -83,16 +83,18 @@ class TouiteurReaderRepository extends TouiteurRepository {
         $result = $this->fetchPage(<<<SQL
             SELECT touite.*
             FROM touite
-            WHERE touite.users_id IN (
-                SELECT followed_id
-                FROM follow
-                WHERE follower_id = :follower_id
-            )
-            OR touite.id IN (
-                SELECT tag2touite.touite_id
-                FROM tag2touite
-                INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
-                WHERE users2tag.users_id = :tag_user_id
+            WHERE (
+                touite.users_id IN (
+                    SELECT followed_id
+                    FROM follow
+                    WHERE follower_id = :follower_id
+                )
+                OR touite.id IN (
+                    SELECT tag2touite.touite_id
+                    FROM tag2touite
+                    INNER JOIN users2tag ON users2tag.tag_id = tag2touite.tag_id
+                    WHERE users2tag.users_id = :tag_user_id
+                )
             )
             AND content LIKE :search
             ORDER BY posted_at DESC
