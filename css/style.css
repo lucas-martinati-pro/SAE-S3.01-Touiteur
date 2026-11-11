@@ -962,6 +962,15 @@ textarea.form-control { resize: vertical; }
         background: var(--brand-soft);
         color: var(--brand);
     }
+    .sidebar .mobile-nav-auth.btn-primary {
+        background: var(--brand-strong);
+        color: #fff !important;
+    }
+    .sidebar .mobile-nav-auth.btn-primary:hover,
+    .sidebar .mobile-nav-auth.btn-primary:focus-visible {
+        background: #0f65a5;
+        color: #fff !important;
+    }
     .sidebar .nav-link i,
     .theme-toggle-icon,
     .sidebar-admin-link i,
