@@ -11,39 +11,33 @@ use iutnc\touiteur\tag\Tag;
  */
 class TouiteurWriterRepository extends TouiteurRepository {
     /**============================================
-     * GESTION DES USERS
+     * GESTION DES FOLLOWS
      *=============================================**/
 
-    public function followUser(int $followerId, int $followedId): void {
-        $this->updateRequest(<<<SQL
-            INSERT INTO follow (follower_id, followed_id) VALUES (:follower_id, :followed_id);
-        SQL, ['follower_id' => $followerId, 'followed_id' => $followedId]);
+    public function follow(int $userId, int $followedId, string $type): void {
+        match ($type) {
+            'user' => $this->updateRequest(<<<SQL
+                        INSERT INTO follow (follower_id, followed_id) VALUES (:follower_id, :followed_id);
+                    SQL, ['follower_id' => $userId, 'followed_id' => $followedId]),
+            'tag' => $this->updateRequest(<<<SQL
+                        INSERT INTO users2tag (users_id, tag_id) VALUES (:user_id, :tag_id);
+                    SQL, ['user_id' => $userId, 'tag_id' => $followedId]),
+        };
     }
 
-    public function unfollowUser(int $followerId, int $followedId): void {
-        $this->updateRequest(<<<SQL
-            DELETE FROM follow
-            WHERE follower_id = :follower_id
-            AND followed_id = :followed_id;
-        SQL, ['follower_id' => $followerId, 'followed_id' => $followedId]);
-    }
-
-    /**============================================
-     * GESTION DES TAGS
-     *=============================================**/
-
-    public function followTag(int $userId, int $tagId): void {
-        $this->updateRequest(<<<SQL
-            INSERT INTO users2tag (users_id, tag_id) VALUES (:user_id, :tag_id);
-        SQL, ['user_id' => $userId, 'tag_id' => $tagId]);
-    }
-
-    public function unfollowTag(int $userId, int $tagId): void {
-        $this->updateRequest(<<<SQL
-            DELETE FROM users2tag
-            WHERE users_id = :user_id
-            AND tag_id = :tag_id;
-        SQL, ['user_id' => $userId, 'tag_id' => $tagId]);
+    public function unfollow(int $userId, int $followedId, string $type): void {
+        match ($type) {
+            'user' => $this->updateRequest(<<<SQL
+                        DELETE FROM follow
+                        WHERE follower_id = :follower_id
+                        AND followed_id = :followed_id;
+                    SQL, ['follower_id' => $userId, 'followed_id' => $followedId]),
+            'tag' => $this->updateRequest(<<<SQL
+                        DELETE FROM users2tag
+                        WHERE users_id = :user_id
+                        AND tag_id = :tag_id;
+                    SQL, ['user_id' => $userId, 'tag_id' => $followedId]),
+        };
     }
 
     /**============================================
