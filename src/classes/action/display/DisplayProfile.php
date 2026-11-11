@@ -89,7 +89,7 @@ class DisplayProfile extends Action {
                         <a href="?action=listFollowTag&id={$id}" class="btn btn-outline-secondary btn-sm rounded-pill">
                             <i class="bi bi-tags me-1"></i> Tags suivis
                         </a>
-                        <span class="d-inline-flex align-items-center px-3 py-1 rounded-pill border {$noteClass} fw-semibold" style="font-size: .85rem; min-height: 32px; border-color: var(--border) !important;">
+                        <span class="profile-note {$noteClass}">
                             <i class="bi bi-heart me-1"></i> <strong>{$noteFormatted}</strong>
                         </span>
                     </div>

@@ -65,6 +65,7 @@ class HtmlHelper {
             </section>
         HTML;
     }
+
     /**
      * Génère les liens à placer dans la balise nav des onglets.
      *
@@ -110,7 +111,7 @@ class HtmlHelper {
         HTML;
     }
 
-public static function profileColor(int $userId): string {
+    public static function profileColor(int $userId): string {
         $colors = [
             'profile-color-blue',
             'profile-color-purple',
@@ -398,8 +399,6 @@ public static function profileColor(int $userId): string {
      * @return string Balises HTML de la page d'erreur.
      */
     public static function errorPage(string $title = 'Erreur', string|array $message = 'Une erreur inattendue est survenue.', string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil", string $type = 'danger'): string {
-        $alertHtml = self::alert($type, $message);
-
         $titleColor = match ($type) {
             'success' => 'text-success',
             'warning' => 'text-warning',
@@ -407,20 +406,17 @@ public static function profileColor(int $userId): string {
             default => 'text-primary',
         };
 
-        // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
-        $titleHtml = self::title($title, 'bi-exclamation-triangle-fill', $titleColor);
-
-        return <<<HTML
-            {$titleHtml}
-            {$alertHtml}
-            <p class="mt-3">
-                <a class="btn btn-secondary d-inline-flex align-items-center" href="{$backUrl}">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/arrow-left/ -->
-                    <i class="bi bi-arrow-left me-2"></i>
-                    {$backLabel}
-                </a>
-            </p>
-        HTML;
+        return self::statusScreen(
+            titleIcon: 'bi-exclamation-triangle-fill',
+            title: $title,
+            titleColorClass: $titleColor,
+            alertType: $type,
+            message: $message,
+            backUrl: $backUrl,
+            backLabel: $backLabel,
+            backIcon: 'bi-arrow-left',
+            backIconClass: 'me-2'
+        );
     }
 
     /**
@@ -465,21 +461,17 @@ public static function profileColor(int $userId): string {
      * @return string Balises HTML de l'écran d'interdiction.
      */
     public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
-        $alert = self::alert('danger', $message);
-        // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
-        $titleHtml = self::title('Accès refusé', 'bi-shield-lock-fill', 'text-danger');
-
-        return <<<HTML
-            {$titleHtml}
-            {$alert}
-            <p class="mt-3">
-                <a class="btn btn-secondary d-inline-flex align-items-center" href="{$backUrl}">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/arrow-left/ -->
-                    <i class="bi bi-arrow-left me-2"></i>
-                    {$backLabel}
-                </a>
-            </p>
-        HTML;
+        return self::statusScreen(
+            titleIcon: 'bi-shield-lock-fill',
+            title: 'Accès refusé',
+            titleColorClass: 'text-danger',
+            alertType: 'danger',
+            message: $message,
+            backUrl: $backUrl,
+            backLabel: $backLabel,
+            backIcon: 'bi-arrow-left',
+            backIconClass: 'me-2'
+        );
     }
 
     /**
@@ -488,25 +480,21 @@ public static function profileColor(int $userId): string {
      * @param string $item Nom de la ressource introuvable.
      * @param string $message Message d'erreur explicatif.
      * @param string $backUrl URL du lien de retour (défaut: '?action=feed').
-     * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à mon compte').
+     * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à mon feed').
      * @return string Balises HTML de la page 404.
      */
     public static function notFound(string $item = 'Ressource', string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
-        $alert = self::alert('danger', $message);
-        // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
-        $titleHtml = self::title("{$item} introuvable", 'bi-exclamation-triangle-fill', 'text-danger');
-
-        return <<<HTML
-            {$titleHtml}
-            {$alert}
-            <p class="mt-3">
-                <a class="btn btn-secondary d-inline-flex align-items-center" href="{$backUrl}">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/arrow-left/ -->
-                    <i class="bi bi-arrow-left me-2"></i>
-                    {$backLabel}
-                </a>
-            </p>
-        HTML;
+        return self::statusScreen(
+            titleIcon: 'bi-exclamation-triangle-fill',
+            title: "{$item} introuvable",
+            titleColorClass: 'text-danger',
+            alertType: 'danger',
+            message: $message,
+            backUrl: $backUrl,
+            backLabel: $backLabel,
+            backIcon: 'bi-arrow-left',
+            backIconClass: 'me-2'
+        );
     }
 
     /**
@@ -519,21 +507,17 @@ public static function profileColor(int $userId): string {
      * @return string Balises HTML de l'écran d'erreur de formulaire.
      */
     public static function formError(string|array $errors = 'Une erreur est survenue lors de la validation du formulaire.', string $backUrl = 'index.php', string $backLabel = 'Retour au formulaire', string $title = 'Erreur dans le formulaire'): string {
-        $alert = self::alert('danger', $errors);
-        // Icône Bootstrap - https://icons.getbootstrap.com/icons/exclamation-triangle-fill/
-        $titleHtml = self::title($title, 'bi-exclamation-triangle-fill', 'text-danger');
-
-        return <<<HTML
-            {$titleHtml}
-            {$alert}
-            <p class="mt-3">
-                <a class="btn btn-secondary d-inline-flex align-items-center" href="{$backUrl}">
-                    <!-- Icône Bootstrap - https://icons.getbootstrap.com/icons/arrow-counterclockwise/ -->
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>
-                    {$backLabel}
-                </a>
-            </p>
-        HTML;
+        return self::statusScreen(
+            titleIcon: 'bi-exclamation-triangle-fill',
+            title: $title,
+            titleColorClass: 'text-danger',
+            alertType: 'danger',
+            message: $errors,
+            backUrl: $backUrl,
+            backLabel: $backLabel,
+            backIcon: 'bi-arrow-counterclockwise',
+            backIconClass: 'me-1'
+        );
     }
 
     /**
@@ -577,6 +561,46 @@ public static function profileColor(int $userId): string {
                     {$backLabel}
                 </a>
                 {$secondaryAction}
+            </p>
+        HTML;
+    }
+
+    /**
+     * Génère un écran de statut uniforme : titre, alerte et bouton de retour.
+     *
+     * @param string $titleIcon Icône Bootstrap Icons affichée à côté du titre.
+     * @param string $title Titre de l'écran.
+     * @param string $titleColorClass Couleur de l'icône du titre (ex: 'text-danger').
+     * @param string $alertType Type d'alerte Bootstrap ('danger', 'warning', etc.).
+     * @param string|array $message Message de l'alerte (texte ou liste).
+     * @param string $backUrl URL du bouton de retour.
+     * @param string $backLabel Libellé du bouton de retour.
+     * @param string $backIcon Icône Bootstrap Icons du bouton de retour.
+     * @param string $backIconClass Classe CSS de l'icône du bouton de retour (ex: 'me-2').
+     * @return string Balises HTML complètes de l'écran.
+     */
+    private static function statusScreen(
+        string $titleIcon,
+        string $title,
+        string $titleColorClass,
+        string $alertType,
+        string|array $message,
+        string $backUrl,
+        string $backLabel,
+        string $backIcon,
+        string $backIconClass
+    ): string {
+        $alertHtml = self::alert($alertType, $message);
+        $titleHtml = self::title($title, $titleIcon, $titleColorClass);
+
+        return <<<HTML
+            {$titleHtml}
+            {$alertHtml}
+            <p class="mt-3">
+                <a class="btn btn-secondary d-inline-flex align-items-center" href="{$backUrl}">
+                    <i class="bi {$backIcon} {$backIconClass}"></i>
+                    {$backLabel}
+                </a>
             </p>
         HTML;
     }
