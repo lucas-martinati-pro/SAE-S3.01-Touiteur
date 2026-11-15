@@ -4,11 +4,13 @@ Touiteur.app, publication et partage de Touites. Elle est codée en PHP. Elle ut
 
 ## Groupe C
 
-- MARTINATI Lucas
-- CHARLES Samuel
-- LE MADEC Jean
+- [MARTINATI Lucas](https://github.com/lucas-martinati)
+- [CHARLES Samuel](https://github.com/CHARLES-Samuel)
+- [LE MADEC Jean](https://github.com/Le-Madec-Jean)
 
 ---
+
+## Depôt [Webetu](https://webetu.iutnc.univ-lorraine.fr/~e32772u/BUT_Info_S3/SAE/Touiteur/admin/)
 
 ## 👥 Comptes utilisateurs de test
 
