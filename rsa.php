@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 1.1 : Exponentiation rapide
+//! Partie 1 - 1.1 : Exponentiation rapide
 function decomposer(int $e): array {
     $puissances = [];
     $puissanceDe2 = 1; // Représente 1, puis 2, 4, 8, 16...
@@ -54,7 +54,7 @@ echo "expmod(3, 12, 7) = " . expmod(3, 12, 7) . "<br>";
 echo "Réponse : 1 <br>";
 
 echo "<hr>";
-// 1.2 :  PGCD (algorithme d'Euclide)
+//! Partie 1 - 1.2 :  PGCD (algorithme d'Euclide)
 function gcd(int $a, int $b) : int {
     if ($b > $a){
         $tmp = $b;
@@ -97,3 +97,34 @@ function RSAdecrypt($y, $e, $p, $q){
 }
 
 echo "Dechiffrement de 2 avec la clé privée 5 et 17 (et e = 5) : " .  RSAdecrypt(2,5,5,17) . "<br>";
+
+echo "<hr>";
+//! Partie 1 - 1.3 : Inverse modulaire (algorithme d'Euclide étendu)
+
+echo "<hr>";
+//! Partie 1 - 1.4 Chiffrement et déchiffrement RSA
+
+echo "<hr>";
+//! Partie 1 - 1.5 : Génération de clés : le test de Miller Rabin
+//? Q.1 :
+// A
+// B
+// C
+
+//? Q.2 :
+// A
+// B
+// C
+// D
+
+//! Partie 2 - Exercice 1
+//? Q.1 :
+// A
+// B
+// C
+// D
+// E
+// F
+// G
+// H
+// I
