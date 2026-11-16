@@ -4,47 +4,20 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 //! Partie 1 - 1.1 : Exponentiation rapide
-function decomposer(int $e): array {
-    $puissances = [];
-    $puissanceDe2 = 1; // Représente 1, puis 2, 4, 8, 16...
+function expmod(int $x, int $e, int $n): int {
+    $res = 1;
+    // On prend le modulo de x par n
+    $val = $x % $n;
 
+    // On parcours le binaire de $e directement
     while ($e > 0) {
-        // Si le reste de la division par 2 est 1, on garde cette puissance
+        // Si c'est une puissance de 2, alors on ajoute la valeur
         if ($e % 2 === 1) {
-            $puissances[] = $puissanceDe2;
+            $res = ($res * $val) % $n;
         }
 
-        // On passe à la puissance de 2 suivante
-        $puissanceDe2 *= 2;
-
-        // On divise $n par 2
-        $e = (int) ($e / 2); // On peut utiliser intdiv($e, 2)
-    }
-
-    // Remet les nombres dans l'ordre décroissant (ex: 16, 4, 1)
-    return array_reverse($puissances);
-}
-
-function expmod(int $x, int $e, int $n): int {
-    // On décompose l'exposent en somme de puissances de 2
-    $puissances = decomposer($e);
-
-    // On calcules chaques composents du résultat modulo n
-    $numbers = [];
-    $val = $x;
-    for ($i = 2; $i <= $puissances[0]; $i *= 2) {
-        // On fait la puissance par 2
-        $val *= $val;
-        // On ajoute la valeur modulo n à la liste des nombres à multiplier dans le résultat seulement si la puissance est dans la liste
-        if (in_array($i, $puissances)) $numbers[] = $val % $n;
-    }
-
-    // On reconstruit le résultat
-    $res = 1;
-    foreach ($numbers as $number) {
-        $res *= $number;
-        // On réalise le modulo n sur le résultat à chaque étape pour simplifier au maximum les calculs
-        $res %= $n;
+        $val = ($val * $val) % $n;
+        $e = (int) ($e / 2);
     }
 
     return $res;
@@ -54,7 +27,7 @@ echo "expmod(3, 12, 7) = " . expmod(3, 12, 7) . "<br>";
 echo "Réponse : 1 <br>";
 
 echo "<hr>";
-//! Partie 1 - 1.2 :  PGCD (algorithme d'Euclide)
+//! Partie 1 - 1.2 : PGCD (algorithme d'Euclide)
 function gcd(int $a, int $b) : int {
     if ($b > $a){
         $tmp = $b;
@@ -78,14 +51,34 @@ echo "<hr>";
 //! Partie 1 - 1.3 : Inverse modulaire (algorithme d'Euclide étendu)
 
 echo "<hr>";
-//! Partie 1 - 1.4 Chiffrement et déchiffrement RSA
+//! Partie 1 - 1.4 : Chiffrement et déchiffrement RSA
 
 echo "<hr>";
 //! Partie 1 - 1.5 : Génération de clés : le test de Miller Rabin
 //? Q.1 :
-// A
-// B
-// C
+// A. D'après le Petit Théorème de Fermat : Soit p un nombre premier, alors ∀a ∈ ℤ,  a^p ≡ a [p].
+// De plus, si p ne divise pas a (c'est-à-dire PGCD(a, p) = 1), alors a admet un inverse modulo p, noté a^(-1).
+// En multipliant par a(-1), on obtient :
+// a^p * a^(-1) ≡ a * a^(-1) [p] <=> a^(p - 1) ≡ 1 [p] car a * a^(-1) = 1
+
+// B.
+function nombreTemoinsFermat(int $n): int {
+    $nbBases = 0;
+    for ($a = 2; $a < $n; $a++) {
+        // a doit être premier avec n, donc PGCD(a, n) = 1
+        if (gcd($a, $n) === 1 && expmod($a, $n - 1, $n) !== 1) {
+            $nbBases++;
+        }
+    }
+    return $nbBases;
+}
+
+echo "nombreTemoinsFermat(561) = " . nombreTemoinsFermat(561) . "<br>";
+echo "Réponse : 0 <br>";
+echo "nombreTemoinsFermat(15) = " . nombreTemoinsFermat(15) . "<br>";
+
+// C. On peut donc constaté que le test de Fermat est incapable de détecter que 561 est composé. En effet, nôtre algorithme nombreTemoinsFermat
+// indique 0 pour la valeur 561 alors que 561 = 3 * 11 * 17.
 
 //? Q.2 :
 // A
