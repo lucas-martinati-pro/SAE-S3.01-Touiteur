@@ -113,6 +113,32 @@ echo "<hr>";
 // C
 // D
 
+//? Travail
+// A
+function estTemoin($a, $d, $s, $n) {
+    $x = expmod($a,$d,$n);
+
+    if ($x == 1 || $x == $n - 1) {
+        return false;
+    }
+
+    for($i = 0 ; $i < $s - 1 ; $i++) {
+
+        $x = ($x * $x) % $n;
+
+        if ($x == $n - 1) {
+            return false;
+        }
+
+    }
+
+    return true;
+}
+
+
+// B
+// C
+
 //! Partie 2 - Exercice 1
 //? Q.1 :
 // A
