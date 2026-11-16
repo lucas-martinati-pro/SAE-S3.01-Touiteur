@@ -111,9 +111,9 @@ echo "Dechiffrement de 2 avec la clé privée 5 et 17 (et e = 5) : " .  RSAdecry
 echo "<hr>";
 //! Partie 1 - 1.5 : Génération de clés : le test de Miller Rabin
 //? Q.1 :
-// A. D'après le Petit Théorème de Fermat : Soit p un nombre premier, alors ∀a ∈ ℤ,  a^p ≡ a [p].
+// A. D'après le Petit Théorème de Fermat : Soit p un nombre premier, alors ∀a ∈ ℤ, a^p ≡ a [p].
 // De plus, si p ne divise pas a (c'est-à-dire PGCD(a, p) = 1), alors a admet un inverse modulo p, noté a^(-1).
-// En multipliant par a(-1), on obtient :
+// En multipliant par a^(-1), on obtient :
 // a^p * a^(-1) ≡ a * a^(-1) [p] <=> a^(p - 1) ≡ 1 [p] car a * a^(-1) = 1
 
 // B.
@@ -136,9 +136,30 @@ echo "nombreTemoinsFermat(15) = " . nombreTemoinsFermat(15) . "<br>";
 // indique 0 pour la valeur 561 alors que 561 = 3 * 11 * 17.
 
 //? Q.2 :
-// A.
-// B.
-// C.
+// A. Par hypothèse, n est premier et a est premier avec n.
+// D'après le petit théorème de Fermat (démontré en Q1), on a donc a^(n-1) ≡ 1 [n].
+// Or, par définition, n - 1 = 2^s * d, d'où a^(2^s * d) = a^(n-1) ≡ 1 [n].
+
+// B. on a x^2 ≡ 1 [n]
+// <=> n | (x^2 - 1)
+// <=> n | (x - 1)(x + 1)
+// D'après le Lemme d'Euclide : Soit p un nombre premier, alors ∀b, c ∈ ℤ, p | bc <=> p | b ou p | c.
+// Donc n | (x - 1) ou n | (x + 1)
+// Donc x - 1 ≡ 0 [n] ou x + 1 ≡ 0 [n]
+// Donc x ≡ 1 [n] ou x ≡ -1 [n].
+
+// C. On cherche à montrer que a^d ≡ 1 [n] ou qu'il existe r ∈ {0, ..., s - 1} tel que a^(2^r *d) ≡ 1 [n]
+// Supposont qu'il existe aucun r ∈ {0, ..., s - 1} tel que a^(2^r *d) ≡ 1 [n].
+// On sait d'après le petit théorème de Fermet que a^(2^s *d) ≡ 1 [n], donc (a^(2^(s - 1) *d))^2 ≡ 1 [n]
+// Donc, d'après la propriété démontré en (B), on a donc :
+// a^(2^(s - 1) *d) ≡ 1 [n] ou a^(2^(s - 1) *d) ≡ -1 [n]
+// Or par hypothèse, aucun terme de la forme a^(2^r *d) (pour r ∈ {0, ..., s - 1}) n'est congu à -1 (mod n). On en déduit donc que a^(2^(s - 1) *d) ≡ 1 [n].
+// En répétant ce raisonnement de proche en proche (pour r = s - 2, s - 3, ... jusqu'à r = 0), chaque terme étant le carré du précédent et ne pouvant
+// jamais être congru à -1 (mod n), tous les termes valent 1 (mod n), jusqu'au premier terme de la suite : a^(2^0 *d) = a^d ≡ 1 [n].
+
+// Ainsi, si aucun terme ne vaut - 1 (mod n), on a nécessairement a^d ≡ 1 [n].
+// Dans tout les cas, l'une des conditions est bien vérifiés.
+
 // D.
 
 //? Travail
