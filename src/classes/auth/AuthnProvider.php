@@ -4,7 +4,6 @@ namespace iutnc\touiteur\auth;
 
 use iutnc\touiteur\exception\AuthnException;
 use iutnc\touiteur\repository\RepositoryFactory;
-use iutnc\touiteur\repository\TouiteurRepository;
 
 /**
  * Fournisseur d'authentification.
