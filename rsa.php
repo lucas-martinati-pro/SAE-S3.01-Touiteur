@@ -156,11 +156,9 @@ echo "nombreTemoinsFermat(15) = " . nombreTemoinsFermat(15) . "<br>";
 // Or par hypothèse, aucun terme de la forme a^(2^r *d) (pour r ∈ {0, ..., s - 1}) n'est congu à -1 (mod n). On en déduit donc que a^(2^(s - 1) *d) ≡ 1 [n].
 // En répétant ce raisonnement de proche en proche (pour r = s - 2, s - 3, ... jusqu'à r = 0), chaque terme étant le carré du précédent et ne pouvant
 // jamais être congru à -1 (mod n), tous les termes valent 1 (mod n), jusqu'au premier terme de la suite : a^(2^0 *d) = a^d ≡ 1 [n].
-
+//
 // Ainsi, si aucun terme ne vaut - 1 (mod n), on a nécessairement a^d ≡ 1 [n].
 // Dans tout les cas, l'une des conditions est bien vérifiés.
-
-// D.
 
 //? Travail
 // A.
