@@ -10,22 +10,32 @@ use iutnc\touiteur\exception\AuthnException;
  * Classe abstraite de base pour l'ensemble des actions de l'application.
  */
 abstract class Action {
+    /**
+     * Valeur utilisée pour http method.
+     */
     protected ?string $http_method = null;
+    /**
+     * Valeur utilisée pour hostname.
+     */
     protected ?string $hostname = null;
+    /**
+     * Valeur utilisée pour script name.
+     */
     protected ?string $script_name = null;
 
     /**
-     * Indique si l'action nécessite une authentification préalable.
-     * Vaut true par défaut, à surcharger à false pour les actions publiques.
+     * Indique si l'action nécessite une authentification préalable. Vaut true par défaut, à surcharger à false pour les actions publiques.
      */
     protected bool $requireAuth = true;
 
-    /** Données de l'utilisateur connecté, ou null s'il n'est pas connecté. */
+    /**
+     * Données de l'utilisateur connecté, ou null s'il n'est pas connecté.
+     * @var array{id: int|string, email: string, passwd: string, nom: string, prenom: string, counter_touite: int|string}|null
+     */
     protected ?array $user = null;
 
     /**
-     * Constructeur d'action.
-     * Initialise les attributs d'environnement du serveur et récupère l'utilisateur connecté s'il existe.
+     * Constructeur d'action. Initialise les attributs d'environnement du serveur et récupère l'utilisateur connecté s'il existe.
      */
     public function __construct() {
         $this->http_method = $_SERVER['REQUEST_METHOD'];
@@ -38,10 +48,8 @@ abstract class Action {
     }
 
     /**
-     * Exécute l'action appropriée après vérification de l'authentification requise.
-     * Appelle get() ou post() selon la méthode HTTP courante.
-     *
-     * @return string Balises HTML générées en réponse à la requête.
+     * Exécute l'action appropriée après vérification de l'authentification requise. Appelle get() ou post() selon la méthode HTTP courante.
+     * @return string Texte ou contenu HTML généré.
      */
     public function execute(): string {
         if ($this->requireAuth && $this->user === null) {
@@ -60,26 +68,23 @@ abstract class Action {
 
     /**
      * Permet d'invoquer directement l'instance de l'action comme une fonction.
-     *
-     * @return string Résultat de l'exécution de l'action.
+     * @return string Texte ou contenu HTML généré.
      */
     public function __invoke(): string {
         return $this->execute();
     }
 
     /**
-     * Traite les requêtes HTTP de type GET.
-     *
-     * @return string Code HTML généré pour l'affichage (formulaire, vue, etc.).
+     * Génère le contenu de la page correspondant à cette action.
+     * @return string Texte ou contenu HTML généré.
      */
     public function get(): string {
         return '';
     }
 
     /**
-     * Traite les requêtes HTTP de type POST.
-     *
-     * @return string Code HTML résultant du traitement (succès, redirection, erreur).
+     * Traite les données envoyées par le formulaire.
+     * @return string Texte ou contenu HTML généré.
      */
     public function post(): string {
         return '';
@@ -87,8 +92,7 @@ abstract class Action {
 
     /**
      * Vérifie les conditions de l'action (existence des paramètres, droits, ressources).
-     *
-     * @return string|null Message d'erreur HTML si la vérification échoue, null sinon.
+     * @return ?string Message d’erreur HTML, ou null si la vérification réussit.
      */
     protected function check(): ?string {
         return null;

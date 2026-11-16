@@ -10,10 +10,18 @@ use iutnc\touiteur\tag\Tag;
  * Repository centralisant les opérations d'accès à la base de données.
  */
 class TouiteurWriterRepository extends TouiteurRepository {
-    /**============================================
+    /**========================================================================
      * GESTION DES FOLLOWS
-     *=============================================**/
+     *========================================================================*/
 
+    /**
+     * Abonne un utilisateur à un utilisateur ou à un tag.
+     * @param int $userId identifiant de l’utilisateur.
+     * @param int $followedId identifiant de l’utilisateur ou du tag suivi.
+     * @param string $type type demandé.
+     * @return void Aucune valeur.
+     * @throws \PDOException En cas d’erreur lors de l’accès à la base de données.
+     */
     public function follow(int $userId, int $followedId, string $type): void {
         match ($type) {
             'user' => $this->updateRequest(<<<SQL
@@ -25,6 +33,14 @@ class TouiteurWriterRepository extends TouiteurRepository {
         };
     }
 
+    /**
+     * Retire l’abonnement d’un utilisateur à un utilisateur ou à un tag.
+     * @param int $userId identifiant de l’utilisateur.
+     * @param int $followedId identifiant de l’utilisateur ou du tag suivi.
+     * @param string $type type demandé.
+     * @return void Aucune valeur.
+     * @throws \PDOException En cas d’erreur lors de l’accès à la base de données.
+     */
     public function unfollow(int $userId, int $followedId, string $type): void {
         match ($type) {
             'user' => $this->updateRequest(<<<SQL
@@ -40,10 +56,18 @@ class TouiteurWriterRepository extends TouiteurRepository {
         };
     }
 
-    /**============================================
+    /**========================================================================
      * GESTION DES TOUITES
-     *=============================================**/
+     *========================================================================*/
 
+    /**
+     * Enregistre ou annule la note donnée à un touite.
+     * @param int $userId identifiant de l’utilisateur.
+     * @param int $touiteId identifiant du touite.
+     * @param TypeNote $state note à enregistrer.
+     * @return void Aucune valeur.
+     * @throws \PDOException En cas d’erreur lors de l’accès à la base de données.
+     */
     public function noteTouite(int $userId, int $touiteId, TypeNote $state): void {
         if ($state === TypeNote::annuler) {
             $this->updateRequest(<<<SQL
@@ -60,6 +84,13 @@ class TouiteurWriterRepository extends TouiteurRepository {
         }
     }
 
+    /**
+     * Enregistre un touite et retourne l’objet mis à jour.
+     * @param Touite $touite touite à afficher ou à enregistrer.
+     * @param int $userId identifiant de l’utilisateur.
+     * @return Touite Touite créé ou converti.
+     * @throws \PDOException En cas d’erreur lors de l’accès à la base de données.
+     */
     public function addTouite(Touite $touite, int $userId): Touite {
         $this->updateRequest(<<<SQL
                 INSERT INTO touite (content, note, media_path,media_description, posted_at, users_id) VALUES (:content, :note, :media_path, :media_desc, :posted_at, :user_id)
@@ -70,6 +101,13 @@ class TouiteurWriterRepository extends TouiteurRepository {
         return $touite;
     }
 
+    /**
+     * Associe un tag à un touite et crée le tag si nécessaire.
+     * @param Tag $tag valeur de tag.
+     * @param int $touiteId identifiant du touite.
+     * @return void Aucune valeur.
+     * @throws \PDOException En cas d’erreur lors de l’accès à la base de données.
+     */
     public function addTouiteTag(Tag $tag, int $touiteId): void {
         $tagId = $tag->getId();
         if ($tagId === null) {
@@ -85,6 +123,12 @@ class TouiteurWriterRepository extends TouiteurRepository {
         SQL, ['touite_id' => $touiteId, 'tag_id' => $tagId]);
     }
 
+    /**
+     * Supprime un touite, ses réactions et ses tags associés.
+     * @param Touite $touite touite à afficher ou à enregistrer.
+     * @return void Aucune valeur.
+     * @throws \PDOException En cas d’erreur lors de l’accès à la base de données.
+     */
     public function deleteTouite(Touite $touite): void {
         $this->updateRequest(<<<SQL
             DELETE FROM note2touite WHERE touite_id = :touite_id;
@@ -104,13 +148,13 @@ class TouiteurWriterRepository extends TouiteurRepository {
      *=============================================**/
 
     /**
-     * Crée un nouvel utilisateur en base de données avec un mot de passe haché (bcrypt).
-     *
-     * @param string $email Adresse email nettoyée de l'utilisateur.
-     * @param string $password Mot de passe en clair à hacher.
-     * @param string $nom Nom de l'utilisateur
-     * @param string $prenom Prénom de l'utilisateur
-     * @return void
+     * Crée un compte utilisateur avec un mot de passe haché.
+     * @param string $email adresse e-mail de l’utilisateur.
+     * @param string $password mot de passe de l’utilisateur.
+     * @param string $nom nom de l’utilisateur.
+     * @param string $prenom prénom de l’utilisateur.
+     * @return void Aucune valeur.
+     * @throws \PDOException En cas d’erreur lors de l’accès à la base de données.
      */
     public function addUser(string $email, string $password, string $nom, string $prenom): void {
         // Double par précaution;
