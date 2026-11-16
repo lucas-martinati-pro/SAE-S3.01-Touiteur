@@ -49,6 +49,35 @@ function expmod(int $x, int $e, int $n): int {
 
     return $res;
 }
+
+
+echo "expmod(3, 12, 7) = " . expmod(3, 12, 7) . "<br>";
+echo "Réponse : 1 <br>";
+
+echo "<hr>";
+//! Partie 1 - 1.2 :  PGCD (algorithme d'Euclide)
+function gcd(int $a, int $b) : int {
+    if ($b > $a){
+        $tmp = $b;
+        $b = $a;
+        $a = $tmp;
+    }
+
+    while ($b != 0){
+        $reste = $a % $b;
+        $a = $b;
+        $b = $reste;
+    }
+
+    return $a;
+}
+
+echo "gcd(12, 26) = " . gcd(12, 26) . "<br>";
+echo "Réponse : 2 <br>";
+
+echo "<hr>";
+//! Partie 1 - 1.3 : Inverse modulaire (algorithme d'Euclide étendu)
+
 function inversmod($e, $f): int | string
 {
     $r0 = $e;
@@ -85,35 +114,6 @@ function inversmod($e, $f): int | string
     }
 
 }
-
-
-
-echo "expmod(3, 12, 7) = " . expmod(3, 12, 7) . "<br>";
-echo "Réponse : 1 <br>";
-
-echo "<hr>";
-//! Partie 1 - 1.2 :  PGCD (algorithme d'Euclide)
-function gcd(int $a, int $b) : int {
-    if ($b > $a){
-        $tmp = $b;
-        $b = $a;
-        $a = $tmp;
-    }
-
-    while ($b != 0){
-        $reste = $a % $b;
-        $a = $b;
-        $b = $reste;
-    }
-
-    return $a;
-}
-
-echo "gcd(12, 26) = " . gcd(12, 26) . "<br>";
-echo "Réponse : 2 <br>";
-
-echo "<hr>";
-//! Partie 1 - 1.3 : Inverse modulaire (algorithme d'Euclide étendu)
 echo "inversmod(5,26) = " . inversmod(5, 26);
 echo "Réponse : 2 <br>";
 echo "inversmod(2,26) = " . inversmod(5, 26);
