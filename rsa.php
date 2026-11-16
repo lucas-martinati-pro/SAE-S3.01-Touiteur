@@ -161,6 +161,8 @@ function estTemoin(int $a, int $d, int $s, int $n) {
     return true;
 }
 
+echo "<hr>";
+
 // B
 function millerRabin($n, $k) {
 
@@ -186,16 +188,16 @@ function millerRabin($n, $k) {
     return true;
 }
 
-$resMiller = (millerRabin(561,20)) ? "premier" : "composé";
-echo $resMiller . "    ";
-$resMiller = (millerRabin(221,20)) ? "premier" : "composé";
-echo $resMiller . "    ";
-$resMiller = (millerRabin(997,20)) ? "premier" : "composé";
-echo $resMiller . "    ";
-$resMiller = (millerRabin(7919,20)) ? "premier" : "composé";
-echo $resMiller . "    ";
-
 // C
+
+$resMiller = (millerRabin(561,20)) ? "premier" : "composé";
+echo "- Test avec 561 et 20 : " . $resMiller . "<br>";
+$resMiller = (millerRabin(221,20)) ? "premier" : "composé";
+echo "- Test avec 221 et 20 : " . $resMiller . "<br>";
+$resMiller = (millerRabin(997,20)) ? "premier" : "composé";
+echo "- Test avec 997 et 20 : " . $resMiller . "<br>";
+$resMiller = (millerRabin(7919,20)) ? "premier" : "composé";
+echo "- Test avec 7919 et 20 : " . $resMiller;
 
 //! Partie 2 - Exercice 1
 //? Q.1 :
