@@ -29,7 +29,7 @@ echo "Réponse : 1 <br>";
 
 echo "<hr>";
 //! Partie 1 - 1.2 : PGCD (algorithme d'Euclide)
-function gcd(int $a, int $b) : int {
+function gcd(int $a, int $b): int {
     if ($b > $a){
         $tmp = $b;
         $b = $a;
@@ -93,7 +93,7 @@ function RSAencrypt(int $x, int $e, int $n){
 
 echo "Chiffrement de 3 avec la clé public 5 et 85 : " .  RSAencrypt(3,5,85) . "<br>";
 
-function RSAdecrypt(int $y, int $e, int $p, int $q){
+function RSAdecrypt(int $y, int $e, int $p, int $q) {
     $n = $p * $q;
     $phin = ($p - 1) * ($q - 1);
 
@@ -181,10 +181,8 @@ function estTemoin(int $a, int $d, int $s, int $n) {
 }
 
 echo "<hr>";
-
-// B
-function millerRabin($n, $k) {
-
+// B.
+function millerRabin(int $n, int $k) {
     if($n <= 1) return false; // les nombres négatifs, 0 et 1 ne sont pas premiers
     if($n == 2 || $n == 3) return true; // 2 et 3 sont premiers
     if ($n % 2 == 0) return false; // les nombres pairs ne sont forcément pas premier
@@ -203,12 +201,11 @@ function millerRabin($n, $k) {
             return false;
         }
     }
-    
+
     return true;
 }
 
-// C
-
+// C.
 $resMiller = (millerRabin(561,20)) ? "premier" : "composé";
 echo "- Test avec 561 et 20 : " . $resMiller . "<br>";
 $resMiller = (millerRabin(221,20)) ? "premier" : "composé";
@@ -217,6 +214,22 @@ $resMiller = (millerRabin(997,20)) ? "premier" : "composé";
 echo "- Test avec 997 et 20 : " . $resMiller . "<br>";
 $resMiller = (millerRabin(7919,20)) ? "premier" : "composé";
 echo "- Test avec 7919 et 20 : " . $resMiller;
+
+// D.
+function premierAleatoire(int $min, int $max): int {
+    return 0;
+}
+
+/**
+ * @return int[]
+ */
+function genererClesRSA(int $min, int $max): array {
+    $res = [];
+    $res[] = 1;
+    $res[] = 2;
+
+    return $res;
+}
 
 //! Partie 2 - Exercice 1
 //? Q.1 :
