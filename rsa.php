@@ -16,7 +16,7 @@ function expmod(int $x, int $e, int $n): int {
             $res = ($res * $val) % $n;
         }
 
-        $val = ($val * $val) % $n;
+        $val = ($val**2) % $n;
         $e = (int) ($e / 2);
     }
 
