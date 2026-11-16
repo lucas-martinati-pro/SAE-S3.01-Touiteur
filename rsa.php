@@ -49,6 +49,44 @@ function expmod(int $x, int $e, int $n): int {
 
     return $res;
 }
+function inversmod($e, $f): int | string
+{
+    $r0 = $e;
+    $u0 = 1;
+    $r1 = $f;
+    $u1 = 0;
+
+    while ($r1 > 0) {
+
+        $q = (int) ($r0 / $r1);
+
+        if ($q < 0) {
+            $q * (-1);
+        }
+
+        $tempR = $r0;
+        $tempU = $u0;
+
+        $r0 = $r1;
+        $u0 = $u1;
+
+        $r1 = $tempR - $q * $r1;
+        $u1 = $tempU - $q * $u1;
+
+
+
+    }
+
+    if ($r0 === 1) {
+        return (($u0 % $f) + $f) % $f;
+    } else {
+        return "L'inverse modulaire n'existe pas.";
+
+    }
+
+}
+
+
 
 echo "expmod(3, 12, 7) = " . expmod(3, 12, 7) . "<br>";
 echo "Réponse : 1 <br>";
@@ -76,6 +114,9 @@ echo "Réponse : 2 <br>";
 
 echo "<hr>";
 //! Partie 1 - 1.3 : Inverse modulaire (algorithme d'Euclide étendu)
+echo "inversmod(5,26) = " . inversmod(5, 26);
+echo "Réponse : 2 <br>";
+echo "inversmod(2,26) = " . inversmod(5, 26);
 
 echo "<hr>";
 //! Partie 1 - 1.4 Chiffrement et déchiffrement RSA
@@ -93,7 +134,7 @@ function RSAdecrypt($y, $e, $p, $q){
         throw new Exception("Erreur RSA : L'exposant e ($e) n'est pas premier avec phi(n) ($phin). La clé est invalide.");
     }
 
-    $d = inversermod($e, $phin);
+    $d = inversmod($e, $phin);
 
     return $y**$d % $n;
 }
