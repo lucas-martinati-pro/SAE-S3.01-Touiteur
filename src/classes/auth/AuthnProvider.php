@@ -13,7 +13,7 @@ class AuthnProvider {
      * Authentifie un utilisateur à partir de son email et mot de passe. En cas de succès, stocke l'utilisateur sérialisé dans la session ($_SESSION['user']).
      * @param string $email adresse e-mail de l’utilisateur.
      * @param string $password mot de passe de l’utilisateur.
-     * @return void  Aucune valeur.
+     * @return void Aucune valeur.
      * @throws AuthnException Si le traitement échoue.
      */
     public static function signin(string $email, string $password): void {
