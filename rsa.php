@@ -74,9 +74,11 @@ function gcd(int $a, int $b) : int {
 echo "gcd(12, 26) = " . gcd(12, 26) . "<br>";
 echo "Réponse : 2 <br>";
 
+echo "<hr>";
+//! Partie 1 - 1.3 : Inverse modulaire (algorithme d'Euclide étendu)
 
-// 1.4 : Chiffrement et déchiffrement RSA
-
+echo "<hr>";
+//! Partie 1 - 1.4 Chiffrement et déchiffrement RSA
 function RSAencrypt($x, $e, $n){
     return $x**$e % $n;
 }
@@ -97,12 +99,6 @@ function RSAdecrypt($y, $e, $p, $q){
 }
 
 echo "Dechiffrement de 2 avec la clé privée 5 et 17 (et e = 5) : " .  RSAdecrypt(2,5,5,17) . "<br>";
-
-echo "<hr>";
-//! Partie 1 - 1.3 : Inverse modulaire (algorithme d'Euclide étendu)
-
-echo "<hr>";
-//! Partie 1 - 1.4 Chiffrement et déchiffrement RSA
 
 echo "<hr>";
 //! Partie 1 - 1.5 : Génération de clés : le test de Miller Rabin
