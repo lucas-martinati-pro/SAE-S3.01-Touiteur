@@ -176,8 +176,40 @@ function estTemoin($a, $d, $s, $n) {
     return true;
 }
 
-
 // B
+function millerRabin($n, $k) {
+
+    if($n <= 1) return false; // les nombres négatifs, 0 et 1 ne sont pas premiers
+    if($n == 2 || $n == 3) return true; // 2 et 3 sont premiers
+    if ($n % 2 == 0) return false; // les nombres pairs ne sont forcément pas premier
+
+    $s = 0;
+    $d = $n - 1;
+
+    while($d % 2 == 0){
+        $s++;
+        $d = $d/2;
+    }
+
+    for($i = 0; $i < $k ; $i++){
+        $base = random_int(2,$n-2);
+        if(estTemoin($base, $d, $s, $n )) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+$resMiller = (millerRabin(561,20)) ? "composé" : "premier";
+echo $resMiller . "    ";
+$resMiller = (millerRabin(221,20)) ? "composé" : "premier";
+echo $resMiller . "    ";
+$resMiller = (millerRabin(997,20)) ? "composé" : "premier";
+echo $resMiller . "    ";
+$resMiller = (millerRabin(7919,20)) ? "composé" : "premier";
+echo $resMiller . "    ";
+
 // C
 
 //! Partie 2 - Exercice 1
