@@ -201,13 +201,13 @@ function millerRabin($n, $k) {
     return true;
 }
 
-$resMiller = (millerRabin(561,20)) ? "composé" : "premier";
+$resMiller = (millerRabin(561,20)) ? "premier" : "composé";
 echo $resMiller . "    ";
-$resMiller = (millerRabin(221,20)) ? "composé" : "premier";
+$resMiller = (millerRabin(221,20)) ? "premier" : "composé";
 echo $resMiller . "    ";
-$resMiller = (millerRabin(997,20)) ? "composé" : "premier";
+$resMiller = (millerRabin(997,20)) ? "premier" : "composé";
 echo $resMiller . "    ";
-$resMiller = (millerRabin(7919,20)) ? "composé" : "premier";
+$resMiller = (millerRabin(7919,20)) ? "premier" : "composé";
 echo $resMiller . "    ";
 
 // C
