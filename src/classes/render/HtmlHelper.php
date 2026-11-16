@@ -12,6 +12,11 @@ use iutnc\touiteur\repository\RepositoryFactory;
  * Classe d'assistance pour la génération des composants HTML de Touiteur.
  */
 class HtmlHelper {
+    /**
+     * Génère le formulaire de publication d’un touite.
+     * @param array{id: int|string, nom?: string, prenom?: string} $user données de l’utilisateur.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function addTouite(array $user): string {
         $profileAvatar = HtmlHelper::profileAvatar($user);
         return <<<HTML
@@ -67,10 +72,12 @@ class HtmlHelper {
     }
 
     /**
-     * Génère les liens à placer dans la balise nav des onglets.
-     *
-     * @param array<string, string> $tabs Types d'onglets associés à leurs libellés.
-     * @param array<string, mixed> $params Paramètres à conserver, comme id ou search.
+     * Génère les liens des onglets avec leurs paramètres.
+     * @param array<string, string> $tabs onglets à afficher.
+     * @param string $active onglet actif.
+     * @param string $action nom de l’action.
+     * @param array<string, scalar|null> $params paramètres à conserver.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function tabs(array $tabs, string $active, string $action, array $params = []): string {
         $html = '';
@@ -93,6 +100,11 @@ class HtmlHelper {
         return $html;
     }
 
+    /**
+     * Génère un message indiquant que l’utilisateur est déjà connecté.
+     * @param string $email adresse e-mail de l’utilisateur.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function alreadyLogin(string $email): string {
         $email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
 
@@ -111,6 +123,11 @@ class HtmlHelper {
         HTML;
     }
 
+    /**
+     * Choisit une couleur d’avatar à partir de l’identifiant utilisateur.
+     * @param int $userId identifiant de l’utilisateur.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function profileColor(int $userId): string {
         $colors = [
             'profile-color-blue',
@@ -124,6 +141,12 @@ class HtmlHelper {
         return $colors[$userId % count($colors)];
     }
 
+    /**
+     * Génère l’avatar d’un utilisateur à partir de ses initiales.
+     * @param array{id: int|string, nom?: string, prenom?: string} $user données de l’utilisateur.
+     * @param string $class classe CSS de l’avatar.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function profileAvatar(array $user, string $class = 'touite-avatar'): string {
         $userId = (int) $user['id'];
         $displayName = trim(($user['nom'] ?? '') . ' ' . ($user['prenom'] ?? ''));
@@ -133,6 +156,14 @@ class HtmlHelper {
         return "<div class=\"{$class} {$color}\">{$initial}</div>";
     }
 
+    /**
+     * Génère le bouton permettant de suivre ou de ne plus suivre un utilisateur.
+     * @param int $userId identifiant de l’utilisateur.
+     * @param bool $isSubscribed état actuel de l’abonnement.
+     * @param string $type type demandé.
+     * @param string $buttonClass classes CSS du bouton.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function subscriptionButton(
         int $userId,
         bool $isSubscribed,
@@ -156,8 +187,13 @@ class HtmlHelper {
     }
 
     /**
-     * Génère une ligne cliquable cohérente pour une liste (tag, profil ou raccourci).
-     * $leadingHtml est du HTML de présentation généré par l'application, par exemple un avatar.
+     * Génère une ligne cliquable cohérente pour une liste (tag, profil ou raccourci). $leadingHtml est du HTML de présentation généré par l'application, par exemple un avatar.
+     * @param string $url adresse de destination.
+     * @param string $leadingHtml contenu HTML affiché au début du lien.
+     * @param string $title titre à afficher.
+     * @param string $subtitle texte secondaire.
+     * @param string $meta informations complémentaires.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function listLink(string $url, string $leadingHtml, string $title, string $subtitle = '', string $meta = ''): string {
         $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
@@ -184,6 +220,13 @@ class HtmlHelper {
         HTML;
     }
 
+    /**
+     * Génère le formulaire de recherche des touites.
+     * @param string $action nom de l’action.
+     * @param string $value valeur du champ.
+     * @param string $placeholder texte indicatif.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function searchForm(string $action, string $value = '', string $placeholder = 'Rechercher un touite'): string {
         $action = htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
         $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
@@ -209,6 +252,13 @@ class HtmlHelper {
         HTML;
     }
 
+    /**
+     * Génère les boutons de réaction et de suppression d’un touite.
+     * @param int $touiteId identifiant du touite.
+     * @param int $note valeur numérique de la note.
+     * @param TypeRender $selector type de rendu demandé.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function touiteActions(int $touiteId, int $note, TypeRender $selector): string {
         $noteClass = $note < 0
             ? 'touite-note-negative'
@@ -268,18 +318,40 @@ class HtmlHelper {
         HTML;
     }
 
+    /**
+     * Génère un bouton HTML avec son libellé et son icône.
+     * @param string $label libellé à afficher.
+     * @param string $icon icône à afficher.
+     * @param string $variant variante visuelle.
+     * @param string $type type demandé.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function button(string $label, string $icon = '', string $variant = 'primary', string $type = 'submit'): string {
         $iconHtml = $icon !== '' ? "<i class=\"bi {$icon}\" aria-hidden=\"true\"></i>" : '';
 
         return "<button type=\"{$type}\" class=\"btn btn-{$variant}\">{$iconHtml}{$label}</button>";
     }
 
+    /**
+     * Génère un lien présenté comme un bouton.
+     * @param string $label libellé à afficher.
+     * @param string $url adresse de destination.
+     * @param string $icon icône à afficher.
+     * @param string $variant variante visuelle.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function linkButton(string $label, string $url, string $icon = '', string $variant = 'primary'): string {
         $iconHtml = $icon !== '' ? "<i class=\"bi {$icon}\" aria-hidden=\"true\"></i>" : '';
 
         return "<a class=\"btn btn-{$variant}\" href=\"{$url}\">{$iconHtml}{$label}</a>";
     }
 
+    /**
+     * Génère un lien de retour.
+     * @param string $url adresse de destination.
+     * @param string $label libellé à afficher.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function backLink(string $url = '?action=feed', string $label = 'Retour au feed'): string {
         $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
         $label = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
@@ -291,6 +363,14 @@ class HtmlHelper {
         HTML;
     }
 
+    /**
+     * Génère l’en-tête d’une page de détail avec son lien de retour.
+     * @param string $title titre à afficher.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $trailingContent contenu affiché après le titre.
+     * @param string $subtitle texte secondaire.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function detailHeader(
         string $title,
         string $backUrl = '?action=feed',
@@ -313,6 +393,13 @@ class HtmlHelper {
         HTML;
     }
 
+    /**
+     * Génère les liens de navigation entre les pages.
+     * @param string $ariaLabel libellé accessible.
+     * @param string $action nom de l’action.
+     * @param Pagination $pagination paramètres de pagination.
+     * @return string Texte ou contenu HTML généré.
+     */
     public static function pagination(string $ariaLabel, string $action, Pagination $pagination): string {
         $previous = $pagination->previous();
         $next = $pagination->next();
@@ -337,11 +424,10 @@ class HtmlHelper {
 
     /**
      * Génère un titre de page cohérent avec le design de Touiteur.
-     *
-     * @param string $title Texte du titre à afficher.
-     * @param string $icon Nom ou classe de l'icône Bootstrap Icons (ex: 'bi-music-note', 'music-note' ou 'bi bi-music-note').
-     * @param string $color Classe CSS de couleur (ex: 'text-primary', 'text-danger'). Défaut: 'text-primary'.
-     * @return string Balises HTML du titre formaté.
+     * @param string $title titre à afficher.
+     * @param string $icon icône à afficher.
+     * @param string $color couleur à utiliser.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function title(string $title = '', string $icon = '', string $color = 'text-primary'): string {
         return <<<HTML
@@ -354,10 +440,9 @@ class HtmlHelper {
 
     /**
      * Génère une alerte Touiteur (texte simple ou liste non ordonnée).
-     *
-     * @param string $type Type d'alerte ('success', 'warning', 'danger', 'info'). Par défaut 'info'.
-     * @param string|array $content Texte unique ou tableau de messages à afficher.
-     * @return string Balises HTML de l'alerte Bootstrap.
+     * @param string $type type demandé.
+     * @param string|list<string> $content contenu du touite.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function alert(string $type = 'info', string|array $content = ''): string {
         $icon = match ($type) {
@@ -389,14 +474,13 @@ class HtmlHelper {
     }
 
     /**
-     * Génère un écran d'erreur générique complet avec bouton de retour.
-     *
-     * @param string $title Titre affiché en tête de page (défaut: 'Erreur').
-     * @param string|array $message Message d'erreur ou liste d'erreurs.
-     * @param string $backUrl URL du lien de retour (défaut: 'index.php').
-     * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à l'accueil').
-     * @param string $type Type d'alerte Bootstrap ('danger', 'warning', etc. Défaut: 'danger').
-     * @return string Balises HTML de la page d'erreur.
+     * Génère une page présentant une erreur et un lien de retour.
+     * @param string $title titre à afficher.
+     * @param string|list<string> $message message à afficher.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $backLabel libellé du lien de retour.
+     * @param string $type type demandé.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function errorPage(string $title = 'Erreur', string|array $message = 'Une erreur inattendue est survenue.', string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil", string $type = 'danger'): string {
         $titleColor = match ($type) {
@@ -420,14 +504,13 @@ class HtmlHelper {
     }
 
     /**
-     * Génère un écran d'accès refusé quand l'utilisateur n'est pas connecté.
-     *
-     * @param string $message Message explicatif (défaut: 'Vous devez être connecté pour accéder à cette page.').
-     * @param string $loginUrl URL vers la page de connexion (défaut: '?action=signin').
-     * @param string $loginLabel Libellé du bouton de connexion (défaut: 'Se connecter').
-     * @param string $backUrl URL du bouton retour (défaut: 'index.php').
-     * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à l'accueil').
-     * @return string Balises HTML de l'écran d'accès refusé.
+     * Génère un message demandant à l’utilisateur de se connecter.
+     * @param string $message message à afficher.
+     * @param string $loginUrl adresse de connexion.
+     * @param string $loginLabel libellé du lien de connexion.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $backLabel libellé du lien de retour.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function authRequired(string $message = 'Vous devez être connecté pour accéder à cette page.', string $loginUrl = '?action=signin', string $loginLabel = 'Se connecter', string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil"): string {
         $alert = self::alert('warning', $message);
@@ -453,12 +536,11 @@ class HtmlHelper {
     }
 
     /**
-     * Génère un écran d'accès interdit pour un utilisateur sans droits suffisants.
-     *
-     * @param string $message Message d'erreur explicatif.
-     * @param string $backUrl URL de retour (défaut: '?action=feed').
-     * @param string $backLabel Libellé du bouton retour (défaut: 'Retour à mon feed').
-     * @return string Balises HTML de l'écran d'interdiction.
+     * Génère un message indiquant que l’accès est interdit.
+     * @param string $message message à afficher.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $backLabel libellé du lien de retour.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
         return self::statusScreen(
@@ -475,13 +557,12 @@ class HtmlHelper {
     }
 
     /**
-     * Génère un écran pour ressource introuvable.
-     *
-     * @param string $item Nom de la ressource introuvable.
-     * @param string $message Message d'erreur explicatif.
-     * @param string $backUrl URL du lien de retour (défaut: '?action=feed').
-     * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour à mon feed').
-     * @return string Balises HTML de la page 404.
+     * Génère un message indiquant que la ressource est introuvable.
+     * @param string $item nom de la ressource.
+     * @param string $message message à afficher.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $backLabel libellé du lien de retour.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function notFound(string $item = 'Ressource', string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
         return self::statusScreen(
@@ -498,13 +579,12 @@ class HtmlHelper {
     }
 
     /**
-     * Génère un écran d'erreur de formulaire avec bouton de retour arrière vers le formulaire.
-     *
-     * @param string|array $errors Message d'erreur unique ou tableau de messages.
-     * @param string $backUrl URL de retour (par défaut: 'index.php').
-     * @param string $backLabel Libellé du bouton de retour (défaut: 'Retour au formulaire').
-     * @param string $title Titre de l'écran d'erreur (défaut: 'Erreur dans le formulaire').
-     * @return string Balises HTML de l'écran d'erreur de formulaire.
+     * Génère une page présentant les erreurs de validation d’un formulaire.
+     * @param string|list<string> $errors erreurs à afficher.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $backLabel libellé du lien de retour.
+     * @param string $title titre à afficher.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function formError(string|array $errors = 'Une erreur est survenue lors de la validation du formulaire.', string $backUrl = 'index.php', string $backLabel = 'Retour au formulaire', string $title = 'Erreur dans le formulaire'): string {
         return self::statusScreen(
@@ -521,13 +601,14 @@ class HtmlHelper {
     }
 
     /**
-     * Génère un écran de confirmation de succès avec bouton d'action suivante.
-     *
-     * @param string $title Titre du message de succès (défaut: 'Opération réussie').
-     * @param string $message Message de confirmation textuel ou HTML.
-     * @param string $backUrl URL de redirection ou d'action suivante (défaut: '?action=feed').
-     * @param string $backLabel Libellé du bouton d'action suivante (défaut: 'Retour à mon feed').
-     * @return string Balises HTML de la page de confirmation de succès.
+     * Génère une page de confirmation avec les liens proposés.
+     * @param string $title titre à afficher.
+     * @param string $message message à afficher.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $backLabel libellé du lien de retour.
+     * @param string $secondaryUrl adresse du lien secondaire.
+     * @param string $secondaryLabel libellé du lien secondaire.
+     * @return string Texte ou contenu HTML généré.
      */
     public static function successPage(
         string $title = 'Opération réussie',
@@ -566,18 +647,17 @@ class HtmlHelper {
     }
 
     /**
-     * Génère un écran de statut uniforme : titre, alerte et bouton de retour.
-     *
-     * @param string $titleIcon Icône Bootstrap Icons affichée à côté du titre.
-     * @param string $title Titre de l'écran.
-     * @param string $titleColorClass Couleur de l'icône du titre (ex: 'text-danger').
-     * @param string $alertType Type d'alerte Bootstrap ('danger', 'warning', etc.).
-     * @param string|array $message Message de l'alerte (texte ou liste).
-     * @param string $backUrl URL du bouton de retour.
-     * @param string $backLabel Libellé du bouton de retour.
-     * @param string $backIcon Icône Bootstrap Icons du bouton de retour.
-     * @param string $backIconClass Classe CSS de l'icône du bouton de retour (ex: 'me-2').
-     * @return string Balises HTML complètes de l'écran.
+     * Génère une page de statut avec un message et un lien de retour.
+     * @param string $titleIcon icône du titre.
+     * @param string $title titre à afficher.
+     * @param string $titleColorClass classe CSS de la couleur du titre.
+     * @param string $alertType type d’alerte à afficher.
+     * @param string|list<string> $message message à afficher.
+     * @param string $backUrl adresse du lien de retour.
+     * @param string $backLabel libellé du lien de retour.
+     * @param string $backIcon icône du lien de retour.
+     * @param string $backIconClass classe CSS de l’icône de retour.
+     * @return string Texte ou contenu HTML généré.
      */
     private static function statusScreen(
         string $titleIcon,
