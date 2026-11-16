@@ -7,11 +7,29 @@ use iutnc\touiteur\enum\TypeRender;
 use iutnc\touiteur\pagination\Pagination;
 use Override;
 
+/**
+ * Classe FeedRenderer de l’application.
+ */
 class FeedRenderer implements Renderer {
+    /**
+     * Valeur utilisée pour feed.
+     */
     protected Feed $feed;
+    /**
+     * Valeur utilisée pour pagination.
+     */
     private Pagination $pagination;
+    /**
+     * Valeur utilisée pour action.
+     */
     private string $action;
 
+    /**
+     * Initialise les données nécessaires à cet objet.
+     * @param Feed $feed fil de touites à afficher.
+     * @param Pagination $pagination paramètres de pagination.
+     * @param string $action nom de l’action.
+     */
     public function __construct(Feed $feed, Pagination $pagination, string $action) {
         $this->feed = $feed;
         $this->pagination = $pagination;

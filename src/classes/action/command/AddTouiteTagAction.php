@@ -7,6 +7,9 @@ use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\action\Action;
 use Override;
 
+/**
+ * Classe AddTouiteTagAction de l’application.
+ */
 class AddTouiteTagAction extends Action {
     protected bool $requireAuth = true;
 

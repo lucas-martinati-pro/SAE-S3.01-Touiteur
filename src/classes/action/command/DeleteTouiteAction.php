@@ -6,6 +6,9 @@ use iutnc\touiteur\render\HtmlHelper;
 use iutnc\touiteur\action\Action;
 use Override;
 
+/**
+ * Classe DeleteTouiteAction de l’application.
+ */
 class DeleteTouiteAction extends Action {
     protected bool $requireAuth = true;
 
