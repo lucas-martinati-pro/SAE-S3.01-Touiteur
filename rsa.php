@@ -80,9 +80,9 @@ function inversemod(int $e, int $f): int | string {
         return "L'inverse modulaire n'existe pas.";
     }
 }
-echo "inversemod(5,26) = " . inversemod(5, 26) . "<br>";
+echo "inversemod(5, 26) = " . inversemod(5, 26) . "<br>";
 echo "Réponse : 21<br>";
-echo "inversemod(2,26) = " . inversemod(5, 26) . "<br>";
+echo "inversemod(2, 26) = " . inversemod(5, 26) . "<br>";
 echo "Réponse : L'inverse modulaire n'existe pas.<br>";
 
 echo "<hr>";
@@ -221,7 +221,7 @@ function premierAleatoire(int $min, int $max): int {
 }
 
 /**
- * @return int[]
+ * @return list<int>
  */
 function genererClesRSA(int $min, int $max): array {
     $res = [];
