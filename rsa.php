@@ -29,7 +29,7 @@ echo "Réponse : 1 <br>";
 
 echo "<hr>";
 //! Partie 1 - 1.2 : PGCD (algorithme d'Euclide)
-function gcd(int $a, int $b) : int {
+function gcd(int $a, int $b): int {
     if ($b > $a){
         $tmp = $b;
         $b = $a;
@@ -80,9 +80,9 @@ function inversemod(int $e, int $f): int | string {
         return "L'inverse modulaire n'existe pas.";
     }
 }
-echo "inversemod(5,26) = " . inversemod(5, 26) . "<br>";
+echo "inversemod(5, 26) = " . inversemod(5, 26) . "<br>";
 echo "Réponse : 21<br>";
-echo "inversemod(2,26) = " . inversemod(5, 26) . "<br>";
+echo "inversemod(2, 26) = " . inversemod(5, 26) . "<br>";
 echo "Réponse : L'inverse modulaire n'existe pas.<br>";
 
 echo "<hr>";
@@ -93,7 +93,7 @@ function RSAencrypt(int $x, int $e, int $n){
 
 echo "Chiffrement de 3 avec la clé public 5 et 85 : " .  RSAencrypt(3,5,85) . "<br>";
 
-function RSAdecrypt(int $y, int $e, int $p, int $q){
+function RSAdecrypt(int $y, int $e, int $p, int $q) {
     $n = $p * $q;
     $phin = ($p - 1) * ($q - 1);
 
@@ -160,6 +160,7 @@ echo "nombreTemoinsFermat(15) = " . nombreTemoinsFermat(15) . "<br>";
 // Ainsi, si aucun terme ne vaut - 1 (mod n), on a nécessairement a^d ≡ 1 [n].
 // Dans tout les cas, l'une des conditions est bien vérifiés.
 
+echo "<hr>";
 //? Travail
 // A.
 function estTemoin(int $a, int $d, int $s, int $n) {
@@ -179,8 +180,6 @@ function estTemoin(int $a, int $d, int $s, int $n) {
 
     return true;
 }
-
-echo "<hr>";
 
 // B
 function millerRabin(int $n, int $k) {
@@ -206,8 +205,7 @@ function millerRabin(int $n, int $k) {
     return true;
 }
 
-// C
-
+// C.
 $resMiller = (millerRabin(561,20)) ? "premier" : "composé";
 echo "- Test avec 561 et 20 : " . $resMiller . "<br>";
 $resMiller = (millerRabin(221,20)) ? "premier" : "composé";
@@ -216,6 +214,83 @@ $resMiller = (millerRabin(997,20)) ? "premier" : "composé";
 echo "- Test avec 997 et 20 : " . $resMiller . "<br>";
 $resMiller = (millerRabin(7919,20)) ? "premier" : "composé";
 echo "- Test avec 7919 et 20 : " . $resMiller;
+
+echo "<hr>";
+// D.
+// version du premierAleatoire sans l'utilisation de GMP (utilisation de nos méthode)
+function premierAleatoireNoGMP(int $min, int $max): int {
+    $number = random_int($min, $max);
+    while (!millerRabin($number, 20)) {
+        $number = random_int($min, $max);
+    }
+    return $number;
+}
+
+// version du genererClesRSA sans l'utilisation de GMP (utilisation de nos méthode)
+function genererClesRSANoGMP(int $min, int $max): array {
+    // Définition des nombres premier aléatoires
+    $primeN = [premierAleatoireNoGMP($min, $max), premierAleatoireNoGMP($min, $max)];
+    // On vérifie que les p et q soient différents
+    while ($primeN[0] === $primeN[1]) {
+        $primeN = [premierAleatoireNoGMP($min, $max), premierAleatoireNoGMP($min, $max)];
+    }
+    // Calcule de n;
+    $n = $primeN[0] * $primeN[1];
+    // Calcule de phi(n)
+    $phin = ($primeN[0] - 1) * ($primeN[1] - 1);
+
+    // On choisie un e aléatoire supérieur à 1 et infèrieur à phi(n) car supérieur ne sert à rien.
+    $e = random_int(1, $phin - 1);
+    // Et on vérifie qu'il est bien premier avec n
+    while (gcd($phin, $e) !== 1) {
+        $e = random_int(1, $phin - 1);
+    }
+
+    // On récupère l'inverse de e par phi(n)
+    $d = inversemod($e, $phin);
+
+    return ['p' => $primeN[0], 'q' => $primeN[1], 'n' => $n, 'phi(n)' => $phin, 'e' => $e, 'd' => $d];
+}
+
+// version du premierAleatoire avec l'utilisation de GMP
+function premierAleatoire(int $min, int $max): GMP {
+    $number = gmp_random_range($min, $max);
+    while (gmp_prob_prime($number, 20) === 0) {
+        $number = gmp_random_range($min, $max);
+    }
+    return $number;
+}
+
+// version du genererClesRSA avec l'utilisation de GMP
+// Pour utiliser la fonction avec des nombres sur 4048 bits, on met en paramètres soit des GMP, soit des string en plus.
+function genererClesRSA(GMP|string|int $min, GMP|string|int $max): array {
+    // Définition des nombres premier aléatoires
+    $primeN = [premierAleatoire($min, $max), premierAleatoire($min, $max)];
+    // On vérifie que les p et q soient différents
+    while (gmp_cmp($primeN[0], $primeN[1]) === 0) {
+        $primeN = [premierAleatoire($min, $max), premierAleatoire($min, $max)];
+    }
+
+    // Calcule de n;
+    $n = $primeN[0] * $primeN[1];
+    // Calcule de phi(n)
+    $phin = ($primeN[0] - 1) * ($primeN[1] - 1);
+
+    // On choisie un e aléatoire supérieur à 1 et infèrieur à phi(n) car supérieur ne sert à rien.
+    $e = gmp_random_range(2, $phin - 1);
+    // Et on vérifie qu'il est bien premier avec n
+    while (gmp_gcd($phin, $e) != 1) {
+        $e = gmp_random_range(1, $phin - 1);
+    }
+
+    // On récupère l'inverse de e par phi(n)
+    $d = gmp_invert($e, $phin);
+
+    return ['p' => $primeN[0], 'q' => $primeN[1], 'n' => $n, 'phi(n)' => $phin, 'e' => $e, 'd' => $d];
+}
+
+echo "- Clé avec des premers dans [100, 999] : ";
+var_dump(genererClesRSA(100, 999));
 
 //! Partie 2 - Exercice 1
 //? Q.1 :
