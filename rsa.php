@@ -294,12 +294,41 @@ var_dump(genererClesRSA(100, 999));
 
 //! Partie 2 - Exercice 1
 //? Q.1 :
-// A.
-// B.
-// C.
-// D.
-// E.
+// A. La clé privée (11, 23) est admissible si et seulement si 23 et 11 sont premier entre eux, c'est-à-dire que le PGCD(23, 11) = 1 :
+// 23 = 11 * 2 + 1, donc PGCD(23, 11) = 1.
+// Donc la clé (11, 23) est admissible. p = 11 et q = 23
+
+// B. n_B = pq = 11 * 23 = 253.
+// phi(n_B) = phi(pq) = (p - 1)(q - 1) = 10 * 22 = 220
+
+// C. Pour que la clé (253, 17) soit admissible (donc n_B = 253 et e_B = 17), il faut que e_B soit premier avec phi(n_B) (pour qu'il soit inversible).
+// Et e et phi(n_B) sont premier entre eux si et seulemenet si PGCD(phi(n_B), e_B) = 1 avec phi(n_B) = 220 et e_B = 17 :
+// 220 = 17 * 12 + 16
+// 17 = 16 + 1 Donc PGCD(220, 17) = 1.
+// Donc la clé (253, 17) est admissible.
+
+// D. d_B = (e_B)^(-1) [phi(n_B)], Il faut donc trouver l'inverse de e_B modulo phi(n) :
+// 1 = 17 - 16
+// 1 = 17 - (220 - 17 * 12)
+// 1 = 17 * 13 + 220 * (-1)
+// Donc d_B = (e_B)^(-1) mod phi(n_B) = 13, en effet 17 * 33 ≡ 1 [220].
+
+// E. 13 = 8 + 4 + 1
+// 100^1 ≡ 100 [253]
+// 100^2 ≡ 10000 [253] ≡ 133 [253]
+// 100^4 ≡ 133^2 [253] ≡ 17689 ≡ 232 [253]
+// 100^8 ≡ 232^2 [253] ≡ 53824 ≡ 188 [253]
+// 100^13 ≡ 100^8 * 100^4 * 100 [253]
+// 100^13 ≡ 188 * 232 * 100 [253]
+// 100^13 ≡ 100 * 100 [253]
+// 100^13 ≡ 100^2 [253]
+// 100^13 ≡ 133 [253]
+// s = 133
+
 // F.
+
 // G.
+
 // H.
+
 // I.
