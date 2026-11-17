@@ -97,7 +97,7 @@ function RSAdecrypt(int $y, int $e, int $p, int $q): int {
     $phin = ($p - 1) * ($q - 1);
 
     if (gcd($e, $phin) != 1) {
-        throw new Exception("Erreur RSA : L'exposant e ($e) n'est pas premier avec phi(n) ($phin). La clé est invalide.");
+        throw new Exception("Erreur RSA : L'exposant e ($e) n'est pas premier avec φ(n) ($phin). La clé est invalide.");
     }
 
     $d = inversemod($e, $phin);
@@ -252,17 +252,17 @@ function genererClesRSANoGMP(int $min, int $max): array {
     }
     // Calcule de n;
     $n = $primeN[0] * $primeN[1];
-    // Calcule de phi(n)
+    // Calcule de φ(n)
     $phin = ($primeN[0] - 1) * ($primeN[1] - 1);
 
-    // On choisie un e aléatoire supérieur à 1 et infèrieur à phi(n) car supérieur ne sert à rien.
+    // On choisie un e aléatoire supérieur à 1 et infèrieur à φ(n) car supérieur ne sert à rien.
     $e = random_int(1, $phin - 1);
     // Et on vérifie qu'il est bien premier avec n
     while (gcd($phin, $e) !== 1) {
         $e = random_int(1, $phin - 1);
     }
 
-    // On récupère l'inverse de e par phi(n)
+    // On récupère l'inverse de e par φ(n)
     $d = inversemod($e, $phin);
 
     return ['p' => $primeN[0], 'q' => $primeN[1], 'n' => $n, 'phi(n)' => $phin, 'e' => $e, 'd' => $d];
@@ -289,17 +289,17 @@ function genererClesRSA(GMP|string|int $min, GMP|string|int $max): array {
 
     // Calcule de n;
     $n = $primeN[0] * $primeN[1];
-    // Calcule de phi(n)
+    // Calcule de φ(n)
     $phin = ($primeN[0] - 1) * ($primeN[1] - 1);
 
-    // On choisie un e aléatoire supérieur à 1 et infèrieur à phi(n) car supérieur ne sert à rien.
+    // On choisie un e aléatoire supérieur à 1 et infèrieur à φ(n) car supérieur ne sert à rien.
     $e = gmp_random_range(2, $phin - 1);
     // Et on vérifie qu'il est bien premier avec n
     while (gmp_gcd($phin, $e) != 1) {
         $e = gmp_random_range(1, $phin - 1);
     }
 
-    // On récupère l'inverse de e par phi(n)
+    // On récupère l'inverse de e par φ(n)
     $d = gmp_invert($e, $phin);
 
     return ['p' => $primeN[0], 'q' => $primeN[1], 'n' => $n, 'phi(n)' => $phin, 'e' => $e, 'd' => $d];
@@ -320,13 +320,13 @@ HTML);
 question("B.");
 show(<<<HTML
 n_B = pq = 11 * 23 = 253.
-phi(n_B) = phi(pq) = (p - 1)(q - 1) = 10 * 22 = 220
+φ(n_B) = φ(pq) = (p - 1)(q - 1) = 10 * 22 = 220
 HTML);
 
 question("C.");
 show(<<<HTML
-Pour que la clé (253, 17) soit admissible (donc n_B = 253 et e_B = 17), il faut que e_B soit premier avec phi(n_B) (pour qu'il soit inversible).
-Et e et phi(n_B) sont premier entre eux si et seulemenet si PGCD(phi(n_B), e_B) = 1 avec phi(n_B) = 220 et e_B = 17 :
+Pour que la clé (253, 17) soit admissible (donc n_B = 253 et e_B = 17), il faut que e_B soit premier avec φ(n_B) (pour qu'il soit inversible).
+Et e et φ(n_B) sont premier entre eux si et seulemenet si PGCD(φ(n_B), e_B) = 1 avec φ(n_B) = 220 et e_B = 17 :
 220 = 17 * 12 + 16
 17 = 16 + 1 Donc PGCD(220, 17) = 1.
 Donc la clé (253, 17) est admissible.
@@ -334,11 +334,11 @@ HTML);
 
 question("D.");
 show(<<<HTML
-d_B = (e_B)^(-1) [phi(n_B)], Il faut donc trouver l'inverse de e_B modulo phi(n) :
+d_B = (e_B)^(-1) [φ(n_B)], Il faut donc trouver l'inverse de e_B modulo φ(n) :
 1 = 17 - 16
 1 = 17 - (220 - 17 * 12)
 1 = 17 * 13 + 220 * (-1)
-Donc d_B = (e_B)^(-1) mod phi(n_B) = 13, en effet 17 * 33 ≡ 1 [220].
+Donc d_B = (e_B)^(-1) mod φ(n_B) = 13, en effet 17 * 33 ≡ 1 [220].
 HTML);
 
 question("E.");
