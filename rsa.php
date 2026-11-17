@@ -224,13 +224,13 @@ function millerRabin(int $n, int $k): bool {
 
 question("C.");
 $resMiller = (millerRabin(561,20)) ? "premier" : "composé";
-show("<li> Test avec 561 et 20 : ", $resMiller);
+show("Test avec 561 et 20 : ", $resMiller);
 $resMiller = (millerRabin(221,20)) ? "premier" : "composé";
-show("<li> Test avec 221 et 20 : ", $resMiller);
+show("Test avec 221 et 20 : ", $resMiller);
 $resMiller = (millerRabin(997,20)) ? "premier" : "composé";
-show("<li> Test avec 997 et 20 : ", $resMiller);
+show("Test avec 997 et 20 : ", $resMiller);
 $resMiller = (millerRabin(7919,20)) ? "premier" : "composé";
-show("<li> Test avec 7919 et 20 : ", $resMiller);
+show("Test avec 7919 et 20 : ", $resMiller);
 
 question("D.");
 // version du premierAleatoire sans l'utilisation de GMP (utilisation de nos méthode)
@@ -396,10 +396,10 @@ tableau(
     ["Grandeur", "Valeur théorique", "Appel PHP", "Résultat PHP"],
     [
         ["n_B, φ(n_B)", "253 ; 220", "11*23 ; (11-1)*(23-1)", 11*23 . " ; " . (11-1)*(23-1)],
-        ["d_B = e_B^-1 mod φ(n_B)", "13", "inversemod(17, 220)", inversemod(17, 220)],
-        ["signature s = 100^d_B mod n_B", "133", "expmod(100, 13, 253) ou RSAdecrypt(100, 17, 11, 23)", RSAdecrypt(100, 17, 11, 23)],
-        ["vérification s^e_B mod n_B", "100", "expmod(133, 17, 253) ou RSAencrypt(133, 17, 253)", RSAencrypt(133, 17, 253)],
-        ["imposteur 200^e_B mod n_B", "73", "expmod(200, 17, 253)", expmod(200, 17, 253)],
+        ["d_B = e_B^(-1) mod φ(n_B)", "13", "inversemod(17, 220)", inversemod(17, 220)],
+        ["signature s = 100^(d_B) mod n_B", "133", "expmod(100, 13, 253) ou RSAdecrypt(100, 17, 11, 23)", RSAdecrypt(100, 17, 11, 23)],
+        ["vérification s^(e_B) mod n_B", "100", "expmod(133, 17, 253) ou RSAencrypt(133, 17, 253)", RSAencrypt(133, 17, 253)],
+        ["imposteur 200^(e_B) mod n_B", "73", "expmod(200, 17, 253)", expmod(200, 17, 253)],
     ]
 );
 /**============================================
