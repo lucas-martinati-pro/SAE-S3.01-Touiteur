@@ -85,14 +85,14 @@ show("inversemod(2, 26) = ", inversemod(2, 26));
 show("Réponse : L'inverse modulaire n'existe pas.");
 
 title("Partie 1 - 1.4 : Chiffrement et déchiffrement RSA");
-function RSAencrypt(int $x, int $e, int $n) {
+function RSAencrypt(int $x, int $e, int $n): int {
     return expmod($x, $e, $n);
 }
 
 show("Chiffrement de 3 avec la clé public 5 et 85 : ", RSAencrypt(3,5,85));
 show("Réponse : 73");
 
-function RSAdecrypt(int $y, int $e, int $p, int $q) {
+function RSAdecrypt(int $y, int $e, int $p, int $q): int {
     $n = $p * $q;
     $phin = ($p - 1) * ($q - 1);
 
@@ -115,7 +115,8 @@ show(<<<HTML
 D'après le Petit Théorème de Fermat : Soit p un nombre premier, alors ∀a ∈ ℤ, a^p ≡ a [p].
 De plus, si p ne divise pas a (c'est-à-dire PGCD(a, p) = 1), alors a admet un inverse modulo p, noté a^(-1).
 En multipliant par a^(-1), on obtient :
-a^p * a^(-1) ≡ a * a^(-1) [p] <=> a^(p - 1) ≡ 1 [p] car a * a^(-1) = 1
+a^p * a^(-1) ≡ a * a^(-1) [p]
+<=> a^(p - 1) ≡ 1 [p] car a * a^(-1) = 1
 HTML);
 
 question("B.");
@@ -177,15 +178,15 @@ HTML);
 
 title("Travail");
 question("A.");
-function estTemoin(int $a, int $d, int $s, int $n) {
-    $x = expmod($a,$d,$n);
+function estTemoin(int $a, int $d, int $s, int $n): bool {
+    $x = expmod($a, $d, $n);
 
     if ($x == 1 || $x == $n - 1) {
         return false;
     }
 
-    for($i = 0 ; $i < $s - 1 ; $i++) {
-        $x = ($x * $x) % $n;
+    for ($i = 0; $i < $s - 1; $i++) {
+        $x = $x**2 % $n;
 
         if ($x == $n - 1) {
             return false;
@@ -196,22 +197,24 @@ function estTemoin(int $a, int $d, int $s, int $n) {
 }
 
 question("B.");
-function millerRabin(int $n, int $k) {
+function millerRabin(int $n, int $k): bool {
     if ($n <= 1) return false; // les nombres négatifs, 0 et 1 ne sont pas premiers
     if ($n == 2 || $n == 3) return true; // 2 et 3 sont premiers
-    if ($n % 2 == 0) return false; // les nombres pairs ne sont forcément pas premier
+    if ($n % 2 == 0) return false; // les nombres pairs sont forcément pas premier
 
     $s = 0;
     $d = $n - 1;
 
-    while($d % 2 == 0) {
+    // On compte le nombre de division possible de d par 2 avant que d ne soit plus pair
+    while ($d % 2 == 0) {
         $s++;
         $d = $d/2;
     }
 
+    // On test k fois n sur la base
     for ($i = 0; $i < $k; $i++) {
-        $base = random_int(2, $n-2);
-        if (estTemoin($base, $d, $s, $n )) {
+        $base = random_int(2, $n - 2);
+        if (estTemoin($base, $d, $s, $n)) {
             return false;
         }
     }
