@@ -85,11 +85,12 @@ show("inversemod(2, 26) = ", inversemod(2, 26));
 show("Réponse : L'inverse modulaire n'existe pas.");
 
 title("Partie 1 - 1.4 : Chiffrement et déchiffrement RSA");
-function RSAencrypt(int $x, int $e, int $n){
-    return $x**$e % $n;
+function RSAencrypt(int $x, int $e, int $n) {
+    return expmod($x, $e, $n);
 }
 
 show("Chiffrement de 3 avec la clé public 5 et 85 : ", RSAencrypt(3,5,85));
+show("Réponse : 73");
 
 function RSAdecrypt(int $y, int $e, int $p, int $q) {
     $n = $p * $q;
@@ -101,10 +102,11 @@ function RSAdecrypt(int $y, int $e, int $p, int $q) {
 
     $d = inversemod($e, $phin);
 
-    return $y**$d % $n;
+    return expmod($y, $d, $n);;
 }
 
 show("Dechiffrement de 2 avec la clé privée 5 et 17 (et e = 5) : ", RSAdecrypt(2,5,5,17));
+show("Réponse : 32");
 
 title("Partie 1 - 1.5 : Génération de clés : le test de Miller Rabin");
 subtitle("Q.1");
@@ -303,7 +305,7 @@ function genererClesRSA(GMP|string|int $min, GMP|string|int $max): array {
 show("Clé avec des premiers dans [100, 999] : ");
 dump(genererClesRSA(100, 999));
 
-title(" Partie 2 - Exercice 1");
+title("Partie 2 - Un protocole d'authentiffication par RSA");
 subtitle("Q.1");
 question("A.");
 show(<<<HTML
@@ -352,13 +354,51 @@ s = 133
 HTML);
 
 question("F.");
+show(<<<HTML
+Alice peut vérifier à partie de la seule valeur s que sont interlocuteur est bien Bob // TODO
+HTML);
 
 question("G.");
+show(<<<HTML
+17 = 16 + 1
+133^2 ≡ 17689 [253] ≡ 232 [253] ≡ -21 [253]
+133^4 ≡ (-21)² [253] ≡ 441 [253] ≡ -65 [253]
+133^8 ≡ (-65)² [253] ≡ 4225 [253] ≡ -76 [253]
+133^16 ≡ (-76)² [253] ≡ 5776 [253] ≡ -43 [253]
+133^17 ≡ 133^16 * 133 [253]
+133^17 ≡ -43 * 133 [253]
+133^17 ≡ −5719 [253]
+133^17 ≡ 100 [253]
+
+On peut en conclure que // TODO
+HTML);
 
 question("H.");
+show(<<<HTML
+17 = 16 + 1
+200^2 ≡ 40000 [253] ≡ 26 [253]
+200^4 ≡ 26² [253] ≡ 676 [253] ≡ 170 [253] ≡ -83 [253]
+200^8 ≡ (-83)² [253] ≡ 6889 [253] ≡ 58 [253]
+200^16 ≡ 58² [253] ≡ 3364 [253] ≡ 75 [253]
+200^17 ≡ 200^16 * 200 [253]
+200^17 ≡ 75 * 200 [253]
+200^17 ≡ 15000 [253]
+200^17 ≡ 73 [253]
+
+On peut en conclure que // TODO
+HTML);
 
 question("I.");
-
+tableau(
+    ["Grandeur", "Valeur théorique", "Appel PHP", "Résultat PHP"],
+    [
+        ["n_B, φ(n_B)", "253 ; 220", "11*23 ; (11-1)*(23-1)", 11*23 . " ; " . (11-1)*(23-1)],
+        ["d_B = e_B^-1 mod φ(n_B)", "13", "inversemod(17, 220)", inversemod(17, 220)],
+        ["signature s = 100^d_B mod n_B", "133", "expmod(100, 13, 253) ou RSAdecrypt(100, 17, 11, 23)", RSAdecrypt(100, 17, 11, 23)],
+        ["vérification s^e_B mod n_B", "100", "expmod(133, 17, 253) ou RSAencrypt(133, 17, 253)", RSAencrypt(133, 17, 253)],
+        ["imposteur 200^e_B mod n_B", "73", "expmod(200, 17, 253)", expmod(200, 17, 253)],
+    ]
+);
 /**============================================
  *               METHODES AFFICHAGES
  *=============================================**/
@@ -376,8 +416,13 @@ function debut(): void {
     h2 { font-size: 1.2rem; color: #a9b1d6; margin: 1.5rem 0 .5rem; }
     h3 { font-size: .95rem; color: #14161c; background: #7aa2f7; display: inline-block; padding: .1rem .7rem; border-radius: 4px; margin: 1.2rem 0 .4rem; }
     .res { background: #1c1f2a; border-left: 3px solid #3b4261; padding: .4rem .8rem; margin: .3rem 0; border-radius: 0 4px 4px 0; }
-    .res b { color: #ff9e64; font-family: monospace; }
+    .res b { color: #ff9e64; font-family: monospace; font-size: .95rem; }
     pre { background: #1c1f2a; color: #c0caf5; padding: .8rem; border-radius: 4px; overflow-x: auto; border: 1px solid #2a2f3d; }
+
+    table.verif { width: 100%; border-collapse: collapse; margin: .8rem 0; background: #1c1f2a; }
+    table.verif th { text-align: left; color: #a9b1d6; background: #20243a; padding: .5rem .8rem; border: 1px solid #2a2f3d; }
+    table.verif td { padding: .45rem .8rem; border: 1px solid #2a2f3d; }
+    table.verif td code { color: #ff9e64; font-family: monospace; }
     </style>
     </head>
     <body>
@@ -405,4 +450,24 @@ function dump(mixed $val): void {
     echo "<pre>";
     var_dump($val);
     echo "</pre>";
+}
+
+// Chaque ligne : [grandeur, valeur théorique, appel PHP]
+// $entetes : noms des colonnes, $lignes : tableau de lignes (chaque ligne = tableau de cellules)
+function tableau(array $entetes, array $lignes): void {
+    echo "<table class='verif'><tr>";
+    foreach ($entetes as $entete) {
+        echo "<th>" . htmlspecialchars($entete) . "</th>";
+    }
+    echo "</tr>";
+
+    foreach ($lignes as $ligne) {
+        echo "<tr>";
+        foreach ($ligne as $cellule) {
+            echo "<td>" . htmlspecialchars((string) $cellule) . "</td>";
+        }
+        echo "</tr>";
+    }
+
+    echo "</table>";
 }
