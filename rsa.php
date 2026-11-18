@@ -75,14 +75,14 @@ function inversemod(int $e, int $f): int | string {
     if ($r0 === 1) {
         return (($u0 % $f) + $f) % $f;
     } else {
-        return "L'inverse modulaire n'existe pas.";
+        return "L'inverse modulaire de $e mod $f n'existe pas.";
     }
 }
 
 show("inversemod(5, 26) = ", inversemod(5, 26));
 show("Réponse : 21");
 show("inversemod(2, 26) = ", inversemod(2, 26));
-show("Réponse : L'inverse modulaire n'existe pas.");
+show("Réponse : L'inverse modulaire de 2 mod 26 n'existe pas.");
 
 title("Partie 1 - 1.4 : Chiffrement et déchiffrement RSA");
 function RSAencrypt(int $x, int $e, int $n): int {
@@ -358,7 +358,12 @@ HTML);
 
 question("F.");
 show(<<<HTML
-Alice peut vérifier à partie de la seule valeur s que sont interlocuteur est bien Bob // TODO
+Alice peut vérifier, à partir de la seule valeur s, que son interlocuteur est bien Bob en appliquant la clé publique de Bob à s (soit r = s^(e_B) mod n_B) afin de retrouver r et vérifier que r = 100.
+
+De plus, si Bob avait chiffré sa réponse avec la clé publique (n_A, e_A) d'Alice, elle devrait d'abord déchiffrer le message y à l'aide de sa clé privée en réalisant l'opération
+s = y^(d_A) mod n_A pour obtenir s.
+Ensuite, elle devrait vérifier la signature sur s pour retrouver r en utilisant la clé publique de Bob, grâce au calcule r = s^(e_B) mod n_B
+et enfin vérifier que r = 100.
 HTML);
 
 question("G.");
@@ -373,7 +378,7 @@ show(<<<HTML
 133^17 ≡ −5719 [253]
 133^17 ≡ 100 [253]
 
-On peut en conclure que // TODO
+On peut en conclure que r = 100. Donc le message proviens bien de Bob.
 HTML);
 
 question("H.");
@@ -388,7 +393,7 @@ show(<<<HTML
 200^17 ≡ 15000 [253]
 200^17 ≡ 73 [253]
 
-On peut en conclure que // TODO
+On peut en conclure que r = 73 et 73 =/ 100, donc Mallory n'as pas réussi à se faire passé pour Bob.
 HTML);
 
 question("I.");
