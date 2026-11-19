@@ -4,21 +4,17 @@ namespace iutnc\touiteur\auth;
 
 use iutnc\touiteur\exception\AuthnException;
 use iutnc\touiteur\repository\RepositoryFactory;
-use iutnc\touiteur\repository\TouiteurRepository;
 
 /**
  * Fournisseur d'authentification.
  */
 class AuthnProvider {
     /**
-     * Authentifie un utilisateur à partir de son email et mot de passe.
-     *
-     * En cas de succès, stocke l'utilisateur sérialisé dans la session ($_SESSION['user']).
-     *
-     * @param string $email Adresse email de connexion.
-     * @param string $password Mot de passe en clair.
-     * @return void
-     * @throws AuthnException Si les identifiants sont invalides ou inexistants.
+     * Authentifie un utilisateur à partir de son email et mot de passe. En cas de succès, stocke l'utilisateur sérialisé dans la session ($_SESSION['user']).
+     * @param string $email adresse e-mail de l’utilisateur.
+     * @param string $password mot de passe de l’utilisateur.
+     * @return void Aucune valeur.
+     * @throws AuthnException Si le traitement échoue.
      */
     public static function signin(string $email, string $password): void {
         $r = RepositoryFactory::getReader();
@@ -32,17 +28,13 @@ class AuthnProvider {
     }
 
     /**
-     * Enregistre un nouvel utilisateur après validation de l'email et du mot de passe.
-     *
-     * Exigences pour le mot de passe : au moins 10 caractères, 1 majuscule, 1 minuscule,
-     * 1 chiffre et 1 caractère spécial.
-     *
-     * @param string $email Adresse email du nouvel utilisateur.
-     * @param string $password Mot de passe choisi.
-     * @param string $nom Nom de l'utilisateur
-     * @param string $prenom Prenom de l'utilisateur
-     * @return void
-     * @throws AuthnException Si l'email est invalide, déjà utilisé, ou si le mot de passe ne respecte pas les critères de sécurité.
+     * Enregistre un nouvel utilisateur après validation de l'email et du mot de passe. Exigences pour le mot de passe : au moins 10 caractères, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.
+     * @param string $email adresse e-mail de l’utilisateur.
+     * @param string $password mot de passe de l’utilisateur.
+     * @param string $nom nom de l’utilisateur.
+     * @param string $prenom prénom de l’utilisateur.
+     * @return void Aucune valeur.
+     * @throws AuthnException Si le traitement échoue.
      */
     public static function register(string $email, string $password, string $nom, string $prenom): void {
         $email = filter_var($email, FILTER_VALIDATE_EMAIL);
@@ -83,9 +75,8 @@ class AuthnProvider {
 
     /**
      * Récupère le tableau de données de l'utilisateur actuellement connecté.
-     *
-     * @return array Tableau associatif contenant les informations de l'utilisateur (id, email, passwd, role).
-     * @throws AuthnException Si aucun utilisateur n'est connecté en session.
+     * @return array{id: int|string, email: string, passwd: string, nom: string, prenom: string, counter_touite: int|string} Données du compte connecté.
+     * @throws AuthnException Si le traitement échoue.
      */
     public static function getSignedInUser(): array {
         if (!isset($_SESSION['user']) || !is_string($_SESSION['user'])) {
@@ -101,7 +92,9 @@ class AuthnProvider {
     }
 
     /**
-     * @throws AuthnException Si aucun utilisateur n'est connecté en session.
+     * Indique si l’utilisateur connecté est administrateur.
+     * @return bool Résultat de la vérification.
+     * @throws AuthnException Si aucun utilisateur n’est connecté.
      */
     public static function isAdminUser(): bool {
         $user = self::getSignedInUser();

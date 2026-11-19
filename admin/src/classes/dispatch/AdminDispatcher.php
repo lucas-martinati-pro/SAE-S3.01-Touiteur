@@ -24,8 +24,7 @@ class AdminDispatcher {
 
     /**
      * Initialise le Dispatcher avec le nom de l'action demandée.
-     *
-     * @param string $action Nom de l'action (par défaut 'default').
+     * @param string $action nom de l’action.
      */
     public function __construct(string $action) {
         $this->action = $action;
@@ -33,8 +32,7 @@ class AdminDispatcher {
 
     /**
      * Point d'entrée de l'exécution du Dispatcher.
-     *
-     * @return void
+     * @return void Aucune valeur.
      */
     public function run(): void {
         $html = match ($this->action) {
@@ -51,9 +49,8 @@ class AdminDispatcher {
 
     /**
      * Génère et affiche la structure HTML complète de la page web.
-     *
-     * @param string $html Contenu HTML généré par l'action courante.
-     * @return void
+     * @param string $html contenu HTML à afficher.
+     * @return void Aucune valeur.
      */
     private function renderPage(string $html): void {
         $navbar = $this->renderNavbar();
@@ -97,6 +94,10 @@ class AdminDispatcher {
         HTML;
     }
 
+    /**
+     * Génère la barre latérale avec les tendances et la recherche.
+     * @return string Texte ou contenu HTML généré.
+     */
     private function renderSideBar(): string {
         try {
             AuthnProvider::getSignedInUser();
@@ -132,9 +133,8 @@ class AdminDispatcher {
     }
 
     /**
-     * Génère le code HTML de la barre de navigation Bootstrap.
-     *
-     * @return string Balises HTML de la barre de navigation.
+     * Génère les liens de navigation et les commandes du compte.
+     * @return string Texte ou contenu HTML généré.
      */
     private function renderNavbar(): string {
         $sidebarLinks = <<<HTML

@@ -12,10 +12,11 @@ use iutnc\touiteur\touite\Feed;
 class RendererFactory {
     /**
      * Instancie et retourne le renderer adéquat pour l'objet donné en argument.
-     *
-     * @param object $element L'objet à restituer en HTML (Touite ou Feed).
-     * @return Renderer Instance de Renderer adaptée.
-     * @throws \InvalidArgumentException Si l'objet n'est pas pris en charge.
+     * @param object $element objet à rendre.
+     * @param Pagination $pagination paramètres de pagination.
+     * @param string $url adresse de destination.
+     * @return Renderer Moteur de rendu adapté à l’objet.
+     * @throws \InvalidArgumentException Si le traitement échoue.
      */
     public static function getRenderer(object $element, Pagination $pagination = new Pagination(), string $url = 'feed'): Renderer {
         return match (true) {

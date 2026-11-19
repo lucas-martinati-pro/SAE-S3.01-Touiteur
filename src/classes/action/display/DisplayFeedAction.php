@@ -87,6 +87,10 @@ class DisplayFeedAction extends Action {
         exit;
     }
 
+    /**
+     * Génère la page d’accueil affichée aux visiteurs non connectés.
+     * @return string Texte ou contenu HTML généré.
+     */
     private function noLogin(): string {
         return <<<HTML
             <section class="landing-page">

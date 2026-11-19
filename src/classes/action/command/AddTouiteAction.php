@@ -8,6 +8,9 @@ use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\action\Action;
 use Override;
 
+/**
+ * Classe AddTouiteAction de l’application.
+ */
 class AddTouiteAction extends Action {
     protected bool $requireAuth = true;
 
@@ -78,6 +81,11 @@ class AddTouiteAction extends Action {
         exit;
     }
 
+    /**
+     * Enregistre le média envoyé avec le touite et retourne son chemin.
+     * @param array{media?: array{name: string, tmp_name: string, error: int, size: int, type: string}} $mediaFile données du fichier envoyé.
+     * @return ?string Message d’erreur HTML, ou null si la vérification réussit.
+     */
     private function saveMedia(array $mediaFile): ?string {
         if (isset($mediaFile['media']) && $mediaFile['media']['error'] === UPLOAD_ERR_OK) {
             $extension = strtolower(pathinfo($mediaFile['media']['name'], PATHINFO_EXTENSION));

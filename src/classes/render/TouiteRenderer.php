@@ -8,9 +8,19 @@ use iutnc\touiteur\touite\Touite;
 use iutnc\touiteur\enum\TypeRender;
 use Override;
 
+/**
+ * Classe TouiteRenderer de l’application.
+ */
 class TouiteRenderer implements Renderer {
+    /**
+     * Valeur utilisée pour touite.
+     */
     protected Touite $touite;
 
+    /**
+     * Initialise les données nécessaires à cet objet.
+     * @param Touite $touite touite à afficher ou à enregistrer.
+     */
     public function __construct(Touite $touite) {
         $this->touite = $touite;
     }
@@ -139,6 +149,13 @@ class TouiteRenderer implements Renderer {
         HTML;
     }
 
+    /**
+     * Génère le lien vers le détail du touite.
+     * @param int $touiteId identifiant du touite.
+     * @param string $author nom de l’auteur.
+     * @param TypeRender $selector type de rendu demandé.
+     * @return string Texte ou contenu HTML généré.
+     */
     private function touiteLink(int $touiteId, string $author, TypeRender $selector): string {
         if ($selector === TypeRender::LONG) {
             return '';
