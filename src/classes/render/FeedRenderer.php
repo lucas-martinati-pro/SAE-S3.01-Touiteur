@@ -40,16 +40,16 @@ class FeedRenderer implements Renderer {
     public function render(TypeRender $selector = TypeRender::COMPACT): string {
         $this->pagination->setIsLastPage($this->feed->getLength());
         $paginationHtml = HtmlHelper::pagination(
-            'Pagination du feed',
+            'Feed pagination',
             $this->action,
             $this->pagination
         );
 
         if ($this->feed->isEmpty()) {
-            return HtmlHelper::alert('info', 'Aucun touite à afficher pour le moment.') . $paginationHtml;
+            return HtmlHelper::alert('info', 'No touites to display yet.') . $paginationHtml;
         }
 
-        $html = '<section class="feed" aria-label="Liste des touites">';
+        $html = '<section class="feed" aria-label="Touites list">';
         foreach ($this->feed as $touite) {
             $html .= (new TouiteRenderer($touite))->render($selector);
         }

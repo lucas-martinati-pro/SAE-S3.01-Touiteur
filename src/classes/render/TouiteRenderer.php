@@ -63,7 +63,7 @@ class TouiteRenderer implements Renderer {
         if ($mediaPath !== null && $mediaPath !== '') {
             $path = htmlspecialchars($mediaPath, ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars(
-                $this->touite->getMediaDescription() ?? 'Média du touite',
+                $this->touite->getMediaDescription() ?? 'Touite media',
                 ENT_QUOTES,
                 'UTF-8'
             );
@@ -74,7 +74,7 @@ class TouiteRenderer implements Renderer {
                 $media = <<<HTML
                     <video class="touite-media touite-video" controls width="100%" preload="metadata">
                         <source src="{$path}" type="video/mp4">
-                        Votre navigateur ne supporte pas la lecture de vidéos.
+                        Your browser does not support video playback.
                     </video>
                 HTML;
             } else {
@@ -104,11 +104,11 @@ class TouiteRenderer implements Renderer {
         if ($userId === $currentUserId && $selector === TypeRender::LONG) {
             $deleteBtn = <<<HTML
                 <form method="post" action="?action=deleteTouite"
-                    onsubmit="return confirm('Supprimer ce touite ?');">
+                    onsubmit="return confirm('Delete this touite?');">
                     <input type="hidden" name="id" value="{$touiteId}">
-                    <button type="submit" class="touite-delete-button" aria-label="Supprimer ce touite">
+                    <button type="submit" class="touite-delete-button" aria-label="Delete this touite">
                         <i class="bi bi-trash3" aria-hidden="true"></i>
-                        <span>Supprimer</span>
+                        <span>Delete</span>
                     </button>
                 </form>
             HTML;
@@ -127,7 +127,7 @@ class TouiteRenderer implements Renderer {
                     <div class="touite-body">
                         <div class="touite-header">
                             <a class="touite-profile-link" href="?action=profile&id={$userId}"
-                                aria-label="Voir le profil de {$completeName}">
+                                aria-label="View {$completeName}'s profile">
                                 {$profileAvatar}
                                 <span class="touite-profile-identity">
                                     <strong class="touite-author">{$completeName}</strong>
@@ -139,7 +139,7 @@ class TouiteRenderer implements Renderer {
                         </div>
                         <p class="touite-content">{$content}</p>
                         {$media}
-                        <div class="touite-actions {$actionsClass}" aria-label="Actions du touite">
+                        <div class="touite-actions {$actionsClass}" aria-label="Touite actions">
                             {$noteActions}
                             {$deleteBtn}
                         </div>
@@ -163,7 +163,7 @@ class TouiteRenderer implements Renderer {
 
         return <<<HTML
             <a class="touite-main-link" href="?action=touite&id={$touiteId}"
-               aria-label="Voir le touite de {$author}">
+               aria-label="View {$author}'s touite">
             </a>
         HTML;
     }

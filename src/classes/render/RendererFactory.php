@@ -22,7 +22,7 @@ class RendererFactory {
         return match (true) {
             $element instanceof Touite => new TouiteRenderer($element),
             $element instanceof Feed => new FeedRenderer($element, $pagination, $url),
-            default => throw new \InvalidArgumentException('Type de rendu non pris en charge.'),
+            default => throw new \InvalidArgumentException('Unsupported renderer type.'),
         };
     }
 }

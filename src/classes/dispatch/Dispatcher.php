@@ -77,7 +77,7 @@ class Dispatcher {
 
         echo <<<HTML
             <!DOCTYPE html>
-            <html lang="fr" data-bs-theme="{$theme}" id="html">
+            <html lang="en" data-bs-theme="{$theme}" id="html">
                 <head>
                     <title>Touiteur</title>
                     <meta charset="utf-8">
@@ -93,7 +93,7 @@ class Dispatcher {
                 <body>
                     <div class="app-layout" id="swup">
                         <aside class="sidebar">
-                            <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php" aria-label="Accueil">
+                            <a class="navbar-brand fw-bold text-primary d-flex align-items-center mb-4" href="index.php" aria-label="Home">
                                 <img src="image/favicon.png" alt="" width="28" height="28" class="me-2">
                                 <span class="logo-word">Touiteur</span>
                             </a>
@@ -134,7 +134,7 @@ class Dispatcher {
                 <aside class="right-sidebar">
                     {$search}
                     <section class="trends">
-                        <h2>Tags populaires</h2>
+                        <h2>Popular tags</h2>
                         <div class="tag-list">
                                 $tagsHtml
                         </div>
@@ -155,8 +155,8 @@ class Dispatcher {
             <div class="sidebar-links">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php" aria-label="Accueil">
-                            <i class="bi bi-house-door-fill" aria-hidden="true"></i><span>Accueil</span>
+                        <a class="nav-link" href="index.php" aria-label="Home">
+                            <i class="bi bi-house-door-fill" aria-hidden="true"></i><span>Home</span>
                         </a>
                     </li>
                 </ul>
@@ -164,9 +164,9 @@ class Dispatcher {
         HTML;
         $themeSwitch = <<<HTML
             <div class="theme-switch">
-                <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Changer de thème">
+                <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Switch theme">
                 <i class="bi bi-circle-half theme-toggle-icon" aria-hidden="true"></i>
-                <span class="theme-toggle-label">Changer de thème</span>
+                <span class="theme-toggle-label">Switch theme</span>
             </button>
             </div>
         HTML;
@@ -182,9 +182,9 @@ class Dispatcher {
 
             if (AuthnProvider::isAdminUser()) {
                 $btnAdmin = <<<HTML
-                    <a href="admin" class="btn btn-outline-primary w-100 mb-2 sidebar-admin-link" aria-label="Espace Admin">
+                    <a href="admin" class="btn btn-outline-primary w-100 mb-2 sidebar-admin-link" aria-label="Admin Panel">
                         <i class="bi bi-shield-lock-fill" aria-hidden="true"></i>
-                        <span>Espace Admin</span>
+                        <span>Admin Panel</span>
                     </a>
                 HTML;
             }
@@ -193,9 +193,9 @@ class Dispatcher {
                 {$btnAdmin}
                 <div class="sidebar-user">
                     <a class="sidebar-avatar-link sidebar-profile-link" href="?action=profile&id={$userId}"
-                       aria-label="Voir mon profil"><span>{$profileAvatar}</span><span class="sidebar-profile-label">Profil</span></a>
+                       aria-label="View my profile"><span>{$profileAvatar}</span><span class="sidebar-profile-label">Profile</span></a>
                     <span class="sidebar-email">{$email}</span>
-                    <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
+                    <a class="sidebar-signout" href="?action=signout" title="Sign out">
                         <i class="bi bi-box-arrow-right"></i>
                     </a>
                 </div>
@@ -203,13 +203,13 @@ class Dispatcher {
         } catch (AuthnException) {
             $accountArea = <<<HTML
                 <div class="sidebar-user guest-user">
-                    <a class="btn btn-outline-primary mobile-nav-auth" href="?action=signin" aria-label="Se connecter">
+                    <a class="btn btn-outline-primary mobile-nav-auth" href="?action=signin" aria-label="Sign in">
                         <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-                        <span>Connexion</span>
+                        <span>Sign in</span>
                     </a>
-                    <a class="btn btn-primary mobile-nav-auth" href="?action=register" aria-label="Créer un compte">
+                    <a class="btn btn-primary mobile-nav-auth" href="?action=register" aria-label="Create an account">
                         <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
-                        <span>Inscription</span>
+                        <span>Sign up</span>
                     </a>
                 </div>
             HTML;
