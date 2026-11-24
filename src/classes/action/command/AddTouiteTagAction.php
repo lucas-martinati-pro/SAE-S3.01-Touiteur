@@ -18,14 +18,14 @@ class AddTouiteTagAction extends Action {
         $tags = $_SESSION['tags'] ?? [];
         if (!is_array($tags) || $tags === [] || !isset($_SESSION['touite'])) {
             return HtmlHelper::errorPage(
-                title: 'Aucun tag à décrire',
-                message: 'Publie d’abord un touite contenant un nouveau tag.',
-                backLabel: 'Retour au fil'
+                title: 'No tag to describe',
+                message: 'First publish a touite containing a new tag.',
+                backLabel: 'Back to feed'
             );
         }
 
-        $page = HtmlHelper::title('Vérifier les tags', 'bi-hash') . <<<HTML
-            <p class="text-secondary">Les tags existants gardent leur description. Ajoute une description pour chaque nouveau tag.</p>
+        $page = HtmlHelper::title('Review tags', 'bi-hash') . <<<HTML
+            <p class="text-secondary">Existing tags keep their description. Add a description for each new tag.</p>
             <form method="post" action="?action=addTouiteTag" class="vstack gap-3">
         HTML;
 
@@ -54,16 +54,16 @@ class AddTouiteTagAction extends Action {
                         name="{$fieldName}"
                         maxlength="235"
                         rows="3"
-                        placeholder="Décris ce tag en quelques mots"
+                        placeholder="Describe this tag in a few words"
                         required
                     >{$description}</textarea>
-                    <div class="form-text">235 caractères maximum.</div>
+                    <div class="form-text">235 characters maximum.</div>
                 </div>
             HTML;
         }
 
-        $submitButton = HtmlHelper::button('Publier le touite', 'bi-send-fill');
-        $cancelButton = HtmlHelper::linkButton('Annuler', '?action=feed', '', 'outline-secondary');
+        $submitButton = HtmlHelper::button('Publish touite', 'bi-send-fill');
+        $cancelButton = HtmlHelper::linkButton('Cancel', '?action=feed', '', 'outline-secondary');
         $page .= <<<HTML
                 <div class="d-flex gap-2">
                     {$submitButton}
@@ -82,9 +82,9 @@ class AddTouiteTagAction extends Action {
 
         if (!is_array($tags) || $tags === [] || $touite === null) {
             return HtmlHelper::errorPage(
-                title: 'Formulaire invalide',
-                message: 'Les tags ou le touite à publier sont introuvables. Recommence la publication.',
-                backLabel: 'Retour au fil'
+                title: 'Invalid form',
+                message: 'The tags or touite to publish could not be found. Please start publishing again.',
+                backLabel: 'Back to feed'
             );
         }
 
@@ -96,14 +96,14 @@ class AddTouiteTagAction extends Action {
 
                 if ($length === 0 || $length > 235) {
                     $message = $length === 0
-                        ? 'La description du tag ne peut pas être vide.'
-                        : 'La description du tag doit comporter au maximum 235 caractères.';
+                        ? 'The tag description cannot be empty.'
+                        : 'The tag description must be at most 235 characters.';
 
                     return HtmlHelper::formError(
                         errors: $message,
                         backUrl: '?action=addTouiteTag',
-                        backLabel: 'Retour au fil',
-                        title: 'Impossible de publier le touite'
+                        backLabel: 'Back to feed',
+                        title: 'Unable to publish touite'
                     );
                 }
 

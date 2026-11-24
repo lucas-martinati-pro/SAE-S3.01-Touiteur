@@ -20,9 +20,9 @@ class LikeAction extends Action {
         if ($id === false || $id === null || $id < 1 || !is_string($typeLabel)
             || !in_array($typeLabel, ['like', 'dislike', 'annuler'], true)) {
             return HtmlHelper::errorPage(
-                title: 'Vote invalide',
-                message: 'Le touite ou le type de vote est invalide.',
-                backLabel: 'Retour au fil'
+                title: 'Invalid vote',
+                message: 'The touite or vote type is invalid.',
+                backLabel: 'Back to feed'
             );
         }
 

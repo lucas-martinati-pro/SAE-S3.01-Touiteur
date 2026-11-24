@@ -21,13 +21,13 @@ class AddTouiteAction extends Action {
         $length = mb_strlen($content);
         if ($length === 0 || $length > 235) {
             $message = $length === 0
-                ? 'Le contenu du touite ne peut pas être vide.'
-                : 'Le contenu du touite doit comporter entre 1 et 235 caractères.';
+                ? 'Touite content cannot be empty.'
+                : 'Touite content must be between 1 and 235 characters.';
 
             return HtmlHelper::formError(
                 errors: $message,
-                backLabel: 'Modifier le touite',
-                title: 'Impossible de publier le touite'
+                backLabel: 'Edit touite',
+                title: 'Unable to publish touite'
             );
         }
         $mediaDescription = trim($_POST['descrip_media'] ?? '');
@@ -38,9 +38,9 @@ class AddTouiteAction extends Action {
             $_FILES['media']['size'] > 2 * 1024 * 1024
         ) {
             return HtmlHelper::formError(
-                errors: 'Le fichier ne doit pas dépasser 2 Mo.',
-                backLabel: 'Modifier le touite',
-                title: 'Impossible de publier le touite'
+                errors: 'The file must not exceed 2 MB.',
+                backLabel: 'Edit touite',
+                title: 'Unable to publish touite'
             );
         }
 

@@ -60,7 +60,7 @@ class AdminDispatcher {
 
         echo <<<HTML
             <!DOCTYPE html>
-            <html lang="fr" data-bs-theme="{$theme}" id="html">
+            <html lang="en" data-bs-theme="{$theme}" id="html">
                 <head>
                     <title>Touiteur - Admin</title>
                     <meta charset="utf-8">
@@ -120,7 +120,7 @@ class AdminDispatcher {
                 <aside class="right-sidebar">
                     {$search}
                     <section class="trends">
-                        <h2>Tags populaires</h2>
+                        <h2>Popular tags</h2>
                         <div class="tag-list">
                                 $tagsHtml
                         </div>
@@ -146,13 +146,13 @@ class AdminDispatcher {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=trendTags" aria-label="Tags populaires">
-                            <i class="bi bi-hash" aria-hidden="true"></i><span>Tags populaires</span>
+                        <a class="nav-link" href="?action=trendTags" aria-label="Popular tags">
+                            <i class="bi bi-hash" aria-hidden="true"></i><span>Popular tags</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?action=trendUsers" aria-label="Utilisateurs populaires">
-                            <i class="bi bi-people" aria-hidden="true"></i><span>Utilisateurs</span>
+                        <a class="nav-link" href="?action=trendUsers" aria-label="Popular users">
+                            <i class="bi bi-people" aria-hidden="true"></i><span>Users</span>
                         </a>
                     </li>
                 </ul>
@@ -160,17 +160,17 @@ class AdminDispatcher {
         HTML;
         $themeSwitch = <<<HTML
             <div class="theme-switch">
-                <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Changer de thème">
+                <button id="toggle-theme" class="theme-toggle" type="button" aria-label="Switch theme">
                 <i class="bi bi-circle-half theme-toggle-icon" aria-hidden="true"></i>
-                <span class="theme-toggle-label">Changer de thème</span>
+                <span class="theme-toggle-label">Switch theme</span>
             </button>
             </div>
         HTML;
 
         $btnSitePublic = <<<HTML
-            <a href="../index.php" class="btn btn-outline-primary w-100 mb-2 sidebar-public-link" aria-label="Site public">
+            <a href="../index.php" class="btn btn-outline-primary w-100 mb-2 sidebar-public-link" aria-label="Public site">
                 <i class="bi bi-house-door-fill" aria-hidden="true"></i>
-                <span>Site public</span>
+                <span>Public site</span>
             </a>
         HTML;
 
@@ -185,9 +185,9 @@ class AdminDispatcher {
                 {$btnSitePublic}
                 <div class="sidebar-user">
                     <a class="sidebar-avatar-link sidebar-profile-link" href="../index.php?action=profile&id={$userId}"
-                       aria-label="Voir mon profil"><span>{$profileAvatar}</span><span class="sidebar-profile-label">Profil</span></a>
+                       aria-label="View my profile"><span>{$profileAvatar}</span><span class="sidebar-profile-label">Profile</span></a>
                     <span class="sidebar-email">{$email}</span>
-                    <a class="sidebar-signout" href="?action=signout" title="Déconnexion">
+                    <a class="sidebar-signout" href="?action=signout" title="Sign out">
                         <i class="bi bi-box-arrow-right"></i>
                     </a>
                 </div>
@@ -196,13 +196,13 @@ class AdminDispatcher {
             $accountArea = <<<HTML
                 {$btnSitePublic}
                 <div class="sidebar-user guest-user">
-                    <a class="btn btn-outline-primary mobile-nav-auth" href="?action=signin" aria-label="Se connecter">
+                    <a class="btn btn-outline-primary mobile-nav-auth" href="?action=signin" aria-label="Sign in">
                         <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-                        <span>Connexion</span>
+                        <span>Sign in</span>
                     </a>
-                    <a class="btn btn-primary mobile-nav-auth" href="?action=register" aria-label="Créer un compte">
+                    <a class="btn btn-primary mobile-nav-auth" href="?action=register" aria-label="Create an account">
                         <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
-                        <span>Inscription</span>
+                        <span>Sign up</span>
                     </a>
                 </div>
             HTML;

@@ -21,7 +21,7 @@ class DisplayListFollowedTag extends Action {
         $backUrl = $id > 0 ? "?action=profile&id={$id}" : '?action=feed';
         $followedTags = $r->findAllFollowedTagByUserId($id);
 
-        $header = HtmlHelper::detailHeader('Tags suivis', $backUrl);
+        $header = HtmlHelper::detailHeader('Followed tags', $backUrl);
 
         $items = '';
         foreach ($followedTags as $tag) {
@@ -37,7 +37,7 @@ class DisplayListFollowedTag extends Action {
         }
 
         return $header . <<<HTML
-            <section class="followed-tags" aria-label="Liste des tags suivis">
+            <section class="followed-tags" aria-label="Followed tags list">
                 {$items}
             </section>
         HTML;

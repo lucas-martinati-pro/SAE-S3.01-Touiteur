@@ -21,7 +21,7 @@ class DisplayTouite extends Action {
         $page = HtmlHelper::detailHeader('Touite');
 
         if ($touite === null) {
-            return HtmlHelper::notFound('Touite', 'Ce touite est introuvable.');
+            return HtmlHelper::notFound('Touite', 'This touite could not be found.');
         }
 
         return $page . '<div class="touite-detail">' .
