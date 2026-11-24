@@ -20,7 +20,7 @@ class HtmlHelper {
     public static function addTouite(array $user): string {
         $profileAvatar = HtmlHelper::profileAvatar($user);
         return <<<HTML
-            <section class="compose-box" aria-label="Écrire un touite">
+            <section class="compose-box" aria-label="Write a touite">
                 {$profileAvatar}
                 <form class="compose-form" method="post" action="?action=addTouite" enctype="multipart/form-data">
                     <div class="compose-fields">
@@ -30,18 +30,18 @@ class HtmlHelper {
                             id="contenu"
                             maxlength="235"
                             rows="1"
-                            placeholder="Quoi de neuf ?"
-                            aria-label="Contenu du touite"
+                            placeholder="What's new?"
+                            aria-label="Touite content"
                             required
                         ></textarea>
                     </div>
                     <div class="compose-footer">
                         <details class="compose-attachment">
-                            <summary aria-label="Ajouter une image ou une vidéo" title="Ajouter une image ou une vidéo">
+                            <summary aria-label="Add an image or video" title="Add an image or video">
                                 <i class="bi bi-image" aria-hidden="true"></i>
                             </summary>
                             <div class="compose-attachment-panel">
-                                <label class="compose-file-label" for="media">Ajouter une image ou une vidéo</label>
+                                <label class="compose-file-label" for="media">Add an image or video</label>
                                 <input
                                     type="file"
                                     name="media"
@@ -50,21 +50,21 @@ class HtmlHelper {
                                     accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
                                     aria-describedby="media-help"
                                 >
-                                <small id="media-help">JPG, PNG, WEBP, GIF ou MP4 · 2 Mo maximum</small>
+                                <small id="media-help">JPG, PNG, WEBP, GIF or MP4 · 2 MB max</small>
                                 <div class="compose-description">
-                                    <label for="descrip_media">Description de l’image <span>(facultative)</span></label>
+                                    <label for="descrip_media">Image description <span>(optional)</span></label>
                                     <textarea
                                         name="descrip_media"
                                         id="descrip_media"
                                         maxlength="235"
                                         rows="2"
-                                        placeholder="Décrivez l’image pour les personnes qui ne peuvent pas la voir"
+                                        placeholder="Describe the image for people who cannot see it"
                                     ></textarea>
                                 </div>
                             </div>
                         </details>
-                        <span class="compose-character-limit">235 caractères maximum</span>
-                        <button type="submit" class="btn btn-primary compose-submit">Publier</button>
+                        <span class="compose-character-limit">235 characters max</span>
+                        <button type="submit" class="btn btn-primary compose-submit">Publish</button>
                     </div>
                 </form>
             </section>
@@ -108,13 +108,13 @@ class HtmlHelper {
     public static function alreadyLogin(string $email): string {
         $email = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
 
-        $title = HtmlHelper::title('Déjà connecté', 'bi-person-plus-fill');
-        $feedButton = HtmlHelper::linkButton('Mon feed', '?action=feed', 'bi-collection-play-fill');
-        $signoutButton = HtmlHelper::linkButton('Se déconnecter', '?action=signout', 'bi-box-arrow-right', 'danger');
-        $homeButton = HtmlHelper::linkButton('Accueil', 'index.php', 'bi-house-door-fill', 'secondary');
+        $title = HtmlHelper::title('Already signed in', 'bi-person-plus-fill');
+        $feedButton = HtmlHelper::linkButton('My feed', '?action=feed', 'bi-collection-play-fill');
+        $signoutButton = HtmlHelper::linkButton('Sign out', '?action=signout', 'bi-box-arrow-right', 'danger');
+        $homeButton = HtmlHelper::linkButton('Home', 'index.php', 'bi-house-door-fill', 'secondary');
         return <<<HTML
             {$title}
-            <p>Vous êtes déjà connecté avec l'adresse <strong>{$email}</strong>.</p>
+            <p>You are already signed in with <strong>{$email}</strong>.</p>
             <p>
                 {$feedButton}
                 {$signoutButton}
@@ -171,7 +171,7 @@ class HtmlHelper {
         string $buttonClass = 'btn btn-sm'
     ): string {
         $state = $isSubscribed ? 'unsub' : 'sub';
-        $label = $isSubscribed ? 'Abonné' : "S'abonner";
+        $label = $isSubscribed ? 'Following' : 'Follow';
         $variant = $isSubscribed ? 'outline-primary' : 'primary';
         $type = htmlspecialchars($type, ENT_QUOTES, 'UTF-8');
         $buttonClass = htmlspecialchars($buttonClass, ENT_QUOTES, 'UTF-8');
@@ -227,7 +227,7 @@ class HtmlHelper {
      * @param string $placeholder texte indicatif.
      * @return string Texte ou contenu HTML généré.
      */
-    public static function searchForm(string $action, string $value = '', string $placeholder = 'Rechercher un touite'): string {
+    public static function searchForm(string $action, string $value = '', string $placeholder = 'Search touites'): string {
         $action = htmlspecialchars($action, ENT_QUOTES, 'UTF-8');
         $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
         $placeholder = htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8');
@@ -245,7 +245,7 @@ class HtmlHelper {
                     aria-label="{$placeholder}"
                     required
                 >
-                <button type="submit" class="search-button" aria-label="Rechercher">
+                <button type="submit" class="search-button" aria-label="Search">
                     <i class="bi bi-search" aria-hidden="true"></i>
                 </button>
             </form>
@@ -263,7 +263,7 @@ class HtmlHelper {
         $noteClass = $note < 0
             ? 'touite-note-negative'
             : ($note > 0 ? 'touite-note-positive' : 'touite-note-neutral');
-        $noteHtml = "<span class=\"touite-note {$noteClass}\" aria-label=\"Note du touite\">{$note}</span>";
+        $noteHtml = "<span class=\"touite-note {$noteClass}\" aria-label=\"Touite score\">{$note}</span>";
 
         $r = RepositoryFactory::getReader();
         $isLiked = false;
@@ -287,7 +287,7 @@ class HtmlHelper {
         if ($selector === TypeRender::COMPACT) {
             $voteClass = $isLiked ? $likeClass : $dislikeClass;
             $voteIcon = $isLiked ? $likeIcon : ($isDisliked ? $dislikeIcon : 'bi-heart');
-            $voteLabel = $isLiked ? "Votre vote : j'aime" : ($isDisliked ? "Votre vote : je n'aime pas" : 'Aucun vote');
+            $voteLabel = $isLiked ? 'Your vote: like' : ($isDisliked ? 'Your vote: dislike' : 'No vote');
 
             return <<<HTML
                 <span class="touite-vote-indicator {$voteClass}" role="img" aria-label="{$voteLabel}"><i class="bi {$voteIcon}" aria-hidden="true"></i></span>
@@ -306,14 +306,14 @@ class HtmlHelper {
                 <input type="hidden" name="id" value="{$touiteId}">
                 <input type="hidden" name="type" value="{$likeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
-                <button type="submit" class="touite-like {$likeClass}" aria-label="J'aime" aria-pressed="{$likePressed}"><i class="bi {$likeIcon}" aria-hidden="true"></i></button>
+                <button type="submit" class="touite-like {$likeClass}" aria-label="Like" aria-pressed="{$likePressed}"><i class="bi {$likeIcon}" aria-hidden="true"></i></button>
             </form>
             {$noteHtml}
             <form method="POST" action="?action=like">
                 <input type="hidden" name="id" value="{$touiteId}">
                 <input type="hidden" name="type" value="{$dislikeType}">
                 <input type="hidden" name="return_query" value="{$returnQuery}">
-                <button type="submit" class="touite-dislike {$dislikeClass}" aria-label="Je n'aime pas" aria-pressed="{$dislikePressed}"><i class="bi {$dislikeIcon}" aria-hidden="true"></i></button>
+                <button type="submit" class="touite-dislike {$dislikeClass}" aria-label="Dislike" aria-pressed="{$dislikePressed}"><i class="bi {$dislikeIcon}" aria-hidden="true"></i></button>
             </form>
         HTML;
     }
@@ -352,7 +352,7 @@ class HtmlHelper {
      * @param string $label libellé à afficher.
      * @return string Texte ou contenu HTML généré.
      */
-    public static function backLink(string $url = '?action=feed', string $label = 'Retour au feed'): string {
+    public static function backLink(string $url = '?action=feed', string $label = 'Back to feed'): string {
         $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
         $label = htmlspecialchars($label, ENT_QUOTES, 'UTF-8');
 
@@ -411,11 +411,11 @@ class HtmlHelper {
             <nav class="feed-pagination" aria-label="{$ariaLabel}">
                 <a class="btn btn-outline-secondary"{$previousAttributes} href="?action={$action}&page={$previous}">
                     <i class="bi bi-chevron-left" aria-hidden="true"></i>
-                    Page précédente
+                    Previous page
                 </a>
                 <span>Page {$page}</span>
                 <a class="btn btn-outline-secondary"{$nextAttribute} href="?action={$action}&page={$next}">
-                    Page suivante
+                    Next page
                     <i class="bi bi-chevron-right" aria-hidden="true"></i>
                 </a>
             </nav>
@@ -482,7 +482,7 @@ class HtmlHelper {
      * @param string $type type demandé.
      * @return string Texte ou contenu HTML généré.
      */
-    public static function errorPage(string $title = 'Erreur', string|array $message = 'Une erreur inattendue est survenue.', string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil", string $type = 'danger'): string {
+    public static function errorPage(string $title = 'Error', string|array $message = 'An unexpected error occurred.', string $backUrl = 'index.php', string $backLabel = 'Back to home', string $type = 'danger'): string {
         $titleColor = match ($type) {
             'success' => 'text-success',
             'warning' => 'text-warning',
@@ -512,10 +512,10 @@ class HtmlHelper {
      * @param string $backLabel libellé du lien de retour.
      * @return string Texte ou contenu HTML généré.
      */
-    public static function authRequired(string $message = 'Vous devez être connecté pour accéder à cette page.', string $loginUrl = '?action=signin', string $loginLabel = 'Se connecter', string $backUrl = 'index.php', string $backLabel = "Retour à l'accueil"): string {
+    public static function authRequired(string $message = 'You must be signed in to access this page.', string $loginUrl = '?action=signin', string $loginLabel = 'Sign in', string $backUrl = 'index.php', string $backLabel = 'Back to home'): string {
         $alert = self::alert('warning', $message);
         // Icône Bootstrap - https://icons.getbootstrap.com/icons/shield-lock-fill/
-        $titleHtml = self::title('Accès refusé', 'bi-shield-lock-fill', 'text-danger');
+        $titleHtml = self::title('Access denied', 'bi-shield-lock-fill', 'text-danger');
 
         return <<<HTML
             {$titleHtml}
@@ -542,10 +542,10 @@ class HtmlHelper {
      * @param string $backLabel libellé du lien de retour.
      * @return string Texte ou contenu HTML généré.
      */
-    public static function forbidden(string $message = "Vous n'êtes pas autorisé à effectuer cette action.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
+    public static function forbidden(string $message = 'You are not authorized to perform this action.', string $backUrl = '?action=feed', string $backLabel = 'Back to my feed'): string {
         return self::statusScreen(
             titleIcon: 'bi-shield-lock-fill',
-            title: 'Accès refusé',
+            title: 'Access denied',
             titleColorClass: 'text-danger',
             alertType: 'danger',
             message: $message,
@@ -564,10 +564,10 @@ class HtmlHelper {
      * @param string $backLabel libellé du lien de retour.
      * @return string Texte ou contenu HTML généré.
      */
-    public static function notFound(string $item = 'Ressource', string $message = "L'élément demandé n'existe pas ou est introuvable.", string $backUrl = '?action=feed', string $backLabel = 'Retour à mon feed'): string {
+    public static function notFound(string $item = 'Resource', string $message = 'The requested item does not exist or could not be found.', string $backUrl = '?action=feed', string $backLabel = 'Back to my feed'): string {
         return self::statusScreen(
             titleIcon: 'bi-exclamation-triangle-fill',
-            title: "{$item} introuvable",
+            title: "{$item} not found",
             titleColorClass: 'text-danger',
             alertType: 'danger',
             message: $message,
@@ -586,7 +586,7 @@ class HtmlHelper {
      * @param string $title titre à afficher.
      * @return string Texte ou contenu HTML généré.
      */
-    public static function formError(string|array $errors = 'Une erreur est survenue lors de la validation du formulaire.', string $backUrl = 'index.php', string $backLabel = 'Retour au formulaire', string $title = 'Erreur dans le formulaire'): string {
+    public static function formError(string|array $errors = 'An error occurred while validating the form.', string $backUrl = 'index.php', string $backLabel = 'Back to form', string $title = 'Form error'): string {
         return self::statusScreen(
             titleIcon: 'bi-exclamation-triangle-fill',
             title: $title,
@@ -611,10 +611,10 @@ class HtmlHelper {
      * @return string Texte ou contenu HTML généré.
      */
     public static function successPage(
-        string $title = 'Opération réussie',
-        string $message = "L'opération s'est déroulée avec succès.",
+        string $title = 'Operation successful',
+        string $message = 'The operation completed successfully.',
         string $backUrl = '?action=feed',
-        string $backLabel = 'Retour à mon feed',
+        string $backLabel = 'Back to my feed',
         string $secondaryUrl = '',
         string $secondaryLabel = ''
     ): string {

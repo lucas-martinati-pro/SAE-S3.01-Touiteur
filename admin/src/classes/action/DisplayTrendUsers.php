@@ -18,14 +18,14 @@ class DisplayTrendUsers extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-        $header = HtmlHelper::detailHeader('Les 200 meilleurs Influenceurs', '?');
+        $header = HtmlHelper::detailHeader('Top 200 Influencers', '?');
 
         $users = $r->findTrendingUsers();
 
         if (empty($users)) {
             return $header
                 . '<div class="followed-tags-empty">'
-                . HtmlHelper::alert('info', 'Il n\'y a aucun utilisateur')
+                . HtmlHelper::alert('info', 'There are no users')
                 . '</div>';
         }
 
@@ -34,8 +34,8 @@ class DisplayTrendUsers extends Action {
             $userId = (int) $row['id'];
             $followerCount = (int) $row['nbFol'];
             $touiteCount = (int) $row['counter_touite'];
-            $followerLabel = $followerCount > 1 ? 'abonnés' : 'abonné';
-            $touiteLabel = $touiteCount > 1 ? 'touites' : 'touite';
+            $followerLabel = $followerCount === 1 ? 'follower' : 'followers';
+            $touiteLabel = $touiteCount === 1 ? 'touite' : 'touites';
             $avatar = HtmlHelper::profileAvatar($row);
             $fullName = trim($row['nom'] . ' ' . $row['prenom']);
             $handle = '@' . $row['nom'] . '_' . $row['prenom'];
@@ -51,7 +51,7 @@ class DisplayTrendUsers extends Action {
         }
 
         return $header . <<<HTML
-            <section class="followed-tags" aria-label="Influenceurs">
+            <section class="followed-tags" aria-label="Influencers">
                 {$items}
             </section>
         HTML;
@@ -61,9 +61,9 @@ class DisplayTrendUsers extends Action {
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
             return HtmlHelper::forbidden(
-                message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
+                message: 'You do not have the required permissions to access this page.',
                 backUrl: '../index.php',
-                backLabel: "Retour à l'accueil"
+                backLabel: 'Back to home'
             );
         }
 

@@ -22,8 +22,8 @@ class DisplayUsersAction extends Action {
         $type = $_GET['type'] ?? 'followed';
 
         $header = match ($type) {
-            'followers' => HtmlHelper::detailHeader('Abonnés', $backUrl),
-            default => HtmlHelper::detailHeader('Abonnements', $backUrl),
+            'followers' => HtmlHelper::detailHeader('Followers', $backUrl),
+            default => HtmlHelper::detailHeader('Following', $backUrl),
         };
 
         $users = match ($type) {
@@ -33,8 +33,8 @@ class DisplayUsersAction extends Action {
 
         if (empty($users)) {
             return $header . match ($type) {
-                'followers' => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur n’a aucun abonné.') . '</div>',
-                default => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'Cet utilisateur ne suit personne.') . '</div>',
+                'followers' => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'This user has no followers.') . '</div>',
+                default => '<div class="followed-tags-empty">' . HtmlHelper::alert('info', 'This user is not following anyone.') . '</div>',
             };
         };
 
@@ -53,7 +53,7 @@ class DisplayUsersAction extends Action {
             );
         }
 
-        $listLabel = $type === 'followers' ? 'Liste des abonnés' : 'Liste des abonnements';
+        $listLabel = $type === 'followers' ? 'Followers list' : 'Following list';
         return $header . <<<HTML
             <section class="followed-tags" aria-label="{$listLabel}">
                 {$items}

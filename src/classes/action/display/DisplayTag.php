@@ -26,7 +26,7 @@ class DisplayTag extends Action {
         $feed = $r->findFeedByTagId($id, $pagination);
         $tag = $r->findTagById($id);
         if ($tag === null) {
-            return HtmlHelper::notFound('Tag', 'Le tag demandé est introuvable.');
+            return HtmlHelper::notFound('Tag', 'The requested tag could not be found.');
         }
         $tagLabel = $tag->getLibelle();
         $tagDescription = htmlspecialchars($tag->getDescription(), ENT_QUOTES, 'UTF-8');

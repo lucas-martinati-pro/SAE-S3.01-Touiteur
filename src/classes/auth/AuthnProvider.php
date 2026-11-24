@@ -22,7 +22,7 @@ class AuthnProvider {
         $user = $r->findUserByEmail(filter_var($email, FILTER_SANITIZE_EMAIL));
 
         if (empty($user) || !password_verify($password, $user['passwd'])) {
-            throw new AuthnException('Auth error : invalid credentials');
+            throw new AuthnException('Auth error: invalid credentials');
         }
         $_SESSION['user'] = serialize($user);
     }
@@ -42,32 +42,32 @@ class AuthnProvider {
         $prenom = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
 
         if ($email === false) {
-            throw new AuthnException("L'adresse email n'est pas valide.");
+            throw new AuthnException('The email address is not valid.');
         }
 
         $r = RepositoryFactory::getReader();
         $w = RepositoryFactory::getWriter();
 
         if ($r->existsByEmail($email)) {
-            throw new AuthnException('Cette adresse email est déjà utilisée.');
+            throw new AuthnException('This email address is already in use.');
         }
 
         $minimumLength = 10;
 
         if (strlen($password) < $minimumLength) { // longueur minimale
-            throw new AuthnException("Le mot de passe doit contenir au moins {$minimumLength} caractères.");
+            throw new AuthnException("Password must be at least {$minimumLength} characters long.");
         }
         if (!preg_match("#\d#", $password)) {// au moins un digit
-            throw new AuthnException('Le mot de passe doit contenir au moins un chiffre.');
+            throw new AuthnException('Password must contain at least one number.');
         }
         if (!preg_match("#\W#", $password)) { // au moins un car. spécial
-            throw new AuthnException('Le mot de passe doit contenir au moins un caractère spécial.');
+            throw new AuthnException('Password must contain at least one special character.');
         }
         if (!preg_match('#[a-z]#', $password)) { // au moins une minuscule
-            throw new AuthnException('Le mot de passe doit contenir au moins une lettre minuscule.');
+            throw new AuthnException('Password must contain at least one lowercase letter.');
         }
         if (!preg_match('#[A-Z]#', $password)) { // au moins une majuscule
-            throw new AuthnException('Le mot de passe doit contenir au moins une lettre majuscule.');
+            throw new AuthnException('Password must contain at least one uppercase letter.');
         }
 
         $w->addUser($email, $password, $nom, $prenom);
@@ -80,12 +80,12 @@ class AuthnProvider {
      */
     public static function getSignedInUser(): array {
         if (!isset($_SESSION['user']) || !is_string($_SESSION['user'])) {
-            throw new AuthnException('Vous devez être connecté pour accéder à cette page.');
+            throw new AuthnException('You must be signed in to access this page.');
         }
 
         $user = unserialize($_SESSION['user'], ['allowed_classes' => false]);
         if (!is_array($user) || !isset($user['id'])) {
-            throw new AuthnException('Vous devez être connecté pour accéder à cette page.');
+            throw new AuthnException('You must be signed in to access this page.');
         }
 
         return $user;

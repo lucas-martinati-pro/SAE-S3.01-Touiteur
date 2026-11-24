@@ -20,14 +20,14 @@ class AccueilAction extends Action {
         $tagsLink = HtmlHelper::listLink(
             '?action=trendTags',
             $tagsIcon,
-            'Tags populaires',
-            'Les sujets les plus présents dans les touites'
+            'Popular tags',
+            'The most frequent topics in touites'
         );
         $usersLink = HtmlHelper::listLink(
             '?action=trendUsers',
             $usersIcon,
-            'Utilisateurs populaires',
-            'Les membres qui rassemblent le plus d’abonnés'
+            'Popular users',
+            'Members with the most followers'
         );
 
         return <<<HTML
@@ -37,10 +37,10 @@ class AccueilAction extends Action {
                     <i class="bi bi-shield-lock-fill text-primary" aria-hidden="true"></i>
                 </div>
             </header>
-            <section class="tag-intro" aria-label="Bienvenue">
-                <p class="tag-description">Bienvenue dans le back-office de Touiteur. Consultez les tendances de la communauté.</p>
+            <section class="tag-intro" aria-label="Welcome">
+                <p class="tag-description">Welcome to the Touiteur back-office. Explore community trends.</p>
             </section>
-            <nav class="followed-tags" aria-label="Outils d’administration">
+            <nav class="followed-tags" aria-label="Administration tools">
                 {$tagsLink}
                 {$usersLink}
             </nav>
@@ -51,9 +51,9 @@ class AccueilAction extends Action {
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
             return HtmlHelper::forbidden(
-                message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
+                message: 'You do not have the required permissions to access this page.',
                 backUrl: '../index.php',
-                backLabel: "Retour à l'accueil"
+                backLabel: 'Back to home'
             );
         }
 

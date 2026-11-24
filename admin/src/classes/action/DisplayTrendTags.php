@@ -18,14 +18,14 @@ class DisplayTrendTags extends Action {
     public function get(): string {
         $r = RepositoryFactory::getReader();
 
-        $header = HtmlHelper::detailHeader('Les 200 Tags les plus populaires', '?');
+        $header = HtmlHelper::detailHeader('Top 200 Popular Tags', '?');
 
         $tags = $r->findTrendingTags();
 
         if (empty($tags)) {
             return $header
                 . '<div class="followed-tags-empty">'
-                . HtmlHelper::alert('info', 'Il n\'y a aucun tag')
+                . HtmlHelper::alert('info', 'There are no tags')
                 . '</div>';
         }
 
@@ -33,7 +33,7 @@ class DisplayTrendTags extends Action {
         foreach ($tags as $tag) {
             $id = (int) $tag['id'];
             $nbAparition = (int) $tag['nbAparition'];
-            $appearanceLabel = $nbAparition > 1 ? 'apparitions' : 'apparition';
+            $appearanceLabel = $nbAparition === 1 ? 'appearance' : 'appearances';
             $icon = '<span class="followed-tag-icon" aria-hidden="true"><i class="bi bi-hash"></i></span>';
             $items .= HtmlHelper::listLink(
                 "../index.php?action=tag&id={$id}",
@@ -45,7 +45,7 @@ class DisplayTrendTags extends Action {
         }
 
         return $header . <<<HTML
-            <section class="followed-tags" aria-label="Tags les plus populaires">
+            <section class="followed-tags" aria-label="Most popular tags">
                 {$items}
             </section>
         HTML;
@@ -55,9 +55,9 @@ class DisplayTrendTags extends Action {
     protected function check(): ?string {
         if (!AuthnProvider::isAdminUser()) {
             return HtmlHelper::forbidden(
-                message: "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
+                message: 'You do not have the required permissions to access this page.',
                 backUrl: '../index.php',
-                backLabel: "Retour à l'accueil"
+                backLabel: 'Back to home'
             );
         }
 

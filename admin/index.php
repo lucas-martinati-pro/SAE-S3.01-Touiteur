@@ -18,7 +18,7 @@ try {
     TouiteurRepository::setConfig(__DIR__ . '/../src/config/touiteur.db.ini');
 } catch (ConfigIOException) {
     http_response_code(500);
-    exit('Impossible de charger la configuration de la base de données.');
+    exit('Unable to load the database configuration.');
 }
 
 (new AdminDispatcher($_GET['action'] ?? 'default'))->run();

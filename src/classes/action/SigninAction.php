@@ -21,41 +21,41 @@ class SigninAction extends Action {
         } catch (AuthnException) {
             $require = '<span class="text-danger">*</span>';
             // Icône Bootstrap - https://icons.getbootstrap.com/icons/box-arrow-in-right/
-            $title = HtmlHelper::title('Connexion', 'bi-box-arrow-in-right');
-            $loginButton = HtmlHelper::button('Connexion', 'bi-box-arrow-in-right');
+            $title = HtmlHelper::title('Sign in', 'bi-box-arrow-in-right');
+            $loginButton = HtmlHelper::button('Sign in', 'bi-box-arrow-in-right');
             return <<<HTML
                 {$title}
                 <form method="post" action="?action=signin">
                     <div class="mb-3">
-                        <label for="email" class="form-label">Adresse mail$require</label>
-                        <input type="email" name="email" class="form-control" id="email" placeholder="nom@exemple.com" aria-describedby="emailHelp" required>
-                        <div id="emailHelp" class="form-text">Saisissez l'adresse e-mail associée à votre compte Touiteur.</div>
+                        <label for="email" class="form-label">Email address$require</label>
+                        <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" aria-describedby="emailHelp" required>
+                        <div id="emailHelp" class="form-text">Enter the email address associated with your Touiteur account.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Mot de passe$require</label>
+                        <label for="password" class="form-label">Password$require</label>
                         <input type="password" name="password" class="form-control" id="password" aria-describedby="passwordHelp" required>
-                        <div id="passwordHelp" class="form-text">Saisissez le mot de passe associé à votre compte.</div>
+                        <div id="passwordHelp" class="form-text">Enter the password associated with your account.</div>
                     </div>
                     {$loginButton}
                 </form>
                 <section class="demo-accounts" aria-labelledby="demo-accounts-title">
-                    <h2 id="demo-accounts-title">Comptes de démonstration</h2>
-                    <p>Utilisez l'un de ces comptes pour vous connecter.</p>
+                    <h2 id="demo-accounts-title">Demo accounts</h2>
+                    <p>Use one of these accounts to sign in.</p>
                     <div class="demo-account-list">
                         <div class="demo-account">
                             <strong>User 1</strong>
                             <span>user1@mail.com</span>
-                            <code>Mot de passe : user1</code>
+                            <code>Password: user1</code>
                         </div>
                         <div class="demo-account">
                             <strong>User 2</strong>
                             <span>user2@mail.com</span>
-                            <code>Mot de passe : user2</code>
+                            <code>Password: user2</code>
                         </div>
                         <div class="demo-account">
                             <strong>Admin</strong>
                             <span>admin@mail.com</span>
-                            <code>Mot de passe : admin</code>
+                            <code>Password: admin</code>
                         </div>
                     </div>
                 </section>
@@ -70,7 +70,7 @@ class SigninAction extends Action {
             return HtmlHelper::alreadyLogin($user['email']);
         } catch (AuthnException) {
             if (!isset($_POST['email'], $_POST['password'])) {
-                return HtmlHelper::formError(errors: 'Tous les champs sont obligatoires.', backUrl: '?action=signin&form=1', title: 'Échec de la connexion');
+                return HtmlHelper::formError(errors: 'All fields are required.', backUrl: '?action=signin&form=1', title: 'Sign in failed');
             }
 
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -78,7 +78,7 @@ class SigninAction extends Action {
             try {
                 AuthnProvider::signin($email, $_POST['password']);
             } catch (AuthnException $error) {
-                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: '?action=signin&form=1', title: 'Échec de la connexion');
+                return HtmlHelper::formError(errors: $error->getMessage(), backUrl: '?action=signin&form=1', title: 'Sign in failed');
             }
 
             $user = AuthnProvider::getSignedInUser();
@@ -90,9 +90,9 @@ class SigninAction extends Action {
                 );
 
             return HtmlHelper::successPage(
-                title: 'Connexion réussie',
-                message: 'Bienvenue, <strong>' . $displayName . '</strong> ! Vous êtes maintenant connecté à Touiteur.',
-                backLabel: 'Accéder à mon feed'
+                title: 'Sign in successful',
+                message: 'Welcome, <strong>' . $displayName . '</strong>! You are now signed in to Touiteur.',
+                backLabel: 'Go to my feed'
             );
         }
     }

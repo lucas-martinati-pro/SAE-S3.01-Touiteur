@@ -18,23 +18,23 @@ class DeleteTouiteAction extends Action {
         if ($id === false || $id === null || $id < 1) {
             return HtmlHelper::notFound(
                 'Touite',
-                'Aucun touite n’a été indiqué pour la suppression.',
+                'No touite was specified for deletion.',
                 '?action=feed&type=global',
-                'Retour au fil'
+                'Back to feed'
             );
         }
 
         $r = RepositoryFactory::getReader();
         $touite = $r->findTouiteById($id);
         if ($touite === null) {
-            return HtmlHelper::notFound('Touite', 'Ce touite n’existe plus ou a déjà été supprimé.');
+            return HtmlHelper::notFound('Touite', 'This touite no longer exists or has already been deleted.');
         }
 
         $author = $r->findUserByTouiteId($touite->getId());
         if ($author === null || (int) $author['id'] !== (int) $this->user['id']) {
             return HtmlHelper::forbidden(
-                message: "Vous n'avez pas les droits de supprimer ce touite.",
-                backLabel: 'Retour au fil'
+                message: 'You do not have permission to delete this touite.',
+                backLabel: 'Back to feed'
             );
         }
 
