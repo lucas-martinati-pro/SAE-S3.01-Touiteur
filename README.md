@@ -1,4 +1,4 @@
-# SAE-S3.01 - Touiteur
+# SAE - Touiteur
 
 Touiteur.app, publication et partage de Touites. Elle est codée en PHP. Elle utilise Bootstrap 5 et MySQL.
 
